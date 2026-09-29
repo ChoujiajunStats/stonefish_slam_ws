@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <!-- M0 nodes share one container's private IPC namespace. A stereo RGB frame
+       is 921600 bytes; reserve enough space for multiple in-flight frames. -->
+  <transport_descriptors>
+    <transport_descriptor>
+      <transport_id>uw_m0_shm</transport_id>
+      <type>SHM</type>
+      <maxMessageSize>4194304</maxMessageSize>
+      <segment_size>33554432</segment_size>
+      <port_queue_capacity>1024</port_queue_capacity>
+    </transport_descriptor>
+  </transport_descriptors>
+  <participant profile_name="uw_m0" is_default_profile="true">
+    <rtps>
+      <userTransports>
+        <transport_id>uw_m0_shm</transport_id>
+      </userTransports>
+      <useBuiltinTransports>false</useBuiltinTransports>
+    </rtps>
+  </participant>
+</profiles>

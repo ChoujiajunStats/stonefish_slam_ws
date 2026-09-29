@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+  <name>uw_ui</name>
+  <version>0.1.0</version>
+  <description>Underwater Stack M0 ui module</description>
+  <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
+  <license>LicenseRef-Not-Yet-Licensed</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>rviz2</exec_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

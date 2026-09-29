@@ -1,0 +1,14 @@
+name: Contracts
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build CPU contract environment
+        run: docker build -f docker/Dockerfile.test -t stonefish-slam-contracts .
+      - name: Run contracts (no GPU or simulation acceptance)
+        run: docker run --rm --network none -v "$GITHUB_WORKSPACE:/workspace:ro" stonefish-slam-contracts

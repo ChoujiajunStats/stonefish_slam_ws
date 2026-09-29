@@ -1,0 +1,11 @@
+schema_version: 1
+scope: optional_porth_whole_cave_survey
+parent_image: underwater-stack:m3-porth-v1
+parent_image_id: sha256:6c0e219da38c1316ce364508baa9bf8375ed60e62f6f0d375e9774a2bd3e44fa
+parent_porth_lock_sha256: 4ad7d7415c2d32f99d83a50098bb0a12f9812642dc74fb19985f6d1d3205f69a
+repository: stonefish_ros2
+commit: 3fc1fc7e9f959f988cd3e9c71fcf7944163abd0d
+patch: 0009-survey-optical-lights.patch
+patch_sha256: ddfdcd4a7ca3de592096d9dd9d5572cf2a0b21a53b46d6a29c092ff9bdeabbdf
+reason: Exclude optical LIGHT actuators from the eight motor channel list; reject
+  all other types. Lease, watchdog, native setpoints and hydrodynamics unchanged.

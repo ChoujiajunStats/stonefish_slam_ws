@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+  <name>uw_benchmark</name>
+  <version>0.1.0</version>
+  <description>Underwater Stack M0 benchmark module</description>
+  <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
+  <license>LicenseRef-Not-Yet-Licensed</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <exec_depend>diagnostic_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>uw_interfaces</exec_depend>
+  <exec_depend>uw_guard</exec_depend>
+  <exec_depend>uw_controller</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-matplotlib</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>uw_perception</exec_depend>
+  <exec_depend>tf2_msgs</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>uw_tasks</exec_depend>
+  <exec_depend>rtabmap_msgs</exec_depend>
+  <exec_depend>sensor_msgs_py</exec_depend>
+  <exec_depend>uw_runtime</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,7 @@
+schema_version: 1
+milestone: M3
+parent_image: underwater-stack:m2-v3
+parent_image_id: sha256:71689218545bc2485aed1f6642594353dfcff335337067ba6b14ff0b6bd02caa
+parent_source_lock: source-lock.m2.yaml
+parent_source_lock_sha256: eb88d3285555a547ac553676300791aac27a6ebc188754f1e9404456c359405c
+new_upstream_patches: []

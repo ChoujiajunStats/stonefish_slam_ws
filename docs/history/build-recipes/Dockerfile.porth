@@ -1,0 +1,10 @@
+# Parent identity is checked by scripts/uw; M0--M3 tags are never overwritten.
+FROM underwater-stack:m3-v4
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ros-jazzy-rtabmap-slam=0.23.7-1noble.20260903.103010 \
+    ros-jazzy-rtabmap-util=0.23.7-1noble.20260903.095812 \
+    ros-jazzy-rtabmap-msgs=0.23.7-1noble.20260902.042917 \
+    && dpkg-query -W > /opt/uw/porth-dpkg-packages.txt \
+    && rm -rf /var/lib/apt/lists/*
+COPY vendor/source-lock.porth.yaml /opt/uw/source-lock.porth.yaml
+RUN sha256sum /opt/uw/source-lock.porth.yaml > /opt/uw/porth-lock.sha256

@@ -1,0 +1,73 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: "@NAMESPACE@/odom"
+    Background Color: 20; 28; 40
+    Frame Rate: 30
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: ENU Reference Grid
+      Enabled: true
+      Cell Size: 1
+      Plane: XY
+      Reference Frame: <Fixed Frame>
+    - Class: rviz_default_plugins/RobotModel
+      Name: Schematic Robot (not hydrodynamics)
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /@NAMESPACE@/robot_description
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Depth: 1
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: true
+      Show Names: true
+    - Class: rviz_default_plugins/Odometry
+      Name: Ground Truth Debug State
+      Enabled: true
+      Topic:
+        Value: /@NAMESPACE@/state/odometry
+        Reliability Policy: Reliable
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 5
+      Keep: 1
+    - Class: rviz_default_plugins/Image
+      Name: Left RGB
+      Enabled: true
+      Topic:
+        Value: /@NAMESPACE@/sensors/stereo/left/image_raw
+        Reliability Policy: Best Effort
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 5
+    - Class: rviz_default_plugins/Image
+      Name: Right RGB
+      Enabled: true
+      Topic:
+        Value: /@NAMESPACE@/sensors/stereo/right/image_raw
+        Reliability Policy: Best Effort
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 5
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 5
+      Pitch: 0.45
+      Yaw: 0.75
+      Target Frame: "@NAMESPACE@/base_link"
+Window Geometry:
+  Width: 1600
+  Height: 900
+  QMainWindow State: "000000ff00000000fd00000002000000000000015400000373fc0200000001fb000000100044006900730070006c0061007900730100000011000003730000007b00ffffff000000010000019000000373fc0200000002fb00000010004c00650066007400200052004700420100000011000001b70000007b00fffffffb0000001200520069006700680074002000520047004201000001ce000001b60000007b00ffffff000003500000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000"

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /work/overlay
+extra=()
+expected_extra=()
+if [[ -f /opt/uw/m2-lock.sha256 ]]; then
+    extra=(/workspace/perception /workspace/localization)
+    expected_extra=(uw_localization uw_perception)
+fi
+if [[ -f /opt/uw/m3-lock.sha256 ]]; then
+    extra+=(/workspace/navigation /workspace/tasks)
+    expected_extra+=(uw_navigation uw_tasks)
+fi
+case "${1:-}" in
+    build)
+        discovered=$(colcon list --paths /workspace/runtime /workspace/app /workspace/robot /workspace/simulations /workspace/ui /workspace/benchmark /workspace/interfaces /workspace/guard /workspace/controller "${extra[@]}" --names-only | sort)
+        expected=$(printf '%s\n' uw_runtime uw_app uw_benchmark uw_controller uw_guard uw_interfaces uw_robot uw_simulations uw_ui "${expected_extra[@]}" | sort)
+        if [[ "$discovered" != "$expected" ]]; then
+            printf 'Unexpected package discovery:\n%s\n' "$discovered" >&2
+            exit 1
+        fi
+        colcon build --paths /workspace/runtime /workspace/app /workspace/robot /workspace/simulations /workspace/ui /workspace/benchmark /workspace/interfaces /workspace/guard /workspace/controller "${extra[@]}" \
+            --build-base /work/overlay/build --install-base /work/overlay/install \
+            --symlink-install --event-handlers console_direct+
+        ;;
+    test)
+        export PYTHONPATH="/workspace/tools:/workspace/runtime:/workspace/app:/workspace/robot:/workspace/simulations:/workspace/benchmark:/workspace/guard:/workspace/controller:/workspace/perception:/workspace/navigation:/workspace/tasks:${PYTHONPATH:-}"
+        python3 -m unittest discover -s /workspace/test -v
+        ;;
+    *)
+        printf 'Expected build or test\n' >&2
+        exit 2
+        ;;
+esac

@@ -1,0 +1,67 @@
+schema_version: 1
+status: FROZEN_M2_V3
+revision: v2 adds fixed-fixture estimator error checks after v1 review rejection; original numeric accuracy thresholds unchanged
+state_source: OPENVINS_STEREO_IMU
+evaluation_truth: PRIVILEGED_DEBUG
+motion_source: M1 guarded thrusters with truth feedback, solely diagnostic excitation
+alignment: first common estimated pose; yaw and translation only; no scale or full-trajectory fitting
+motion_schedule:
+  reference: seconds after explicit ARM accepted; body FLU m/s, rad/s
+  segments:
+    - {start: 0, end: 8, velocity: [0, 0, 0, 0]}
+    - {start: 8, end: 18, velocity: [0.12, 0, 0, 0]}
+    - {start: 18, end: 26, velocity: [0, 0.08, 0, 0]}
+    - {start: 26, end: 32, velocity: [0, 0, 0, 0.08]}
+    - {start: 32, end: 38, velocity: [-0.08, 0, 0.03, 0]}
+    - {start: 38, end: case_end_minus_1, velocity: [0, 0, 0, 0]}
+  final: explicit DISARM one second before case end
+  faults: injection at 20 seconds; test runner explicitly DISARMs diagnostic truth-controlled motion
+estimation_window: all valid estimates; no best-window selection; tracking continuity checked after 15 seconds
+thresholds:
+  initialization_deadline_sec: 15.0
+  position_rmse_m: 0.20
+  velocity_rmse_m_s: 0.05
+  roll_pitch_rmse_deg: 3.0
+  yaw_rmse_deg: 5.0
+  tracking_fraction: 0.90
+  estimate_delay_p95_sec: 0.20
+  checkerboard_reprojection_rmse_px: 1.0
+  stereo_vertical_median_px: 0.50
+  stereo_vertical_p95_px: 1.5
+  stereo_disparity_error_px: 1.0
+  stereo_min_matches: 25
+  fixed_imu_rmse_m_s2: 0.04
+  sensor_fault_detection_sec: 0.80
+  terminal_neutralization_sec: 0.50
+  sensor_max_age_sec: 1.0
+safety:
+  initial_ned_m: [0.0, 0.0, 2.0]
+  normal_initial_rpy_enu_deg: [0.0, 0.0, 90.0]
+  depth_enu_m: [-4.5, -0.3]
+  visual_fixture_x_ned_limit_m: 3.0
+  roll_pitch_peak_deg: 25
+  cleanup: explicit DISARM then finite process-group shutdown, isolated container/network removal
+cases:
+  calibration:
+    group: sensors
+    duration_sec: 15
+    fixed_fixture: true
+    diagnostic_motion: false
+    recording_profile: sensors
+  imu_tilt:
+    group: sensors
+    duration_sec: 15
+    fixed_fixture: true
+    initial_rpy_enu_deg: [6.0, -5.0, 90.0]
+    diagnostic_motion: false
+  trajectory_1: {group: estimation, duration_sec: 45, diagnostic_motion: true}
+  trajectory_2: {group: estimation, duration_sec: 45, diagnostic_motion: true}
+  trajectory_3: {group: estimation, duration_sec: 45, diagnostic_motion: true}
+  empty_water: {group: degeneration, duration_sec: 20, scene_profile: empty_water, diagnostic_motion: true}
+  image_dropout: {group: faults, duration_sec: 28, diagnostic_motion: true, injection_sec: 20, restore_sec: 23}
+  imu_dropout: {group: faults, duration_sec: 28, diagnostic_motion: true, injection_sec: 20, restore_sec: 23}
+  clock_pause: {group: faults, duration_sec: 28, diagnostic_motion: true, injection_sec: 20, restore_sec: 23}
+  clock_rewind: {group: faults, duration_sec: 28, diagnostic_motion: true, injection_sec: 20}
+  estimator_kill: {group: faults, duration_sec: 28, diagnostic_motion: true, injection_sec: 20}
+  load_1: {group: load, duration_sec: 60, diagnostic_motion: true, visualization: rviz, recording_profile: debug}
+  load_2: {group: load, duration_sec: 60, diagnostic_motion: true, visualization: rviz, recording_profile: debug}

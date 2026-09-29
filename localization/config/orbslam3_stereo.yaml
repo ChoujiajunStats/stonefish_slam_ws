@@ -1,0 +1,15 @@
+# Pure stereo; image acquisition remains 20 Hz and 640x480.
+features: 1600
+scale_factor: 1.2
+pyramid_levels: 8
+initial_fast_threshold: 12
+minimum_fast_threshold: 5
+close_depth_baselines: 40.0
+maximum_input_age_sec: 0.30
+maximum_pending_per_side: 3
+map_publish_hz: 1.0
+# Actual camera intrinsics/extrinsics are generated from robot profile per run.
+
+# Native image evidence/renderer unchanged; explicit deterministic front-end preprocessing.
+clahe_clip_limit: 3.0
+clahe_grid_size: 8

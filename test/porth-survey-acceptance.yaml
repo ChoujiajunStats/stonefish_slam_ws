@@ -1,0 +1,28 @@
+version: porth-survey-v4
+scope: Known-route stereo SLAM acquisition; whole-surface reconstruction evaluated separately
+safety:
+  control_state_source: PRIVILEGED_DEBUG
+  maximum_horizontal_speed_m_s: 0.20
+  tracking_abort_m: 0.25
+  collision_mesh_screening_lower_bound_m: 0.80
+  robot_screening_radius_m: 0.50
+  roll_pitch_peak_deg: 20
+  estimator_unhealthy: abort_latched_fault
+  initialization: Explicit ARM, zero velocity hold; no route motion until sensor-only SLAM ready
+  initialization_hold_timeout_sec: 20
+  adapter_kill_native_neutral_sec: 0.50
+  camera_stale_wall_sec: 0.5
+  slam_stale_wall_sec: 5
+online_mapping:
+  maximum_working_nodes: 600
+  memory_management_time_budget_ms: 250
+  long_term_sensor_database_preserved: true
+  reason: Bound dictionary rebuild latency observed in v3; safety thresholds unchanged
+thresholds:
+  slam_graph_nodes: 3
+  slam_map_points: 1000
+  surface_coverage_distances_m: [0.15, 0.30, 0.50]
+  full_surface_reconstruction: report_measured_fraction_no_assumed_pass
+cases:
+  manual: {}
+recording: State MCAP plus original sensor-bearing RTAB-Map SQLite database; full stereo remains active

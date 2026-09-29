@@ -1,0 +1,40 @@
+schema_version: 1
+base_image: ros:jazzy-ros-base@sha256:c3706ef0a0aa45413c07803cf433602f543b22e45b4855f6fca955c2d8ecc4e8
+repositories:
+- name: stonefish
+  url: https://github.com/patrykcieslak/stonefish.git
+  commit: 6d285a955d19c9ecef3defd3f0605907f4594dbb
+  license: GPL-3.0-or-later
+  patches:
+  - file: patches/0002-stonefish-fixed-width-integers.patch
+    sha256: 0e5cee143d7c52cd7d48c666c23ce17d37bc3a2b720363f99014adff39b4459e
+  - file: patches/0003-pre-actuator-safety-hook.patch
+    sha256: d5df9a50fb23eea40e99f5f41e2220780ba66054dc7509e1dde3ce70a84b905c
+- name: stonefish_ros2
+  url: https://github.com/patrykcieslak/stonefish_ros2.git
+  commit: 3fc1fc7e9f959f988cd3e9c71fcf7944163abd0d
+  license: GPL-3.0-or-later
+  patches:
+  - file: patches/0001-simulation-clock-and-node-ownership.patch
+    sha256: 324172eadbf734806c4607aa6bdb0bb2562d3b7609ca97b76594f5d43d975ba5
+  - file: patches/0004-terminal-command-lease.patch
+    sha256: ea70ffc618403d5e0bfbc655526bfb6a6b8a3014e01ae78e4345c176b7a995de
+- name: stonefish_bluerov2
+  url: https://github.com/bvibhav/stonefish_bluerov2.git
+  commit: 6448383af6b7ef6083b0eac2c08102660591e318
+  license: Apache-2.0 (package declaration; asset provenance still requires review)
+  patches: []
+- name: rviz
+  url: https://github.com/ros2/rviz.git
+  commit: feb01669f1297df2af755ce9cd2ed18083e7a8b2
+  license: BSD-3-Clause
+  version: 14.1.23 (same as installed Jazzy package)
+  patches:
+  - file: patches/0005-rviz-idempotent-image-unsubscribe.patch
+    sha256: 55fd803d8ee7922baf2bac3d88569a6b6491a985f4b5181b9c800902ad68d912
+  - file: patches/0006-rviz-release-view-manager.patch
+    sha256: 39f3065889ad2406def504c1302cb5aa429a0ac6404f1ff15c8993b078eb5bd2
+reproducibility_limits:
+- APT packages are inventoried at build time, not snapshot-pinned
+- GPU driver is supplied by the host
+- Stonefish RNG is not seeded by the M0 manifest

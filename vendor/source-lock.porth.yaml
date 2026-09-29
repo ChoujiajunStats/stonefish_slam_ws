@@ -1,0 +1,11 @@
+schema_version: 1
+scope: optional_porth_slam_demo
+parent_image: underwater-stack:m3-v4
+parent_image_id: sha256:1eb89a2c0925a0d3586b760bd2f6a22c09e1b762b76df136e101a83bb125fa7f
+packages:
+  ros-jazzy-rtabmap-slam: 0.23.7-1noble.20260903.103010
+  ros-jazzy-rtabmap-util: 0.23.7-1noble.20260903.095812
+  ros-jazzy-rtabmap-msgs: 0.23.7-1noble.20260902.042917
+source: https://github.com/introlab/rtabmap_ros
+changes_to_upstream: none
+dependency_resolution: APT transitive versions recorded in porth-dpkg-packages.txt; not bitwise reproducible

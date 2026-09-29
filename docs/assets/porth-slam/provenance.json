@@ -1,0 +1,26 @@
+{
+  "rviz.png": {
+    "run_id": "porth_path_v2_repeat--20260923T190141Z--f62dee1e6e0b",
+    "source": "figures/rviz-slam.png",
+    "sha256": "e9b3b0dcfc51ef463befb1704b1299b2bcf42109d8c9b711f7bbbff1cfa2dac3"
+  },
+  "rviz-known-asset.png": {
+    "run_id": "porth_path_v2_repeat--20260923T190141Z--f62dee1e6e0b",
+    "source": "figures/rviz-known-asset.png",
+    "sha256": "9cdab312cdbc3eaa51a7ce5f6d61e7dde1c1f5bb75d176db87f203fac42c14a3"
+  },
+  "slam-map.png": {
+    "run_id": "porth_path_v2_repeat--20260923T190141Z--f62dee1e6e0b",
+    "source": "figures/slam-map.png",
+    "sha256": "a2248e4f5e6462d55ca2e200a3f908a85985a86e1833d8ca2687da70438eefef"
+  },
+  "trajectory.png": {
+    "run_id": "porth_path_v2_repeat--20260923T190141Z--f62dee1e6e0b",
+    "source": "figures/trajectory.png",
+    "sha256": "a51ebe5ccfadddb520a1992e632abd0f808aef9b0f2515933efdfa9eb2be24cf"
+  },
+  "reloaded-trajectory.png": {
+    "report": "slam-export-20260923T190347Z-20189b94",
+    "sha256": "149dcf3a754282612f92c375280733b3306366f2adcdcf6de489ecd402714225"
+  }
+}

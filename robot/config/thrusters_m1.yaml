@@ -1,0 +1,168 @@
+schema_version: 1
+source_sha256: 38fd7380283413f68df0f7c684392993ae226e419c36cd6e7432a2dd0a93f65d
+density_kg_m3: 1031.0
+wrench_reference: physical_CG
+wrench_frame: FLU
+velocity_reference: base_link_origin
+setpoint_limit: 0.6
+thrusters:
+- name: FrontRight
+  position_frd:
+  - 0.1355
+  - 0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - -0.7853981634
+  axis_frd:
+  - 0.7071067811847431
+  - -0.7071067811883518
+  - 0.0
+  inverted: true
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: FrontLeft
+  position_frd:
+  - 0.1355
+  - -0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - 0.7853981634
+  axis_frd:
+  - 0.7071067811847431
+  - 0.7071067811883518
+  - 0.0
+  inverted: true
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: BackRight
+  position_frd:
+  - -0.1475
+  - 0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - -2.3561944902
+  axis_frd:
+  - -0.7071067811919606
+  - -0.7071067811811347
+  - 0.0
+  inverted: false
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: BackLeft
+  position_frd:
+  - -0.1475
+  - -0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - 2.3561944902
+  axis_frd:
+  - -0.7071067811919606
+  - 0.7071067811811347
+  - 0.0
+  inverted: false
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: DiveFrontRight
+  position_frd:
+  - 0.12
+  - 0.218
+  - 0.0
+  rpy_frd:
+  - 0.0
+  - -1.5707963268
+  - 0.0
+  axis_frd:
+  - -5.103362177294457e-12
+  - 0.0
+  - 1.0000000000000002
+  inverted: false
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: DiveFrontLeft
+  position_frd:
+  - 0.12
+  - -0.218
+  - 0.0
+  rpy_frd:
+  - 0.0
+  - -1.5707963268
+  - 0.0
+  axis_frd:
+  - -5.103362177294457e-12
+  - 0.0
+  - 1.0000000000000002
+  inverted: true
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: DiveBackRight
+  position_frd:
+  - -0.12
+  - 0.218
+  - 0.0
+  rpy_frd:
+  - 0.0
+  - -1.5707963268
+  - 0.0
+  axis_frd:
+  - -5.103362177294457e-12
+  - 0.0
+  - 1.0000000000000002
+  inverted: true
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016
+- name: DiveBackLeft
+  position_frd:
+  - -0.12
+  - -0.218
+  - 0.0
+  rpy_frd:
+  - 0.0
+  - -1.5707963268
+  - 0.0
+  axis_frd:
+  - -5.103362177294457e-12
+  - 0.0
+  - 1.0000000000000002
+  inverted: false
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3600.0
+  kt_forward: 0.167
+  kt_reverse: 0.167
+  kq: 0.016

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+  <name>uw_robot</name>
+  <version>0.1.0</version>
+  <description>Underwater Stack M0 robot module</description>
+  <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
+  <license>LicenseRef-Not-Yet-Licensed</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

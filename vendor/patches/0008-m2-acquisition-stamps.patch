@@ -1,0 +1,51 @@
+--- a/src/stonefish_ros2/ROS2ScenarioParser.cpp
++++ b/src/stonefish_ros2/ROS2ScenarioParser.cpp
+@@ -585,7 +585,8 @@
+         }
+ 
+         std::string topicStr(topic);
+-        unsigned int queueSize = (unsigned int)ceil(sens->getUpdateFrequency());
++        // Negative rate means every physics step, not a negative DDS history depth.
++        unsigned int queueSize = sens->getUpdateFrequency() <= 0 ? 5u : (unsigned int)ceil(sens->getUpdateFrequency());
+ 
+         //Generate publishers for different sensor types
+         switch(sens->getType())
+@@ -710,6 +711,9 @@
+                         img_pubs[sensorName] = it->advertise(topicStr + "/image_color", queueSize);
+                         pubs[sensorName + "/info"] = nh_->create_publisher<sensor_msgs::msg::CameraInfo>(topicStr + "/camera_info", queueSize);
+                         ColorCamera* cam = (ColorCamera*)sens;
++                        bool captureTime = false;
++                        element->QueryBoolAttribute("uw_capture_time", &captureTime);
++                        cam->enableCaptureTime(captureTime);
+                         cam->InstallNewDataHandler(std::bind(&ROS2SimulationManager::ColorCameraImageReady, sim, _1));
+                         camMsgProto[sensorName] = ROS2Interface::GenerateCameraMsgPrototypes(cam, false);
+                     }
+--- a/src/stonefish_ros2/ROS2SimulationManager.cpp
++++ b/src/stonefish_ros2/ROS2SimulationManager.cpp
+@@ -516,7 +516,10 @@
+ {
+     //Fill in the image message
+     sensor_msgs::msg::Image::SharedPtr img = cameraMsgPrototypes_[cam->getName()].first;
+-    img->header.stamp = UWClockNow();
++    if(cam->hasCaptureTime() && cam->getCaptureTime() < 0) return;
++    img->header.stamp = cam->hasCaptureTime()
++        ? rclcpp::Time(static_cast<int64_t>(std::llround(cam->getCaptureTime()*1e9)), RCL_ROS_TIME)
++        : UWClockNow();
+     memcpy(img->data.data(), (uint8_t*)cam->getImageDataPointer(), img->step * img->height);
+ 
+     //Fill in the info message
+--- a/src/stonefish_ros2/ROS2Interface.cpp
++++ b/src/stonefish_ros2/ROS2Interface.cpp
+@@ -161,6 +161,12 @@
+     msg.orientation.z = quat.z();
+     msg.orientation.w = quat.w();
+     msg.orientation_covariance[0] = angleStdDev.getX() * angleStdDev.getX();
++    if(imu->hasSpecificForce())
++    {
++        msg.orientation.x = msg.orientation.y = msg.orientation.z = 0;
++        msg.orientation.w = 1;
++        msg.orientation_covariance[0] = -1; // VIO receives gyro+specific force, no truth attitude.
++    }
+     msg.orientation_covariance[4] = angleStdDev.getY() * angleStdDev.getY();
+     msg.orientation_covariance[8] = angleStdDev.getZ() * angleStdDev.getZ();
+     msg.angular_velocity.x = s.getValue(3);

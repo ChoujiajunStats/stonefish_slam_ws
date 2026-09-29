@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Bounded CLI startup capacity check; never changes the accepted DDS transport."""
+import os,sys,time
+# 32 MiB accepted participant segment plus metadata/ports and allocation headroom.
+minimum=36*1024*1024
+end=time.monotonic()+3
+while True:
+    stat=os.statvfs('/dev/shm');free=stat.f_bavail*stat.f_frsize
+    if free>=minimum:break
+    if time.monotonic()>=end:
+        raise SystemExit('CLI not started: private /dev/shm capacity remains below 36 MiB; no command sent')
+    time.sleep(.05)
+os.execvp(sys.argv[1],sys.argv[1:])

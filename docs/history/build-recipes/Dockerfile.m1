@@ -1,0 +1,40 @@
+# The CLI checks M0's ID. Existing physics sources are reused; added RViz is locked.
+ARG UW_M0_IMAGE=underwater-stack:m0
+FROM ${UW_M0_IMAGE}
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ARG UW_M0_IMAGE_ID
+ARG UW_BUILD_JOBS=8
+RUN cp -a /opt/uw/vendor /opt/uw/m0-vendor
+COPY vendor /opt/uw/vendor
+COPY scripts/repatch_upstream.py scripts/record_build.py /opt/uw/
+RUN python3 /opt/uw/repatch_upstream.py \
+    && cmake -S /opt/uw_src/stonefish -B /opt/uw_build/stonefish -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF \
+    && cmake --build /opt/uw_build/stonefish --parallel "${UW_BUILD_JOBS}" \
+    && cmake --install /opt/uw_build/stonefish && ldconfig \
+    && source /opt/ros/jazzy/setup.bash \
+    && export MAKEFLAGS="-j${UW_BUILD_JOBS}" CMAKE_BUILD_PARALLEL_LEVEL="${UW_BUILD_JOBS}" \
+    && colcon build --base-paths /opt/uw_src/stonefish_ros2 /opt/uw_src/stonefish_bluerov2 \
+       --build-base /opt/uw_build/ros --install-base /opt/uw_underlay --merge-install \
+       --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
+    && dpkg-query -W > /opt/uw/dpkg-packages.txt \
+    && python3 -m pip list --format=json > /opt/uw/python-packages.json \
+    && UW_BUILD_BASE="$(cat /opt/uw/vendor/source-lock.yaml | head -2 | tail -1 | cut -d' ' -f2-)" \
+       UW_PARENT_IMAGE_ID="${UW_M0_IMAGE_ID}" python3 /opt/uw/record_build.py
+
+RUN apt-get update && apt-get install -y --no-install-recommends python3-matplotlib \
+    && rm -rf /var/lib/apt/lists/* \
+    && dpkg-query -W > /opt/uw/dpkg-packages.txt \
+    && python3 -m pip list --format=json > /opt/uw/python-packages.json \
+    && UW_PARENT_IMAGE_ID="${UW_M0_IMAGE_ID}" python3 /opt/uw/record_build.py
+
+RUN source /opt/ros/jazzy/setup.bash \
+    && export MAKEFLAGS="-j${UW_BUILD_JOBS}" CMAKE_BUILD_PARALLEL_LEVEL="${UW_BUILD_JOBS}" \
+    && colcon build --base-paths /opt/uw_src/rviz/rviz_common /opt/uw_src/rviz/rviz_default_plugins \
+       --build-base /opt/uw_build/rviz --install-base /opt/uw_underlay --merge-install \
+       --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+COPY test/rviz_lifecycle /opt/uw/rviz_lifecycle
+RUN source /opt/ros/jazzy/setup.bash && source /opt/uw_underlay/setup.bash \
+    && cmake -S /opt/uw/rviz_lifecycle -B /opt/uw_build/rviz_lifecycle \
+    && cmake --build /opt/uw_build/rviz_lifecycle --parallel "${UW_BUILD_JOBS}" \
+    && QT_QPA_PLATFORM=offscreen ASAN_OPTIONS=detect_leaks=0 /opt/uw_build/rviz_lifecycle/image_unsubscribe \
+    && UW_PARENT_IMAGE_ID="${UW_M0_IMAGE_ID}" python3 /opt/uw/record_build.py

@@ -1,0 +1,22 @@
+request_timeout_sec: 0.25
+state_timeout_sec: 0.25
+clock_timeout_sec: 0.25
+future_tolerance_sec: 0.05
+ros_age_limit_sec: 0.25
+velocity_limits:
+- 0.4
+- 0.4
+- 0.2
+- 0.4
+probe_limit: 0.15
+sources:
+- benchmark
+- cli
+safety_envelope:
+  depth_enu_m:
+  - -4.5
+  - -0.3
+  horizontal_position_abs_m: 8.0
+  roll_pitch_peak_deg: 25.0
+  linear_speed_peak_m_s: 1.2
+  angular_speed_peak_rad_s: 1.2

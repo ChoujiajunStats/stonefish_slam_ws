@@ -1,0 +1,10 @@
+string run_id
+string action
+string source
+---
+bool accepted
+string reason
+string state
+uint64 generation
+string token
+string source

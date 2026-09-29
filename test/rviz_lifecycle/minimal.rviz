@@ -1,0 +1,16 @@
+Panels: []
+Visualization Manager:
+  Class: ""
+  Displays: []
+  Global Options:
+    Background Color: 30; 30; 30
+    Fixed Frame: map
+    Frame Rate: 30
+  Tools: []
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 10
+      Name: Current View
+      Target Frame: <Fixed Frame>
+    Saved: []

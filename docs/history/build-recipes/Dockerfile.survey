@@ -1,0 +1,19 @@
+# Additive optical-only patch to the locked Porth image; old tags stay intact.
+FROM underwater-stack:m3-porth-v1
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+COPY vendor/source-lock.survey.yaml /opt/uw/survey/source-lock.survey.yaml
+COPY vendor/patches/0009-survey-optical-lights.patch /opt/uw/survey/
+RUN python3 - <<'PY'
+import hashlib,pathlib,subprocess,yaml
+r=pathlib.Path('/opt/uw/survey');l=yaml.safe_load((r/'source-lock.survey.yaml').read_text())
+assert hashlib.sha256(pathlib.Path('/opt/uw/source-lock.porth.yaml').read_bytes()).hexdigest()==l['parent_porth_lock_sha256']
+target='/opt/uw_src/'+l['repository'];p=r/l['patch']
+assert subprocess.check_output(['git','-C',target,'rev-parse','HEAD'],text=True).strip()==l['commit']
+assert hashlib.sha256(p.read_bytes()).hexdigest()==l['patch_sha256']
+subprocess.run(['git','-C',target,'apply','--check',str(p)],check=True)
+subprocess.run(['git','-C',target,'apply',str(p)],check=True)
+PY
+RUN source /opt/ros/jazzy/setup.bash && source /opt/uw_underlay/setup.bash \
+    && cmake --build /opt/uw_build/ros/stonefish_ros2 --parallel 4 \
+    && cmake --install /opt/uw_build/ros/stonefish_ros2 \
+    && sha256sum /opt/uw/survey/source-lock.survey.yaml > /opt/uw/survey-lock.sha256

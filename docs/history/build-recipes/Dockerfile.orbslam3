@@ -1,0 +1,48 @@
+# Additive research SLAM image; accepted simulator and historical tags unchanged.
+FROM underwater-stack:m3-porth-survey-v1
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    libglew-dev libepoxy-dev libboost-serialization-dev libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+# Source fetch is cached separately from local patch revisions.
+RUN python3 - <<'PYFETCH'
+import pathlib,subprocess,time
+for name,url,commit in [('ORB_SLAM3','https://github.com/UZ-SLAMLab/ORB_SLAM3.git','4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4'),('Pangolin','https://github.com/stevenlovegrove/Pangolin.git','aff6883c83f3fd7e8268a9715e84266c42e2efe3')]:
+    target=pathlib.Path('/opt/uw_src')/name
+    subprocess.run(['git','init',str(target)],check=True)
+    for attempt in range(3):
+        result=subprocess.run(['git','-C',str(target),'-c','http.lowSpeedLimit=1024','-c','http.lowSpeedTime=30','fetch','--depth','1',url,'refs/tags/v0.8' if name=='Pangolin' else commit],timeout=180)
+        if result.returncode==0:break
+        if attempt==2:raise RuntimeError('Pinned source download failed')
+        time.sleep(2)
+    subprocess.run(['git','-C',str(target),'checkout','--detach','FETCH_HEAD'],check=True)
+PYFETCH
+COPY vendor/source-lock.orbslam3.yaml /opt/uw/orbslam3/source-lock.orbslam3.yaml
+COPY vendor/patches/0010-orbslam3-build-export-shutdown.patch vendor/patches/0011-pangolin-fixed-width-integers.patch /opt/uw/orbslam3/
+RUN python3 - <<'PY'
+import hashlib,pathlib,subprocess,yaml
+r=pathlib.Path('/opt/uw/orbslam3');l=yaml.safe_load((r/'source-lock.orbslam3.yaml').read_text())
+assert hashlib.sha256(pathlib.Path('/opt/uw/survey/source-lock.survey.yaml').read_bytes()).hexdigest()==l['parent_lock_sha256']
+for source in l['repositories']:
+    target=pathlib.Path('/opt/uw_src')/source['name']
+    assert subprocess.check_output(['git','-C',str(target),'rev-parse','HEAD'],text=True).strip()==source['commit']
+    for item in source['patches']:
+        p=r/item['file'];assert hashlib.sha256(p.read_bytes()).hexdigest()==item['sha256']
+        subprocess.run(['git','-C',str(target),'apply','--check',str(p)],check=True)
+        subprocess.run(['git','-C',str(target),'apply',str(p)],check=True)
+PY
+RUN cmake -S /opt/uw_src/Pangolin -B /opt/uw_build/pangolin \
+    -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TOOLS=OFF -DBUILD_TESTS=OFF \
+    -DBUILD_PANGOLIN_PYTHON=OFF -DBUILD_PANGOLIN_VIDEO=OFF \
+    && cmake --build /opt/uw_build/pangolin --parallel 4 \
+    && cmake --install /opt/uw_build/pangolin
+RUN cmake -S /opt/uw_src/ORB_SLAM3/Thirdparty/DBoW2 -B /opt/uw_build/dbow2 -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build /opt/uw_build/dbow2 --parallel 4 \
+    && cmake -S /opt/uw_src/ORB_SLAM3 -B /opt/uw_build/orbslam3 -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build /opt/uw_build/orbslam3 --target ORB_SLAM3 --parallel 4 \
+    && tar -xf /opt/uw_src/ORB_SLAM3/Vocabulary/ORBvoc.txt.tar.gz -C /opt/uw_src/ORB_SLAM3/Vocabulary \
+    && printf '%s\n' /opt/uw_src/ORB_SLAM3/lib /opt/uw_src/ORB_SLAM3/Thirdparty/DBoW2/lib /opt/uw_src/ORB_SLAM3/Thirdparty/g2o/lib > /etc/ld.so.conf.d/uw-orbslam3.conf \
+    && ldconfig \
+    && sha256sum /opt/uw/orbslam3/source-lock.orbslam3.yaml > /opt/uw/orbslam3-lock.sha256 \
+    && sha256sum /opt/uw_src/ORB_SLAM3/Vocabulary/ORBvoc.txt > /opt/uw/orbslam3/vocabulary.sha256 \
+    && dpkg-query -W > /opt/uw/orbslam3/dpkg-packages.txt

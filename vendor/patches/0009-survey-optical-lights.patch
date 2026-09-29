@@ -1,0 +1,12 @@
+--- a/src/stonefish_ros2/UWTerminal.cpp
++++ b/src/stonefish_ros2/UWTerminal.cpp
+@@ -24,6 +24,9 @@
+     : node_(std::make_shared<rclcpp::Node>("uw_terminal",node->get_namespace(),rclcpp::NodeOptions().use_global_arguments(false))), robot_(robot), run_(run), secret_(secret) {
+     if(run.empty() || secret.size()<24) throw std::runtime_error("Invalid terminal run identity");
+     for(unsigned i=0; auto* a=robot->getActuator(i); ++i) {
++        // Optical lights exert no wrench and are not motor channels.
++        // All other unexpected actuator types still fail closed.
++        if(a->getType()==ActuatorType::LIGHT) continue;
+         if(a->getType()!=ActuatorType::THRUSTER) throw std::runtime_error("Terminal supports thrusters only");
+         thrusters_.push_back(static_cast<Thruster*>(a));
+         auto name=a->getName(); names_.push_back(name.substr(name.find_last_of('/')+1));

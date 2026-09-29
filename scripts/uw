@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+"""Thin host entry point; implementation lives in tools/uw_workspace."""
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from uw_workspace.cli import entrypoint
+# Compatibility for the historical RViz lifecycle harness.
+from uw_workspace.environment import compose_env, compose, prepare_xauth
+if __name__ == "__main__":
+    raise SystemExit(entrypoint())

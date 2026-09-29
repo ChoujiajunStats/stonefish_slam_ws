@@ -1,0 +1,232 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 016e743..1fd3524 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -9,24 +9,13 @@ MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
+ 
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall   -O3")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
+-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
+-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+-
+-# Check C++11 or C++0x support
+-include(CheckCXXCompilerFlag)
+-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+-if(COMPILER_SUPPORTS_CXX11)
+-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+-   add_definitions(-DCOMPILEDWITHC11)
+-   message(STATUS "Using flag -std=c++11.")
+-elseif(COMPILER_SUPPORTS_CXX0X)
+-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+-   add_definitions(-DCOMPILEDWITHC0X)
+-   message(STATUS "Using flag -std=c++0x.")
+-else()
+-   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+-endif()
++set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
++set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
++
++# C++17 is required by the pinned Pangolin v0.8 on Ubuntu 24.04.
++set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
++add_definitions(-DCOMPILEDWITHC11)
+ 
+ LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
+ 
+@@ -114,6 +103,7 @@ include/Config.h
+ include/Settings.h)
+ 
+ add_subdirectory(Thirdparty/g2o)
++add_dependencies(${PROJECT_NAME} g2o)
+ 
+ target_link_libraries(${PROJECT_NAME}
+ ${OpenCV_LIBS}
+diff --git a/Thirdparty/DBoW2/CMakeLists.txt b/Thirdparty/DBoW2/CMakeLists.txt
+index c312b25..518ddd0 100644
+--- a/Thirdparty/DBoW2/CMakeLists.txt
++++ b/Thirdparty/DBoW2/CMakeLists.txt
+@@ -5,8 +5,8 @@ if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE Release)
+ endif()
+ 
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
+-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 ")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3")
+ 
+ set(HDRS_DBOW2
+   DBoW2/BowVector.h
+diff --git a/Thirdparty/g2o/CMakeLists.txt b/Thirdparty/g2o/CMakeLists.txt
+index 1a32ff9..1cb9b37 100644
+--- a/Thirdparty/g2o/CMakeLists.txt
++++ b/Thirdparty/g2o/CMakeLists.txt
+@@ -54,8 +54,8 @@ IF(OPENMP_FOUND AND G2O_USE_OPENMP)
+ ENDIF(OPENMP_FOUND AND G2O_USE_OPENMP)
+ 
+ # Compiler specific options for gcc
+-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
+-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -march=native")
++SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
++SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
+ # SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+ # SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
+ 
+diff --git a/include/LoopClosing.h b/include/LoopClosing.h
+index c9ccb26..7a47627 100644
+--- a/include/LoopClosing.h
++++ b/include/LoopClosing.h
+@@ -30,6 +30,7 @@
+ 
+ #include <boost/algorithm/string.hpp>
+ #include <thread>
++#include <atomic>
+ #include <mutex>
+ #include "Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h"
+ 
+@@ -78,6 +79,8 @@ public:
+         return mbFinishedGBA;
+     }   
+ 
++    // Include superseded detached GBA workers in the shutdown fence.
++    std::atomic<unsigned int> researchGbaWorkers{0};
+     void RequestFinish();
+ 
+     bool isFinished();
+@@ -223,7 +226,7 @@ protected:
+     bool mbFixScale;
+ 
+ 
+-    bool mnFullBAIdx;
++    int mnFullBAIdx; // Generation counter, not a boolean (incremented on GBA supersession).
+ 
+ 
+ 
+diff --git a/include/System.h b/include/System.h
+index 872c86e..c8ef69b 100644
+--- a/include/System.h
++++ b/include/System.h
+@@ -177,6 +177,17 @@ public:
+     std::vector<MapPoint*> GetTrackedMapPoints();
+     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
+ 
++    // Research transport: copied current-map data only, never mutable pointers.
++    struct ResearchKeyFrame { unsigned long id; double stamp; Sophus::SE3f Twc; };
++    struct ResearchSnapshot {
++        unsigned long map_id = 0;
++        int maps = 0, big_changes = 0;
++        size_t loop_edges = 0;
++        std::vector<Eigen::Vector3f> points;
++        std::vector<ResearchKeyFrame> keyframes;
++    };
++    ResearchSnapshot GetResearchSnapshot();
++
+     // For debugging
+     double GetTimeFromIMUInit();
+     bool isLost();
+diff --git a/src/LoopClosing.cc b/src/LoopClosing.cc
+index 319afb5..d932a21 100644
+--- a/src/LoopClosing.cc
++++ b/src/LoopClosing.cc
+@@ -1203,6 +1203,7 @@ void LoopClosing::CorrectLoop()
+         mbStopGBA = false;
+         mnCorrectionGBA = mnNumCorrection;
+ 
++        ++researchGbaWorkers;
+         mpThreadGBA = new thread(&LoopClosing::RunGlobalBundleAdjustment, this, pLoopMap, mpCurrentKF->mnId);
+     }
+ 
+@@ -1766,6 +1767,7 @@ void LoopClosing::MergeLocal()
+         mbRunningGBA = true;
+         mbFinishedGBA = false;
+         mbStopGBA = false;
++        ++researchGbaWorkers;
+         mpThreadGBA = new thread(&LoopClosing::RunGlobalBundleAdjustment,this, pMergeMap, mpCurrentKF->mnId);
+     }
+ 
+@@ -2266,7 +2268,8 @@ void LoopClosing::ResetIfRequested()
+ }
+ 
+ void LoopClosing::RunGlobalBundleAdjustment(Map* pActiveMap, unsigned long nLoopKF)
+-{  
++{
++    struct Completion { std::atomic<unsigned int>& count; ~Completion(){--count;} } completed{researchGbaWorkers};
+     Verbose::PrintMess("Starting Global Bundle Adjustment", Verbose::VERBOSITY_NORMAL);
+ 
+ #ifdef REGISTER_TIMES
+diff --git a/src/System.cc b/src/System.cc
+index 60d9c51..5b5441e 100644
+--- a/src/System.cc
++++ b/src/System.cc
+@@ -523,27 +523,14 @@ void System::Shutdown()
+ 
+     mpLocalMapper->RequestFinish();
+     mpLoopCloser->RequestFinish();
+-    /*if(mpViewer)
+-    {
+-        mpViewer->RequestFinish();
+-        while(!mpViewer->isFinished())
+-            usleep(5000);
+-    }*/
+-
+-    // Wait until all thread have effectively stopped
+-    /*while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
+-    {
+-        if(!mpLocalMapper->isFinished())
+-            cout << "mpLocalMapper is not finished" << endl;*/
+-        /*if(!mpLoopCloser->isFinished())
+-            cout << "mpLoopCloser is not finished" << endl;
+-        if(mpLoopCloser->isRunningGBA()){
+-            cout << "mpLoopCloser is running GBA" << endl;
+-            cout << "break anyway..." << endl;
+-            break;
+-        }*/
+-        /*usleep(5000);
+-    }*/
++    if(mpViewer) mpViewer->RequestFinish();
++    // Do not serialize or export while mapping/loop/GBA still mutate the Atlas.
++    while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished()
++          || mpLoopCloser->researchGbaWorkers.load()!=0 || (mpViewer && !mpViewer->isFinished()))
++        usleep(5000);
++    if(mptLocalMapping->joinable()) mptLocalMapping->join();
++    if(mptLoopClosing->joinable()) mptLoopClosing->join();
++    if(mpViewer && mptViewer->joinable()) mptViewer->join();
+ 
+     if(!mStrSaveAtlasToFile.empty())
+     {
+@@ -561,6 +548,35 @@ void System::Shutdown()
+ 
+ }
+ 
++System::ResearchSnapshot System::GetResearchSnapshot()
++{
++    ResearchSnapshot out;
++    out.maps = mpAtlas->CountMaps();
++    // PreSave marks empty maps bad; GetCurrentMap would then wait forever.
++    // After shutdown only export the sole nonempty retained map, if present.
++    Map* map = nullptr;
++    if(isShutDown()) {
++        auto maps = mpAtlas->GetAllMaps();
++        if(maps.size()!=1) return out;
++        map = maps.front();
++    } else map = mpAtlas->GetCurrentMap();
++    if(!map || map->IsBad()) return out;
++    unique_lock<mutex> update(map->mMutexMapUpdate);
++    out.map_id = map->GetId();
++    out.big_changes = map->GetLastBigChangeIdx();
++    for(MapPoint* point : map->GetAllMapPoints())
++        if(point && !point->isBad()) out.points.push_back(point->GetWorldPos());
++    for(KeyFrame* frame : map->GetAllKeyFrames())
++        if(frame && !frame->isBad()) {
++            out.keyframes.push_back({frame->mnId, frame->mTimeStamp, frame->GetPoseInverse()});
++            out.loop_edges += frame->GetLoopEdges().size();
++        }
++    out.loop_edges /= 2; // undirected accepted keyframe loop edges, not event count
++    std::sort(out.keyframes.begin(), out.keyframes.end(),
++        [](const ResearchKeyFrame& a, const ResearchKeyFrame& b){return a.stamp < b.stamp;});
++    return out;
++}
++
+ bool System::isShutDown() {
+     unique_lock<mutex> lock(mMutexReset);
+     return mbShutDown;

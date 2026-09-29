@@ -1,0 +1,67 @@
+x-common: &common
+  image: ${UW_IMAGE:-stonefish-slam:orbslam3}
+  user: "${UW_UID:?set by scripts/uw}:${UW_GID:?set by scripts/uw}"
+  init: true
+  working_dir: /workspace
+  shm_size: 512mb
+  environment: &environment
+    ROS_DOMAIN_ID: ${UW_ROS_DOMAIN_ID:-42}
+    # LOCALHOST in rmw_fastrtps adds a second, default-sized SHM transport.
+    # Our XML uses only this container's private shared memory for discovery/data.
+    ROS_AUTOMATIC_DISCOVERY_RANGE: SYSTEM_DEFAULT
+    RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+    FASTRTPS_DEFAULT_PROFILES_FILE: /workspace/docker/fastdds.xml
+    UW_CONTAINER_NAME: ${UW_CONTAINER_NAME:-}
+    UW_IMAGE_ID: ${UW_IMAGE_ID:-unknown}
+    PYTHONDONTWRITEBYTECODE: "1"
+  volumes:
+    - type: bind
+      source: ..
+      target: /workspace
+      read_only: true
+    - type: bind
+      source: ${UW_DATA_ROOT:?set UW_DATA_ROOT outside the repository}
+      target: /data
+    - overlay:/work/overlay
+
+services:
+  tools:
+    <<: *common
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: ${UW_BUILD_TARGET:-orbslam3}
+      args:
+        UW_BASE_IMAGE: ${UW_BASE_IMAGE:?set by scripts/uw}
+        UW_BUILD_JOBS: ${UW_BUILD_JOBS:-8}
+  sim:
+    <<: *common
+    gpus: all
+    environment:
+      <<: *environment
+      DISPLAY: ${DISPLAY:-:0}
+      XAUTHORITY: /tmp/uw.Xauthority
+      NVIDIA_DRIVER_CAPABILITIES: graphics,utility,compute,display
+      QT_X11_NO_MITSHM: "1"
+    volumes:
+      - type: bind
+        source: ..
+        target: /workspace
+        read_only: true
+      - type: bind
+        source: ${UW_DATA_ROOT:?set UW_DATA_ROOT}
+        target: /data
+      - overlay:/work/overlay
+      - type: bind
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+        read_only: true
+      - type: bind
+        source: ${UW_XAUTH_FILE:-/tmp/uw-no-xauthority}
+        target: /tmp/uw.Xauthority
+        read_only: true
+
+volumes:
+  overlay:
+    name: ${UW_OVERLAY_VOLUME:?set by scripts/uw}
+    external: true

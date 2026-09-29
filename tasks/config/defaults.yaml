@@ -1,0 +1,6 @@
+heartbeat_hz: 20.0
+maximum_waypoints: 12
+maximum_timeout_sec: 90.0
+horizontal_goal_abs_m: 1.0
+vertical_goal_abs_m: 0.4
+neutralization_deadline_sec: 0.5

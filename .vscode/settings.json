@@ -1,0 +1,32 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    ".cache": true
+  },
+  "search.exclude": {
+    "build": true,
+    "install": true,
+    "log": true,
+    ".cache": true
+  },
+  "editor.tabSize": 4,
+  "files.insertFinalNewline": true,
+  "material-icon-theme.folders.associations": {
+    "app": "App",
+    "interfaces": "Interface",
+    "robot": "Robot",
+    "simulations": "Simulations",
+    "ui": "Ui",
+    "benchmark": "Benchmark",
+    "config": "Config",
+    "docker": "Docker",
+    "docs": "Obsidian",
+    "resources": "Resource",
+    "scripts": "Scripts",
+    "test": "Test",
+    "vendor": "Repository",
+    "runtime": "Utils",
+    "tools": "Tools"
+  },
+  "cmake.configureOnOpen": false
+}

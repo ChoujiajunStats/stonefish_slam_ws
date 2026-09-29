@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>uw_runtime</name><version>0.1.0</version>
+  <description>Run evidence lifecycle and persisted map inspection</description>
+  <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
+  <license>LicenseRef-Not-Yet-Licensed</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <export><build_type>ament_python</build_type></export>
+</package>

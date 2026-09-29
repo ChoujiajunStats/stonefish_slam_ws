@@ -1,0 +1,29 @@
+version: porth-slam-v1
+scope: Optional prescribed-path stereo SLAM demonstration, no obstacle avoidance
+defaults:
+  initial_pose: ENU (0,0,-8), roll/pitch0 yaw90; unmodified free-body dynamics
+  input: Five asset-manifest waypoints, 0.12 m/s speed limit; explicit --arm
+  duration_sec: 140
+  end_after_mission_result_sec: 5
+  statistics: Full estimation window and every reached waypoint; all map updates
+  evidence: m3-samples.jsonl, slam-events.jsonl, slam-map.ply, rtabmap.db, metrics, bag
+  cleanup: Finite launch, owned processes, DISARM after mission completion
+thresholds:
+  estimate_position_rmse_m: 0.25
+  estimate_velocity_rmse_m_s: 0.05
+  true_waypoint_error_m: 0.25
+  terminal_neutral_sec: 0.5
+  true_waypoint_yaw_rad: 0.15
+  roll_pitch_error_rmse_deg: 3.0
+  control_request_age_p95_sec: 0.15
+  slam_map_points: 1000
+  slam_graph_nodes_motion: 5
+  estimated_horizontal_travel_m: 1.5
+cases:
+  manual: {}
+safety:
+  true_enu_depth_m: [-12, -4]
+  true_horizontal_abs_m: 4
+  roll_pitch_peak_deg: 25
+  action_timeout_sec: 130
+unverified: [autonomous exploration, obstacle avoidance, full-cave coverage, real hardware]

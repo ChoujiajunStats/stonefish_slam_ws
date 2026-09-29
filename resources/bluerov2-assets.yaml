@@ -1,0 +1,20 @@
+source_repository: https://github.com/bvibhav/stonefish_bluerov2
+commit: 6448383af6b7ef6083b0eac2c08102660591e318
+units: metres
+license_status: upstream package declares Apache-2.0; individual asset provenance
+  pending
+files:
+- path: data/bluerov2/br2.png
+  sha256: 39e695ffaa8ffafc152f6471e6ea96fc1136f68e64877a56a903d788b3590f8c
+- path: data/bluerov2/bluerov2_phy.obj
+  sha256: 65bd7fbab7371ff6fc7e601c5665d6b0c0aa27573a64a74163a87d87c48dfbb4
+- path: data/bluerov2/bluerov2.obj
+  sha256: 8ea488fbcf91df8a27ebb2082031f15f7a12c869576dab369584df8ef7b81d9c
+- path: data/bluerov2/bluerov2_ring.obj
+  sha256: e67ddb9ffd794d21db3170e0dbfc1213c3e0dc5922ce166ec18d232da0ebef52
+- path: data/bluerov2/bluerov2_wings.obj
+  sha256: 8a8b852be4ebcab8e78386e7e9cee213300a658763fbb1708473515523daf1cb
+- path: data/bluerov2/ccw.obj
+  sha256: 855c9004dd8bbb56bd3de07402a1f7d2222b85c29897942c6dc94b8722c03c4e
+- path: data/bluerov2/cw.obj
+  sha256: ca806a538dcc31941f14e6b49f7492723e06ba710848071a4bf45e8008a8af20

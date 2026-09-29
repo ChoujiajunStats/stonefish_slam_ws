@@ -1,0 +1,7 @@
+ARG UW_BASE_IMAGE=ros:jazzy-ros-base@sha256:c3706ef0a0aa45413c07803cf433602f543b22e45b4855f6fca955c2d8ecc4e8
+FROM ${UW_BASE_IMAGE}
+RUN apt-get update && apt-get install -y --no-install-recommends python3-yaml python3-numpy python3-opencv \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /workspace
+ENV PYTHONDONTWRITEBYTECODE=1
+CMD ["./scripts/uw", "test", "--local"]

@@ -1,0 +1,1673 @@
+schema_version: 1
+status: FROZEN_M1_V4
+state_source: PRIVILEGED_DEBUG
+safety:
+  upstream_timeout_sec: 0.25
+  terminal_timeout_sec: 0.2
+  neutralization_limit_sec: 0.5
+  measurement_start: coordinator monotonic timestamp immediately before scoped injection
+  depth_enu_m:
+  - -4.5
+  - -0.3
+  roll_pitch_peak_deg: 25
+  horizontal_position_abs_m: 8
+  linear_speed_peak_m_s: 1.2
+  angular_speed_peak_rad_s: 1.2
+thresholds:
+  linear_rmse: max(0.02,0.2*abs(target))
+  yaw_rmse: max(0.03,0.2*abs(target))
+  uncommanded_linear_rms: 0.03
+  uncommanded_yaw_rms: 0.03
+  roll_pitch_rms_deg: 3.0
+  return_velocity_rms: 0.03
+  return_yaw_rms: 0.03
+cases:
+  probe_0:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_1:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_2:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_3:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_4:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_5:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_6:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  probe_7:
+    group: mapping
+    initial: fixed original robot at NED (0,0,2)
+    positive: 0.12
+    negative: -0.12
+    duration_sec: 9
+    rpm_relative_tolerance: 0.1
+    force_relative_tolerance: 0.15
+    cleanup: DISARM and process restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    schedule_sec:
+      baseline:
+      - 0
+      - 1
+      positive:
+      - 1
+      - 3
+      zero_1:
+      - 3
+      - 4
+      negative:
+      - 4
+      - 6
+      zero_2:
+      - 6
+      - 8
+      disarm:
+      - 8
+      - 9
+    statistics_windows_sec:
+      positive:
+      - 2.3
+      - 2.9
+      negative:
+      - 5.3
+      - 5.9
+      zero:
+      - 7.4
+      - 7.9
+  vx_positive_1:
+    group: velocity
+    target: &id001
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vx_positive_2:
+    group: velocity
+    target: *id001
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vx_positive_3:
+    group: velocity
+    target: *id001
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vx_negative_1:
+    group: velocity
+    target: &id002
+    - -0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vx_negative_2:
+    group: velocity
+    target: *id002
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vx_negative_3:
+    group: velocity
+    target: *id002
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vy_positive_1:
+    group: velocity
+    target: &id003
+    - 0.0
+    - 0.15
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vy_positive_2:
+    group: velocity
+    target: *id003
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vy_positive_3:
+    group: velocity
+    target: *id003
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vy_negative_1:
+    group: velocity
+    target: &id004
+    - 0.0
+    - -0.15
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vy_negative_2:
+    group: velocity
+    target: *id004
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vy_negative_3:
+    group: velocity
+    target: *id004
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vz_positive_1:
+    group: velocity
+    target: &id005
+    - 0.0
+    - 0.0
+    - 0.08
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vz_positive_2:
+    group: velocity
+    target: *id005
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vz_positive_3:
+    group: velocity
+    target: *id005
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vz_negative_1:
+    group: velocity
+    target: &id006
+    - 0.0
+    - 0.0
+    - -0.08
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vz_negative_2:
+    group: velocity
+    target: *id006
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  vz_negative_3:
+    group: velocity
+    target: *id006
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw_positive_1:
+    group: velocity
+    target: &id007
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.15
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw_positive_2:
+    group: velocity
+    target: *id007
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw_positive_3:
+    group: velocity
+    target: *id007
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw_negative_1:
+    group: velocity
+    target: &id008
+    - 0.0
+    - 0.0
+    - 0.0
+    - -0.15
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 1
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw_negative_2:
+    group: velocity
+    target: *id008
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 2
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw_negative_3:
+    group: velocity
+    target: *id008
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    cold_start_repetition: 3
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  yaw90_body_vx:
+    group: extra
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  tilted_level:
+    group: extra
+    target:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 15
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 5.0
+    - -5.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 30
+  combined:
+    group: extra
+    target:
+    - 0.1
+    - 0.08
+    - 0.0
+    - 0.08
+    zero_sec: 5
+    step_sec: 10
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 25
+  zero30:
+    group: extra
+    target:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    zero_sec: 5
+    step_sec: 30
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 45
+  saturation_recovery:
+    group: extra
+    target:
+    - 0.4
+    - 0.4
+    - 0.2
+    - 0.4
+    zero_sec: 5
+    step_sec: 6
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    recovery_target:
+    - 0.1
+    - 0.0
+    - 0.0
+    - 0.0
+    recovery_sec: 10
+    tracking_during_saturation_required: false
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 31
+  load_1:
+    group: extra
+    target:
+    - 0.08
+    - 0.0
+    - 0.0
+    - 0.05
+    zero_sec: 5
+    step_sec: 60
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 75
+  load_2:
+    group: extra
+    target:
+    - 0.08
+    - 0.0
+    - 0.0
+    - -0.05
+    zero_sec: 5
+    step_sec: 60
+    return_sec: 8
+    steady_window_sec: 4
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    cleanup: DISARM, normal shutdown, remove own container/network
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+    duration_after_arm_sec: 75
+  fault_source:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_guard:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_controller:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_adapter:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_state:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_state_frozen:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_clock_pause:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_clock_rewind:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_disarm:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: DISARMED
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_latch:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: FAULT
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  fault_rviz:
+    group: fault
+    target:
+    - 0.15
+    - 0.0
+    - 0.0
+    - 0.0
+    injection_sec: 4
+    post_injection_sec: 2.5
+    neutralization_limit_sec: 0.5
+    expected_terminal_state: ARMED
+    cleanup: preserve actual signal exit, stop own remaining processes
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  authority_validation:
+    group: authority
+    checks:
+    - not_armed
+    - not_ready
+    - wrong_run
+    - wrong_frame
+    - NaN
+    - Inf
+    - expired_ros
+    - future_ros
+    - roll_rate
+    - pitch_rate
+    - wrong_channel
+    - duplicate_channel
+    - missing_channel
+    - limit_exceeded
+    - source_switch
+    - old_authorization_replay
+    cleanup: DISARM and restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  authority_velocity:
+    group: authority
+    checks:
+    - not_armed
+    - not_ready
+    - wrong_run
+    - wrong_frame
+    - NaN
+    - Inf
+    - expired_ros
+    - future_ros
+    - roll_rate
+    - pitch_rate
+    - limit_exceeded
+    - source_switch
+    - old_authorization_replay
+    cleanup: DISARM and restart
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 90.0
+    evidence:
+    - manifest.json
+    - control-metrics.json
+    - control-samples.jsonl
+    - control-events.jsonl
+    - bags/metadata.yaml
+    - figures/
+  m0:
+    group: regression
+    configuration: config/run.empty_water.example.yaml
+    repetitions: 2
+    duration_after_ready_sec: 60
+    initial_ned_m:
+    - 0.0
+    - 0.0
+    - 2.0
+    thresholds: unchanged original M0 Probe (41 inherited test semantics)
+    recording: debug
+    visualization: rviz
+    expected: PASS, one advancing clock, valid fresh observations and TF, no motor
+      endpoints, normal required exits
+    evidence:
+    - metrics.json
+    - graph-inspection.json
+    - bag-inspection.json
+    - process-exits.jsonl
+    - bags/metadata.yaml
+    - figures/
+    cleanup: normal shutdown; remove only this run container and network
+
+normal_gui_shutdown: drain run data processes, save generated RViz layout, WM_DELETE_WINDOW; all recorded exits checked
+m1_debug_storage: MCAP zstd_fast lossless; same complete topic list and live image load
+m0_debug_storage: unchanged original MCAP recording

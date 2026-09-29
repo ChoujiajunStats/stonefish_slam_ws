@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+  <name>uw_app</name>
+  <version>0.1.0</version>
+  <description>Underwater Stack M0 app module</description>
+  <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
+  <license>LicenseRef-Not-Yet-Licensed</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>uw_robot</exec_depend>
+  <exec_depend>uw_simulations</exec_depend>
+  <exec_depend>uw_ui</exec_depend>
+  <exec_depend>uw_benchmark</exec_depend>
+  <exec_depend>stonefish_ros2</exec_depend>
+  <exec_depend>stonefish_bluerov2</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>rosbag2_transport</exec_depend>
+  <exec_depend>rosbag2_storage_mcap</exec_depend>
+  <exec_depend>uw_interfaces</exec_depend>
+  <exec_depend>uw_guard</exec_depend>
+  <exec_depend>uw_controller</exec_depend>
+  <exec_depend>uw_perception</exec_depend>
+  <exec_depend>uw_localization</exec_depend>
+  <exec_depend>uw_navigation</exec_depend>
+  <exec_depend>uw_tasks</exec_depend>
+  <exec_depend>rtabmap_slam</exec_depend>
+  <exec_depend>uw_runtime</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

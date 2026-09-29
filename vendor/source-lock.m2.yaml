@@ -1,0 +1,22 @@
+schema_version: 1
+parent_source_lock_sha256: f8129e0570220f791e49d83ef4b19f944b708abe6588f5fc6ff27c0980419fa5
+parent_image_id: sha256:03ba64865883949afb1b2a01ef293d5ad92e4bba11697cecc66fd8891b7d0550
+additive_patches:
+- repository: stonefish
+  path: patches/0007-m2-sensor-semantics.patch
+  sha256: b6d1cba2592cb03a44bca038728553db176d9158273877b7dcbc8597e3a594a3
+- repository: stonefish_ros2
+  path: patches/0008-m2-acquisition-stamps.patch
+  sha256: 03a6d8bb95ada1b98c79b7079f1c3a1461fbac7b3716dfb619fe9d2815bd0924
+open_vins:
+  url: https://github.com/rpng/open_vins.git
+  commit: 93adc241390d13e99232652cf05cbe18a93c7bea
+  tag: v2.7
+  license: GPL-3.0-or-later
+ceres:
+  url: https://github.com/ceres-solver/ceres-solver.git
+  commit: f68321e7de8929fbcdb95dd42877531e64f72f66
+  tag: 2.1.0
+  license: BSD-3-Clause
+  reason: OpenVINS v2.7 uses LocalParameterization removed by Ceres 2.2; isolated
+    compatible dependency, no estimator math patch

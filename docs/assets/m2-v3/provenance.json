@@ -1,0 +1,22 @@
+{
+  "velocity-attitude-unwrapped.png": {
+    "source": "/home/hong/.local/share/underwater-stack/reports/m2-v3-derived/trajectory_1/velocity-attitude-unwrapped.png",
+    "sha256": "02a5fe16123d07ffcade9eb73d469df10ff567f00a9b40b2f25595183bc531f4"
+  },
+  "trajectory.png": {
+    "source": "/home/hong/.local/share/underwater-stack/runs/m2_formal_trajectory_1--20260923T032021Z--9bb8c7e5767c/figures/trajectory.png",
+    "sha256": "dd53556fbc4469b34975b18a9a4913ece8d82b1ba58f2b65aaf84a390b370fb7"
+  },
+  "fault-timeline.png": {
+    "source": "/home/hong/.local/share/underwater-stack/runs/m2_formal_image_dropout--20260923T032340Z--21c02249dbd4/figures/fault-timeline.png",
+    "sha256": "cfd76b573d2f762bf467baed9cf4b8664c1d83b84671b77c62586ca7c4726924"
+  },
+  "rviz.png": {
+    "source": "/home/hong/.local/share/underwater-stack/runs/m2_formal_load_2--20260923T032809Z--6cd3005a1d49/figures/rviz.png",
+    "sha256": "dc044df2370a35e2c8b9bc1f3202943a5d4658c8effe7e97ece650e2d888f316"
+  },
+  "stonefish.png": {
+    "source": "/home/hong/.local/share/underwater-stack/runs/m2_formal_load_2--20260923T032809Z--6cd3005a1d49/figures/stonefish.png",
+    "sha256": "9daedd3a3623cecf902c7a8e71b40444f71e74625a44be9e9e91b98a44dc9d2a"
+  }
+}

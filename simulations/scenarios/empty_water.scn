@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<scenario>
+  <environment>
+    <ned latitude="56.136459" longitude="-2.706819"/>
+    <ocean>
+      <water density="1031.0" jerlov="0.15"/>
+      <waves height="0.0"/>
+      <particles enabled="false"/>
+      <current type="uniform"><velocity xyz="0.0 0.0 0.0"/></current>
+    </ocean>
+    <atmosphere><sun azimuth="45.0" elevation="90.0"/></atmosphere>
+  </environment>
+  <materials>
+    <material name="Neutral" density="1000.0" restitution="0.1"/>
+    <material name="Fiberglass" density="1500.0" restitution="0.3"/>
+    <material name="Steel" density="7850.0" restitution="0.1"/>
+    <friction_table>
+      <friction material1="Neutral" material2="Neutral" static="0.5" dynamic="0.2"/>
+    </friction_table>
+  </materials>
+  <looks>
+    <look name="black" gray="0.05" roughness="0.2"/>
+    <look name="None" gray="0.5" roughness="1.0"/>
+  </looks>
+</scenario>

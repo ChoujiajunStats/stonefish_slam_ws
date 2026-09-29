@@ -1,0 +1,340 @@
+version: m3-v4
+scope: Known free visual fixture; local odom waypoint navigation, no obstacle avoidance
+defaults:
+  initial_pose: ENU (0,0,-2), roll/pitch 0, yaw90 unless specified
+  recording: state
+  cleanup: finite launch, manifest-owned PID/container only
+  evidence: m3-samples.jsonl, m3-events.jsonl, mission-events.jsonl, bag, metrics,
+    native feedback
+  statistics: full estimate window; waypoint truth error at every declared arrival
+  startup_timeout_sec: 45.0
+  goal_coordinates: mission_start relative at acceptance; x/y/z m, yaw rad
+thresholds:
+  estimate_position_rmse_m: 0.15
+  estimate_velocity_rmse_m_s: 0.05
+  true_waypoint_error_m: 0.15
+  terminal_neutral_sec: 0.5
+  true_waypoint_yaw_rad: 0.15
+  roll_pitch_error_rmse_deg: 3.0
+  control_request_age_p95_sec: 0.15
+safety:
+  true_enu_depth_m:
+  - -4.5
+  - -0.3
+  true_horizontal_abs_m: 2.0
+  roll_pitch_peak_deg: 25.0
+cases:
+  bootstrap:
+    group: contracts
+    duration_sec: 10.0
+  invalid_goals:
+    group: contracts
+    duration_sec: 10.0
+  mission_1:
+    group: missions
+    duration_sec: 50.0
+    mission_timeout_sec: 44.0
+    waypoints:
+    - - 0.4
+      - 0
+      - 0
+      - 0
+    - - 0.4
+      - 0.3
+      - 0.12
+      - 0.3
+    - - 0
+      - 0
+      - 0
+      - 0
+  mission_2:
+    group: missions
+    duration_sec: 50.0
+    mission_timeout_sec: 44.0
+    waypoints:
+    - - 0.4
+      - 0
+      - 0
+      - 0
+    - - 0.4
+      - 0.3
+      - 0.12
+      - 0.3
+    - - 0
+      - 0
+      - 0
+      - 0
+  mission_3:
+    group: missions
+    duration_sec: 50.0
+    mission_timeout_sec: 44.0
+    waypoints:
+    - - 0.4
+      - 0
+      - 0
+      - 0
+    - - 0.4
+      - 0.3
+      - 0.12
+      - 0.3
+    - - 0
+      - 0
+      - 0
+      - 0
+  rotated:
+    group: missions
+    duration_sec: 30.0
+    mission_timeout_sec: 25.0
+    initial_rpy_enu_deg:
+    - 0.0
+    - 0.0
+    - 0.0
+    waypoints:
+    - - 0.4
+      - 0
+      - 0
+      - 0
+    - - 0
+      - 0
+      - 0
+      - 0
+  cancel:
+    group: lifecycle
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  timeout:
+    group: lifecycle
+    duration_sec: 10.0
+    mission_timeout_sec: 2.0
+  fault_tasks:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_navigation:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_guard:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_controller:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_actuator_adapter:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_localization:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_images:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_imu:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_clock_pause:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_clock_rewind:
+    group: faults
+    duration_sec: 15.0
+    mission_timeout_sec: 40.0
+  fault_rviz:
+    group: ui
+    duration_sec: 30.0
+    mission_timeout_sec: 25.0
+    visualization: rviz
+    waypoints:
+    - - 0.4
+      - 0
+      - 0
+      - 0
+    - - 0
+      - 0
+      - 0
+      - 0
+  load_1:
+    group: load
+    duration_sec: 60.0
+    mission_timeout_sec: 54.0
+    visualization: rviz
+    recording_profile: debug
+    waypoints:
+    - - 0.5
+      - 0
+      - 0
+      - 0
+    - - 0.5
+      - 0.35
+      - 0.12
+      - 0.3
+    - - 0
+      - 0.35
+      - 0
+      - 0
+    - - 0
+      - 0
+      - 0
+      - 0
+  load_2:
+    group: load
+    duration_sec: 60.0
+    mission_timeout_sec: 54.0
+    visualization: rviz
+    recording_profile: debug
+    waypoints:
+    - - 0.5
+      - 0
+      - 0
+      - 0
+    - - 0.5
+      - 0.35
+      - 0.12
+      - 0.3
+    - - 0
+      - 0.35
+      - 0
+      - 0
+    - - 0
+      - 0
+      - 0
+      - 0
+  restart_replay:
+    group: missions
+    duration_sec: 30.0
+    mission_timeout_sec: 25.0
+    waypoints:
+    - - 0.4
+      - 0
+      - 0
+      - 0
+    - - 0
+      - 0
+      - 0
+      - 0
+regressions:
+  m0_1:
+    group: regression
+    milestone: 0
+    case_id: m0
+    duration_sec: 60.0
+  m0_2:
+    group: regression
+    milestone: 0
+    case_id: m0
+    duration_sec: 60.0
+  m1_velocity:
+    group: regression
+    milestone: 1
+    case_id: vx_positive_1
+    duration_sec: 50.0
+  m1_watchdog:
+    group: regression
+    milestone: 1
+    case_id: fault_adapter
+    duration_sec: 50.0
+  m2_calibration:
+    group: regression
+    milestone: 2
+    case_id: calibration
+    duration_sec: 15
+    fixed_fixture: true
+    diagnostic_motion: false
+    recording_profile: sensors
+  m2_imu_tilt:
+    group: regression
+    milestone: 2
+    case_id: imu_tilt
+    duration_sec: 15
+    fixed_fixture: true
+    initial_rpy_enu_deg:
+    - 6.0
+    - -5.0
+    - 90.0
+    diagnostic_motion: false
+  m2_trajectory_1:
+    group: regression
+    milestone: 2
+    case_id: trajectory_1
+    duration_sec: 45
+    diagnostic_motion: true
+  m2_trajectory_2:
+    group: regression
+    milestone: 2
+    case_id: trajectory_2
+    duration_sec: 45
+    diagnostic_motion: true
+  m2_trajectory_3:
+    group: regression
+    milestone: 2
+    case_id: trajectory_3
+    duration_sec: 45
+    diagnostic_motion: true
+  m2_empty_water:
+    group: regression
+    milestone: 2
+    case_id: empty_water
+    duration_sec: 20
+    scene_profile: empty_water
+    diagnostic_motion: true
+  m2_image_dropout:
+    group: regression
+    milestone: 2
+    case_id: image_dropout
+    duration_sec: 28
+    diagnostic_motion: true
+    injection_sec: 20
+    restore_sec: 23
+  m2_imu_dropout:
+    group: regression
+    milestone: 2
+    case_id: imu_dropout
+    duration_sec: 28
+    diagnostic_motion: true
+    injection_sec: 20
+    restore_sec: 23
+  m2_clock_pause:
+    group: regression
+    milestone: 2
+    case_id: clock_pause
+    duration_sec: 28
+    diagnostic_motion: true
+    injection_sec: 20
+    restore_sec: 23
+  m2_clock_rewind:
+    group: regression
+    milestone: 2
+    case_id: clock_rewind
+    duration_sec: 28
+    diagnostic_motion: true
+    injection_sec: 20
+  m2_estimator_kill:
+    group: regression
+    milestone: 2
+    case_id: estimator_kill
+    duration_sec: 28
+    diagnostic_motion: true
+    injection_sec: 20
+  m2_load_1:
+    group: regression
+    milestone: 2
+    case_id: load_1
+    duration_sec: 60
+    diagnostic_motion: true
+    visualization: rviz
+    recording_profile: debug
+  m2_load_2:
+    group: regression
+    milestone: 2
+    case_id: load_2
+    duration_sec: 60
+    diagnostic_motion: true
+    visualization: rviz
+    recording_profile: debug

@@ -1,0 +1,10 @@
+--- a/Library/include/StonefishCommon.h
++++ b/Library/include/StonefishCommon.h
+@@ -27,6 +27,7 @@
+ #define __Stonefish_StonefishCommon__
+ 
+ //STL
++#include <cstdint>
+ #include <string>
+ #include <vector>
+ #include <stdexcept>

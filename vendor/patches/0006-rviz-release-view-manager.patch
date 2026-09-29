@@ -1,0 +1,13 @@
+diff --git a/rviz_common/src/rviz_common/visualization_manager.cpp b/rviz_common/src/rviz_common/visualization_manager.cpp
+--- a/rviz_common/src/rviz_common/visualization_manager.cpp
++++ b/rviz_common/src/rviz_common/visualization_manager.cpp
+@@ -240,6 +240,9 @@ VisualizationManager::~VisualizationManager()
+ 
+   shutting_down_ = true;
+ 
++  // View controllers own ROS services. Release them while the node and
++  // render scene are alive, instead of leaking a DDS participant until exit.
++  delete view_manager_;
+   delete display_property_tree_model_;
+   delete tool_manager_;
+   delete display_factory_;

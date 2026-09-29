@@ -1,0 +1,18 @@
+# Odom absolute or mission_start relative waypoints; explicit ARM consent.
+# mission_start: gravity level, yaw/translation captured from estimate at acceptance.
+string run_id
+string mission_id
+bool authorize_arm
+geometry_msgs/PoseStamped[] waypoints
+float64 timeout_sec
+---
+string outcome
+string reason
+uint32 completed_waypoints
+float64 elapsed_sec
+bool terminal_neutral_verified
+---
+string state
+uint32 waypoint_index
+float64 distance_m
+float64 elapsed_sec

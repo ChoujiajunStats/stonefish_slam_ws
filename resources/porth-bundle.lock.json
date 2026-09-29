@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "bundle": "porth_sump9_v1-with-survey-v14",
+  "distribution": "external; obtain permission from asset owner",
+  "files": {
+    "assets/porth_sump9_v1/albedo.png": {
+      "bytes": 18443743,
+      "sha256": "52457047ad182b19c07ac0e58ee0d0757a2573dd2e24b27ce980940660c8f720"
+    },
+    "assets/porth_sump9_v1/asset.json": {
+      "bytes": 3893,
+      "sha256": "7031490e7a94037ca63d2687782d9fc5a2a82d4709d2871bf07ff84e1402ca6e"
+    },
+    "assets/porth_sump9_v1/bluerov2/bluerov2.obj": {
+      "bytes": 10317847,
+      "sha256": "25b1c6b1bfe18ef000db241ecc4108f20fe87f127f5aabcddfaf2cc18a9c2afc"
+    },
+    "assets/porth_sump9_v1/bluerov2/bluerov2_wings.obj": {
+      "bytes": 6606716,
+      "sha256": "96fcb8f658fac280aa1b39149619acd61097b50b816440543034691aee4705b0"
+    },
+    "assets/porth_sump9_v1/bluerov2/br2.png": {
+      "bytes": 266978,
+      "sha256": "39e695ffaa8ffafc152f6471e6ea96fc1136f68e64877a56a903d788b3590f8c"
+    },
+    "assets/porth_sump9_v1/bluerov2/ccw.obj": {
+      "bytes": 451604,
+      "sha256": "855c9004dd8bbb56bd3de07402a1f7d2222b85c29897942c6dc94b8722c03c4e"
+    },
+    "assets/porth_sump9_v1/bluerov2/cw.obj": {
+      "bytes": 429348,
+      "sha256": "ca806a538dcc31941f14e6b49f7492723e06ba710848071a4bf45e8008a8af20"
+    },
+    "assets/porth_sump9_v1/bluerov2/robot.mtl": {
+      "bytes": 67,
+      "sha256": "fda089f5f71e8fa8436a0cff498a6c3ca1f3761eb91827896bc2e70a55f5ab45"
+    },
+    "assets/porth_sump9_v1/bluerov2/source.scn": {
+      "bytes": 13796,
+      "sha256": "38fd7380283413f68df0f7c684392993ae226e419c36cd6e7432a2dd0a93f65d"
+    },
+    "assets/porth_sump9_v1/collision.obj": {
+      "bytes": 2696932,
+      "sha256": "99bebec611a933ebceca2a230267bb6302892b8607e318e1c8d2e616ce2c04df"
+    },
+    "assets/porth_sump9_v1/navigation_centerline.csv": {
+      "bytes": 64288,
+      "sha256": "d8b68cc1cb7170bc02efcea3d5d8033d4810003bd91fb1f59b62fae6a73fd81b"
+    },
+    "assets/porth_sump9_v1/porth.mtl": {
+      "bytes": 57,
+      "sha256": "85fac075694c02089f94016b493fad685666df4f1522ed53c5e7f1ca11c02b74"
+    },
+    "assets/porth_sump9_v1/rviz_cutaway.obj": {
+      "bytes": 63504971,
+      "sha256": "ae7510cc75695b28b9b07d76fb34abfb31e5ca893ee6dfd29ee099e1877065c6"
+    },
+    "assets/porth_sump9_v1/source-inspection.json": {
+      "bytes": 4280,
+      "sha256": "e4ce6d1220660c9675aa7acba3cf0ff3f1aa921e6322f9449ec1a95199eca4ba"
+    },
+    "assets/porth_sump9_v1/source-metadata.yaml": {
+      "bytes": 862,
+      "sha256": "2ae51e6bff7f4660114b225fdd2fc33186c5f468118a1ef46928c711547fa11a"
+    },
+    "assets/porth_sump9_v1/visual.obj": {
+      "bytes": 280701118,
+      "sha256": "a0e07f517791c5832ce8f2555bb6a4cfd4225ed95d0ee0ca9c0523e64e62ba67"
+    },
+    "plans/porth-survey-v14/plan.json": {
+      "bytes": 811823,
+      "sha256": "8f0a68f663c905f21bc29380b04b26089805e3d1f77f1fba8a6aefc78a003792"
+    }
+  }
+}

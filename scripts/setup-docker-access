@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Configure the current user's access to the existing local Docker daemon.
+set -euo pipefail
+
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+    cat <<'HELP'
+Usage: ./scripts/setup-docker-access
+
+Run as your ordinary desktop user in a local terminal. This script:
+  1. Adds that user to the existing docker group for future login sessions.
+  2. Grants that user read/write access to the current Docker socket via ACL,
+     so existing IDE processes can use Docker immediately.
+  3. Checks access with docker info.
+
+Administrator authentication is handled by sudo in your terminal.
+Docker access grants host administration capabilities.
+The socket ACL may need reapplying after Docker restarts until you log in again.
+HELP
+    exit 0
+fi
+
+if [[ $# -ne 0 ]]; then
+    printf 'Unexpected arguments. See --help.\n' >&2
+    exit 2
+fi
+if [[ $EUID -eq 0 ]]; then
+    printf 'Run this script as your normal desktop user, without prefixing sudo.\n' >&2
+    exit 1
+fi
+if [[ ! -t 0 ]]; then
+    printf 'Run this script in your local terminal so sudo can request authentication.\n' >&2
+    exit 1
+fi
+for program in sudo usermod setfacl getent docker; do
+    if ! command -v "$program" >/dev/null; then
+        printf 'Required command unavailable: %s\n' "$program" >&2
+        exit 1
+    fi
+done
+if [[ -n "${DOCKER_HOST:-}" || -n "${DOCKER_CONTEXT:-}" ]] || [[ "$(docker context show)" != default ]]; then
+    printf 'This script targets the default local Docker context; select it before proceeding.\n' >&2
+    exit 1
+fi
+if [[ ! -S /var/run/docker.sock ]] || ! getent group docker >/dev/null; then
+    printf 'The existing local Docker socket or docker group was not found.\n' >&2
+    exit 1
+fi
+
+uw_target_user=$(id -un)
+uw_target_uid=$(id -u)
+printf 'Configuring Docker access for %s (uid %s).\n' "$uw_target_user" "$uw_target_uid"
+printf 'This grants host administration capabilities through Docker.\n'
+printf 'Authenticate with your administrator password in this terminal.\n'
+sudo -v
+sudo -n usermod -aG docker "$uw_target_user"
+sudo -n setfacl -m "u:${uw_target_uid}:rw" /var/run/docker.sock
+
+docker info --format 'Docker {{.ServerVersion}}; runtimes: {{range $name, $runtime := .Runtimes}}{{$name}} {{end}}'
+printf '\nDocker is now accessible to this user, including the existing IDE session.\n'
+printf 'The docker group membership becomes active on your next full login.\n'
+printf 'If Docker restarts before then, rerun this script to restore the socket ACL.\n'

@@ -1,0 +1,389 @@
+--- /dev/null
++++ b/include/stonefish_ros2/UWClock.h
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++// One simulator per process. Step time is shared with the rendering callback.
++#pragma once
++#include <atomic>
++#include <cstdint>
++#include <rclcpp/rclcpp.hpp>
++namespace sf {
++inline std::atomic<int64_t> uw_step_time_ns{0};
++inline rclcpp::Time UWClockNow() {
++    return rclcpp::Time(uw_step_time_ns.load(), RCL_ROS_TIME);
++}
++}
+--- a/include/stonefish_ros2/ROS2SimulationManager.h
++++ b/include/stonefish_ros2/ROS2SimulationManager.h
+@@ -27,6 +27,7 @@
+ #define __Stonefish_ROS2SimulationManager__
+ 
+ #include "rclcpp/rclcpp.hpp"
++#include "rosgraph_msgs/msg/clock.hpp"
+ #include "image_transport/image_transport.hpp"
+ #include "std_srvs/srv/trigger.hpp"
+ #include "std_srvs/srv/set_bool.hpp"
+@@ -135,6 +136,7 @@
+     protected:
+         std::string scenarioPath_;
+         std::vector<std::shared_ptr<ROS2Robot>> rosRobots_;
++        rclcpp::Publisher<rosgraph_msgs::msg::Clock>::SharedPtr uw_clock_pub_;
+         std::shared_ptr<rclcpp::Node> nh_;
+         std::shared_ptr<image_transport::ImageTransport> it_;
+         std::unique_ptr<tf2_ros::TransformBroadcaster> tf_;
+--- a/src/stonefish_ros2/ROS2SimulationManager.cpp
++++ b/src/stonefish_ros2/ROS2SimulationManager.cpp
+@@ -60,6 +60,9 @@
+ #include <Stonefish/actuators/VariableBuoyancy.h>
+ #include <Stonefish/core/Robot.h>
+ 
++#include "stonefish_ros2/UWClock.h"
++#include <stdexcept>
++
+ using namespace std::placeholders;
+ 
+ namespace sf
+@@ -68,6 +71,8 @@
+ ROS2SimulationManager::ROS2SimulationManager(Scalar stepsPerSecond, std::string scenarioFilePath, const std::shared_ptr<rclcpp::Node>& nh)
+ 	: SimulationManager(stepsPerSecond, SolverType::SOLVER_SI, CollisionFilteringType::COLLISION_EXCLUSIVE), scenarioPath_(scenarioFilePath), nh_(nh)
+ {
++    uw_clock_pub_ = nh_->create_publisher<rosgraph_msgs::msg::Clock>("/clock", rclcpp::QoS(1));
++    uw_step_time_ns.store(0);
+     it_ = std::make_shared<image_transport::ImageTransport>(nh_);
+     interface_ = std::make_shared<ROS2Interface>(nh_);
+     tf_ = std::make_unique<tf2_ros::TransformBroadcaster>(nh_);
+@@ -79,14 +84,14 @@
+ 
+ uint64_t ROS2SimulationManager::getSimulationClock() const
+ {
+-    rclcpp::Time now = rclcpp::Clock(RCL_ROS_TIME).now();
++    rclcpp::Time now = rclcpp::Clock(RCL_STEADY_TIME).now();
+     return now.nanoseconds()/1000;
+ }
+ 
+ void ROS2SimulationManager::SimulationClockSleep(uint64_t us)
+ {
+     rclcpp::Duration duration(0, (uint32_t)us*1000);
+-    rclcpp::Clock(RCL_ROS_TIME).sleep_for(duration);
++    rclcpp::Clock(RCL_STEADY_TIME).sleep_for(duration);
+ }
+ 
+ std::map<std::string, rclcpp::ServiceBase::SharedPtr>& ROS2SimulationManager::getServices()
+@@ -148,6 +153,9 @@
+ 
+     if(!success2)
+         RCLCPP_ERROR(nh_->get_logger(), "Parser log file '%s' could not be saved!", logPath.c_str());
++
++    if(!success)
++        throw std::runtime_error("Stonefish scenario parsing failed");
+ 
+     // Standard services
+     srvs_["enable_currents"] = nh_->create_service<std_srvs::srv::Trigger>("enable_currents", std::bind(&ROS2SimulationManager::EnableCurrentsService, this, _1, _2));
+@@ -172,7 +180,11 @@
+ 	
+ void ROS2SimulationManager::SimulationStepCompleted(Scalar timeStep)
+ {
+-    (void)timeStep; // Suppress warning
++    (void)timeStep;
++    uw_step_time_ns.store(static_cast<int64_t>(getSimulationTime() * 1000000000.0));
++    rosgraph_msgs::msg::Clock clock_msg;
++    clock_msg.clock = UWClockNow();
++    uw_clock_pub_->publish(clock_msg);
+ 
+     ////////////////////////////////////////SENSORS//////////////////////////////////////////////
+     unsigned int id = 0;
+@@ -313,7 +325,7 @@
+     for(size_t i=0; i<rosRobots_.size(); ++i)
+     {
+         if(rosRobots_[i]->publishBaseLinkTransform_)
+-            interface_->PublishTF(tf_, rosRobots_[i]->robot_->getTransform(), rclcpp::Clock(RCL_ROS_TIME).now(), "world_ned", rosRobots_[i]->robot_->getName() + "/base_link");
++            interface_->PublishTF(tf_, rosRobots_[i]->robot_->getTransform(), UWClockNow(), "world_ned", rosRobots_[i]->robot_->getName() + "/base_link");
+     }
+ 
+     //////////////////////////////////////SERVOS(JOINTS)/////////////////////////////////////////
+@@ -325,7 +337,7 @@
+             Actuator* actuator;
+             Servo* srv;
+             sensor_msgs::msg::JointState msg;
+-            msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++            msg.header.stamp = UWClockNow();
+             msg.header.frame_id = rosRobots_[i]->robot_->getName();
+             
+             while((actuator = rosRobots_[i]->robot_->getActuator(aID++)) != nullptr)
+@@ -353,7 +365,7 @@
+             Actuator* actuator;
+             Thruster* th;
+             stonefish_ros2::msg::ThrusterState msg;
+-            msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++            msg.header.stamp = UWClockNow();
+             msg.header.frame_id = rosRobots_[i]->robot_->getName();
+             msg.setpoint.resize(rosRobots_[i]->thrusterSetpoints_.size());
+             msg.rpm.resize(rosRobots_[i]->thrusterSetpoints_.size());
+@@ -492,7 +504,7 @@
+ {
+     //Fill in the image message
+     sensor_msgs::msg::Image::SharedPtr img = cameraMsgPrototypes_[cam->getName()].first;
+-    img->header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    img->header.stamp = UWClockNow();
+     memcpy(img->data.data(), (uint8_t*)cam->getImageDataPointer(), img->step * img->height);
+ 
+     //Fill in the info message
+@@ -508,7 +520,7 @@
+ {
+     //Fill in the image message
+     sensor_msgs::msg::Image::SharedPtr img = cameraMsgPrototypes_[cam->getName()].first;
+-    img->header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    img->header.stamp = UWClockNow();
+     memcpy(img->data.data(), (float*)cam->getImageDataPointer(), img->step * img->height);
+ 
+     //Fill in the info message
+@@ -529,7 +541,7 @@
+ {
+     //Fill in the data message
+     sensor_msgs::msg::Image::SharedPtr img = sonarMsgPrototypes_[fls->getName()].first;
+-    img->header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    img->header.stamp = UWClockNow();
+     memcpy(img->data.data(), (uint8_t*)fls->getImageDataPointer(), img->step * img->height);
+ 
+     //Fill in the display message
+@@ -547,7 +559,7 @@
+ {
+     //Fill in the data message
+     sensor_msgs::msg::Image::SharedPtr img = sonarMsgPrototypes_[sss->getName()].first;
+-    img->header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    img->header.stamp = UWClockNow();
+     memcpy(img->data.data(), (uint8_t*)sss->getImageDataPointer(), img->step * img->height);
+ 
+     //Fill in the display message
+@@ -564,7 +576,7 @@
+ {
+     //Fill in the data message
+     sensor_msgs::msg::Image::SharedPtr img = sonarMsgPrototypes_[msis->getName()].first;
+-    img->header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    img->header.stamp = UWClockNow();
+     memcpy(img->data.data(), (uint8_t*)msis->getImageDataPointer(), img->step * img->height);
+ 
+     //Fill in the display message
+--- a/src/stonefish_ros2/ROS2Interface.cpp
++++ b/src/stonefish_ros2/ROS2Interface.cpp
+@@ -74,6 +74,8 @@
+ #include <Stonefish/core/SimulationManager.h>
+ #include <Stonefish/core/NED.h>
+ 
++#include "stonefish_ros2/UWClock.h"
++
+ namespace sf
+ {
+ 
+@@ -107,7 +109,7 @@
+                                           acc->getSensorChannelDescription(1).stdDev,
+                                           acc->getSensorChannelDescription(2).stdDev);
+     geometry_msgs::msg::AccelWithCovarianceStamped msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = acc->getName();
+     msg.accel.accel.linear.x = s.getValue(0);
+     msg.accel.accel.linear.y = s.getValue(1);
+@@ -125,7 +127,7 @@
+                                       gyro->getSensorChannelDescription(1).stdDev,
+                                       gyro->getSensorChannelDescription(2).stdDev);
+     geometry_msgs::msg::TwistWithCovarianceStamped msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = gyro->getName();
+     msg.twist.twist.angular.x = s.getValue(0);
+     msg.twist.twist.angular.y = s.getValue(1);
+@@ -152,7 +154,7 @@
+                                         imu->getSensorChannelDescription(8).stdDev);
+     //Variance is sigma^2!
+     sensor_msgs::msg::Imu msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();    
++    msg.header.stamp = UWClockNow();    
+     msg.header.frame_id = imu->getName();
+     msg.orientation.x = quat.x();
+     msg.orientation.y = quat.y();
+@@ -180,7 +182,7 @@
+ {
+     Sample s = press->getLastSample();
+     sensor_msgs::msg::FluidPressure msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = press->getName();
+     msg.fluid_pressure = s.getValue(0);
+     msg.variance = press->getSensorChannelDescription(0).stdDev;
+@@ -197,7 +199,7 @@
+     vVariance *= vVariance; //Variance is square of standard deviation
+     //Publish DVL message
+     stonefish_ros2::msg::DVL msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = dvl->getName();
+     msg.velocity.x = s.getValue(0);
+     msg.velocity.y = s.getValue(1);
+@@ -220,7 +222,7 @@
+     sf::Scalar beamAngle = dvl->getBeamAngle();
+     //Publish range message
+     sensor_msgs::msg::Range msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = dvl->getName() + "_altitude";
+     msg.radiation_type = msg.ULTRASOUND;
+     msg.field_of_view = beamAngle*2;
+@@ -235,7 +237,7 @@
+     Sample s = gps->getLastSample();
+ 
+     sensor_msgs::msg::NavSatFix msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = gps->getName();
+     msg.status.service = msg.status.SERVICE_GPS;
+ 
+@@ -264,7 +266,7 @@
+ {
+     Sample s = odom->getLastSample();
+     nav_msgs::msg::Odometry msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = "world_ned";
+     msg.child_frame_id = odom->getName();
+     msg.pose.pose.position.x = s.getValue(0);
+@@ -290,7 +292,7 @@
+ 
+     Sample s = ins->getLastSample();
+     stonefish_ros2::msg::INS msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = ins->getName();
+     msg.latitude = s.getValue(4);
+     msg.longitude = s.getValue(5);
+@@ -316,7 +318,7 @@
+ {
+     Sample s = ins->getLastSample();
+     nav_msgs::msg::Odometry msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = "world_ned";
+     msg.child_frame_id = ins->getName();
+     msg.pose.pose.position.x = s.getValue(0);
+@@ -340,7 +342,7 @@
+ {
+     Sample s = ft->getLastSample();    
+     geometry_msgs::msg::WrenchStamped msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = ft->getName();
+     msg.wrench.force.x = s.getValue(0);
+     msg.wrench.force.y = s.getValue(1);
+@@ -355,7 +357,7 @@
+ {
+     Sample s = enc->getLastSample();
+     sensor_msgs::msg::JointState msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = enc->getName();
+     msg.name.resize(1);
+     msg.position.resize(1);
+@@ -376,7 +378,7 @@
+     size_t angSteps = distances.size();
+ 
+     sensor_msgs::msg::LaserScan msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = mb->getName();
+     
+     msg.angle_min = -angRange/sf::Scalar(2); // start angle of the scan [rad]
+@@ -436,7 +438,7 @@
+     pcl::toPCLPointCloud2(*cloud, pclMsg);
+ 
+     sensor_msgs::msg::PointCloud2 msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = mb->getName();
+     pcl_conversions::fromPCL(pclMsg, msg);
+     
+@@ -456,7 +458,7 @@
+     SensorChannel channel = prof->getSensorChannelDescription(1); // range channel
+ 
+     sensor_msgs::msg::LaserScan msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = prof->getName();
+     
+     msg.angle_min = hist->front().getValue(0);
+@@ -531,7 +533,7 @@
+     pcl::toPCLPointCloud2(*cloud, pclMsg);
+ 
+     sensor_msgs::msg::PointCloud2 msg;
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.header.frame_id = mb->getName();
+     pcl_conversions::fromPCL(pclMsg, msg);
+ 
+@@ -555,7 +557,7 @@
+     //Publish marker message
+     visualization_msgs::msg::Marker msg;
+     msg.header.frame_id = "world_ned";
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.ns = cnt->getName();
+     msg.id = 0;
+     msg.type = visualization_msgs::msg::Marker::ARROW;
+@@ -592,7 +594,7 @@
+     stonefish_ros2::msg::BeaconInfo info;
+     
+     marker.header.frame_id = usbl->getName();
+-    marker.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    marker.header.stamp = UWClockNow();
+     info.header.frame_id = marker.header.frame_id;
+     info.header.stamp = marker.header.stamp;
+ 
+@@ -647,7 +649,7 @@
+     //Odometry message
+     nav_msgs::msg::Odometry msg;
+     msg.header.frame_id = "world_ned";
+-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
++    msg.header.stamp = UWClockNow();
+     msg.child_frame_id = anim->getName();
+     msg.pose.pose.position.x = p.x();
+     msg.pose.pose.position.y = p.y();
+--- a/src/stonefish_simulator.cpp
++++ b/src/stonefish_simulator.cpp
+@@ -40,7 +40,7 @@
+                            sf::Scalar rate) 
+                            : Node("stonefish_simulator")
+     {   
+-        manager_ = std::shared_ptr<sf::ROS2SimulationManager>(new sf::ROS2SimulationManager(rate, scenarioPath, std::shared_ptr<rclcpp::Node>(this)));
++        manager_ = std::shared_ptr<sf::ROS2SimulationManager>(new sf::ROS2SimulationManager(rate, scenarioPath, std::shared_ptr<rclcpp::Node>(this, [](rclcpp::Node*) {})));
+         app_ = std::shared_ptr<sf::ROS2GraphicalSimulationApp>(new sf::ROS2GraphicalSimulationApp("Stonefish Simulator", 
+                                                                                                  dataPath, s, h, 
+                                                                                                  manager_.get()));
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -10,6 +10,7 @@
+ # find dependencies
+ find_package(ament_cmake REQUIRED)
+ find_package(rclcpp REQUIRED)
++find_package(rosgraph_msgs REQUIRED)
+ find_package(ament_index_cpp REQUIRED)
+ find_package(std_srvs REQUIRED)
+ find_package(geometry_msgs REQUIRED)
+@@ -55,7 +56,8 @@
+     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+     $<INSTALL_INTERFACE:include>)
+ ament_target_dependencies(stonefish_ros2_interface
+- rclcpp 
++ rclcpp
++ rosgraph_msgs
+  ament_index_cpp 
+  std_srvs
+  geometry_msgs
+--- a/package.xml
++++ b/package.xml
+@@ -12,6 +12,7 @@
+   <buildtool_depend>rosidl_default_generators</buildtool_depend>
+   
+   <depend>rclcpp</depend>
++  <depend>rosgraph_msgs</depend>
+   <depend>ament_index_cpp</depend>
+   <depend>std_srvs</depend>
+   <depend>geometry_msgs</depend>

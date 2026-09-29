@@ -1,0 +1,28 @@
+schema_version: 1
+scope: optional_online_orbslam3_stereo_survey
+control_state_source: PRIVILEGED_DEBUG
+inputs: [live_left_rgb, live_right_rgb]
+not_inputs: [truth, asset_mesh, openvins_odometry, imu]
+thresholds:
+  collection_slam_stale_sec: 5.0
+  stereo_map_points: 1000
+  keyframes: 3
+  minimum_tracking_fraction_after_initialization: 0.95
+  maximum_online_latency_p99_sec: 0.5
+  maximum_maps: 1
+  minimum_processed_hz: 15.0
+cases:
+  - id: short
+    config: config/run.porth-orbslam3-short.yaml
+    input: prescribed initial 6 m of unchanged v14 route
+    purpose: initialization, live tracking, coordinate conversion, recording, native stop
+  - id: full
+    config: config/run.porth-orbslam3.yaml
+    input: entire v14 route with retained headings on return
+    purpose: full online acquisition, track continuity and bounded delay
+    requires: short PASS
+initial_state: inherited original free-body Porth v14 spawn; default DISARMED
+end_state: explicit DISARM, native receiver neutral, required process exits 0
+recording: state MCAP plus original online per-frame poses and native saved Atlas
+cleanup: current run container and isolated network only
+map_claim: sparse visual landmarks; dense complete cave reconstruction NOT_VERIFIED

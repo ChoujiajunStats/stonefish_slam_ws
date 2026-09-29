@@ -1,0 +1,11 @@
+rate_hz: 20.0
+position_gain: 0.55
+yaw_gain: 0.8
+horizontal_speed_m_s: 0.12
+vertical_speed_m_s: 0.06
+yaw_rate_rad_s: 0.12
+position_tolerance_m: 0.06
+yaw_tolerance_rad: 0.10
+settle_speed_m_s: 0.04
+settle_yaw_rate_rad_s: 0.04
+dwell_sec: 1.0

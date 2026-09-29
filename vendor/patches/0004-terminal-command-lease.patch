@@ -1,0 +1,300 @@
+--- /dev/null
++++ b/include/stonefish_ros2/UWTerminal.h
+@@ -0,0 +1,47 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++// Opt-in simulation receiver. No dependency on project control packages.
++#pragma once
++#include <rclcpp/rclcpp.hpp>
++#include <std_msgs/msg/string.hpp>
++#include <Stonefish/core/Robot.h>
++#include <Stonefish/actuators/Thruster.h>
++#include <mutex>
++#include <thread>
++#include <atomic>
++#include <vector>
++#include <string>
++namespace sf {
++class UWTerminal {
++public:
++    UWTerminal(std::shared_ptr<rclcpp::Node> node, Robot* robot,
++               const std::string& run, const std::string& secret, bool fixture);
++    ~UWTerminal();
++    void BeforeStep();
++    void AfterStep();
++    int64_t ClockValue(int64_t raw);
++private:
++    void Gate(const std_msgs::msg::String::SharedPtr msg);
++    void Output(const std_msgs::msg::String::SharedPtr msg);
++    void Fixture(const std_msgs::msg::String::SharedPtr msg);
++    void Check(int64_t now);
++    void Fault(const std::string& reason, int64_t now);
++    void Report();
++    std::shared_ptr<rclcpp::Node> node_;
++    Robot* robot_;
++    std::string run_, secret_, token_, state_{"DISARMED"}, reason_{"startup"}, model_;
++    std::vector<Thruster*> thrusters_;
++    std::vector<std::string> names_;
++    std::vector<double> values_, applied_, rpm_, thrust_, torque_;
++    uint64_t generation_{0}, output_seq_{0}, gate_seq_{0}, request_seq_{0};
++    int64_t armed_ns_{0}, lease_ns_{0}, output_ns_{0}, deadline_ns_{0},
++            fault_ns_{0}, neutral_ns_{0}, applied_ns_{0}, physics_ns_{0};
++    std::mutex mutex_;
++    rclcpp::executors::SingleThreadedExecutor executor_;
++    std::thread worker_;
++    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr gate_, output_, fixture_;
++    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr report_;
++    rclcpp::TimerBase::SharedPtr timer_;
++    std::atomic<bool> clock_hold_{false};
++    std::atomic<int64_t> clock_offset_{0}, clock_last_{0};
++};
++}
+--- /dev/null
++++ b/src/stonefish_ros2/UWTerminal.cpp
+@@ -0,0 +1,157 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#include "stonefish_ros2/UWTerminal.h"
++#include <Stonefish/entities/SolidEntity.h>
++#include <boost/property_tree/ptree.hpp>
++#include <boost/property_tree/json_parser.hpp>
++#include <chrono>
++#include <cmath>
++#include <sstream>
++#include <stdexcept>
++namespace sf {
++using boost::property_tree::ptree;
++static int64_t Now() { return std::chrono::duration_cast<std::chrono::nanoseconds>(
++    std::chrono::steady_clock::now().time_since_epoch()).count(); }
++static ptree Parse(const std::string& s) {
++    if(s.size()>16384) throw std::runtime_error("oversized packet");
++    ptree p; std::istringstream in(s); boost::property_tree::read_json(in,p); return p;
++}
++static std::string Json(const ptree& p) { std::ostringstream out; boost::property_tree::write_json(out,p,false); return out.str(); }
++template<class T> static ptree Array(const std::vector<T>& v) {
++    ptree a; for(const auto& x:v) { ptree n; n.put("",x); a.push_back({"",n}); } return a;
++}
++UWTerminal::UWTerminal(std::shared_ptr<rclcpp::Node> node, Robot* robot,
++    const std::string& run, const std::string& secret, bool fixture)
++    : node_(std::make_shared<rclcpp::Node>("uw_terminal",node->get_namespace(),rclcpp::NodeOptions().use_global_arguments(false))), robot_(robot), run_(run), secret_(secret) {
++    if(run.empty() || secret.size()<24) throw std::runtime_error("Invalid terminal run identity");
++    for(unsigned i=0; auto* a=robot->getActuator(i); ++i) {
++        if(a->getType()!=ActuatorType::THRUSTER) throw std::runtime_error("Terminal supports thrusters only");
++        thrusters_.push_back(static_cast<Thruster*>(a));
++        auto name=a->getName(); names_.push_back(name.substr(name.find_last_of('/')+1));
++    }
++    if(thrusters_.size()!=8) throw std::runtime_error("M1 expects verified eight-thruster model");
++    values_.resize(8,0); applied_=rpm_=thrust_=torque_=values_;
++    auto* base=robot->getBaseLink(); auto cg=base->getCG2OTransform().inverse().getOrigin();
++    ptree model; model.put("mass_kg",base->getMass()); model.put("volume_m3",base->getVolume());
++    model.add_child("cg_frd_m",Array(std::vector<double>{cg.x(),cg.y(),cg.z()}));
++    model.add_child("names",Array(names_));
++    ptree geometry;
++    for(auto* t:thrusters_) {
++        auto tr=base->getOTransform().inverse()*t->getActuatorFrame();
++        auto p=tr.getOrigin(), a=tr.getBasis().getColumn(0);
++        ptree entry; entry.add_child("position_frd",Array(std::vector<double>{p.x(),p.y(),p.z()}));
++        entry.add_child("axis_frd",Array(std::vector<double>{a.x(),a.y(),a.z()}));
++        geometry.push_back({"",entry});
++    }
++    model.add_child("geometry",geometry); model_=Json(model);
++    auto qos=rclcpp::QoS(1).reliable().durability_volatile();
++    gate_=node_->create_subscription<std_msgs::msg::String>("sim/terminal/gate",qos,
++        [this](std_msgs::msg::String::SharedPtr m){Gate(m);});
++    output_=node_->create_subscription<std_msgs::msg::String>("sim/terminal/input",qos,
++        [this](std_msgs::msg::String::SharedPtr m){Output(m);});
++    report_=node_->create_publisher<std_msgs::msg::String>("sim/terminal/status",qos);
++    if(fixture) fixture_=node_->create_subscription<std_msgs::msg::String>("sim/terminal/fixture",qos,
++        [this](std_msgs::msg::String::SharedPtr m){Fixture(m);});
++    // Wall timer is independent of /clock; it revokes cached requests while paused.
++    timer_=node_->create_wall_timer(std::chrono::milliseconds(10),[this](){Report();});
++    executor_.add_node(node_);worker_=std::thread([this](){executor_.spin();});
++}
++UWTerminal::~UWTerminal() { executor_.cancel();if(worker_.joinable())worker_.join(); }
++void UWTerminal::Fault(const std::string& reason,int64_t now) {
++    if(state_!="FAULT") {fault_ns_=now; reason_=reason;}
++    state_="FAULT"; std::fill(values_.begin(),values_.end(),0); neutral_ns_=now;
++    token_.clear(); deadline_ns_=0;
++}
++void UWTerminal::Check(int64_t now) {
++    if(state_!="ARMED") return;
++    if(now-lease_ns_>250000000LL) Fault("guard_lease_expired",now);
++    else if(now-(output_ns_?output_ns_:armed_ns_)>200000000LL) Fault("terminal_output_expired",now);
++    else if(now>deadline_ns_) Fault("original_request_expired",now);
++}
++void UWTerminal::Gate(const std_msgs::msg::String::SharedPtr msg) {
++    std::lock_guard<std::mutex> lock(mutex_); auto now=Now(); Check(now);
++    try {
++        auto p=Parse(msg->data);
++        if(p.get<std::string>("run")!=run_ || p.get<std::string>("secret")!=secret_) return;
++        auto sent=p.get<int64_t>("sent_ns"); auto seq=p.get<uint64_t>("gate_seq");
++        if(sent>now+1000000 || now-sent>250000000 || seq<=gate_seq_) return;
++        gate_seq_=seq;
++        auto op=p.get<std::string>("op"); auto gen=p.get<uint64_t>("generation");
++        if(op=="DISARM") {
++            if(state_!="FAULT") {state_="DISARMED";reason_="explicit_disarm";}
++            token_.clear(); std::fill(values_.begin(),values_.end(),0); neutral_ns_=now;
++        } else if(op=="FAULT") Fault(p.get<std::string>("reason","guard_fault"),now);
++        else if(op=="RESET" && state_!="ARMED") {
++            state_="DISARMED";reason_="explicit_reset";token_.clear();
++        } else if(op=="ARM" && state_=="DISARMED" && gen>generation_) {
++            auto token=p.get<std::string>("token"); if(token.size()<24) return;
++            generation_=gen; token_=token; state_="ARMED";reason_="explicit_arm";
++            armed_ns_=lease_ns_=now; output_ns_=0;output_seq_=0;request_seq_=0;
++            deadline_ns_=now+200000000LL;
++        } else if(op=="LEASE" && state_=="ARMED" && gen==generation_ && p.get<std::string>("token")==token_) {
++            lease_ns_=now;
++        }
++    } catch(const std::exception&) { if(state_=="ARMED") Fault("invalid_gate_packet",now); }
++}
++void UWTerminal::Output(const std_msgs::msg::String::SharedPtr msg) {
++    std::lock_guard<std::mutex> lock(mutex_); auto now=Now(); Check(now);
++    if(state_!="ARMED") return;
++    try {
++        auto p=Parse(msg->data);
++        if(p.get<std::string>("run")!=run_ || p.get<uint64_t>("generation")!=generation_ || p.get<std::string>("token")!=token_) return;
++        auto seq=p.get<uint64_t>("output_seq"), request=p.get<uint64_t>("request_seq");
++        auto issued=p.get<int64_t>("issued_ns"), computed=p.get<int64_t>("computed_ns"), deadline=p.get<int64_t>("deadline_ns");
++        if(seq<=output_seq_ || request<request_seq_ || issued>now+1000000 || computed>now+1000000 ||
++           now-computed>200000000LL || deadline>issued+250000000LL || deadline<=now || computed<issued)
++            throw std::runtime_error("expired_or_replayed_output");
++        std::vector<std::string> names; for(auto& x:p.get_child("names")) names.push_back(x.second.get_value<std::string>());
++        std::vector<double> values; for(auto& x:p.get_child("values")) values.push_back(x.second.get_value<double>());
++        if(names!=names_ || values.size()!=names_.size()) throw std::runtime_error("invalid_channels");
++        for(auto x:values) if(!std::isfinite(x) || std::abs(x)>0.7) throw std::runtime_error("invalid_setpoint");
++        values_=values;output_ns_=now;deadline_ns_=deadline;output_seq_=seq;request_seq_=request;
++    } catch(const std::exception& e) {Fault(e.what(),now);}
++}
++void UWTerminal::BeforeStep() {
++    std::lock_guard<std::mutex> lock(mutex_);auto now=Now();Check(now);
++    // The sole controlled writer, before Thruster::Update. Never refresh a lease here.
++    for(size_t i=0;i<thrusters_.size();++i) {
++        thrusters_[i]->setSetpoint(state_=="ARMED"?values_[i]:0);
++        applied_[i]=thrusters_[i]->getSetpoint();
++    }
++    applied_ns_=now;
++}
++void UWTerminal::AfterStep() {
++    std::lock_guard<std::mutex> lock(mutex_);physics_ns_=Now();
++    for(size_t i=0;i<thrusters_.size();++i) {
++        rpm_[i]=thrusters_[i]->getOmega()*60/(2*M_PI);
++        thrust_[i]=thrusters_[i]->getThrust();torque_[i]=thrusters_[i]->getTorque();
++    }
++}
++void UWTerminal::Report() {
++    std::lock_guard<std::mutex> lock(mutex_);auto now=Now();Check(now);
++    ptree p;p.put("run",run_);p.put("state",state_);p.put("reason",reason_);p.put("generation",generation_);
++    p.put("wall_ns",now);p.put("fault_ns",fault_ns_);p.put("neutral_ns",neutral_ns_);
++    p.put("applied_ns",applied_ns_);p.put("physics_ns",physics_ns_);p.put("clock_ns",clock_last_.load());
++    p.put("deadline_ns",deadline_ns_);p.put("output_seq",output_seq_);p.put("request_seq",request_seq_);
++    p.add_child("names",Array(names_));p.add_child("receiver_setpoint",Array(values_));
++    p.add_child("applied_setpoint",Array(applied_));p.add_child("rpm",Array(rpm_));
++    p.add_child("thrust_N",Array(thrust_));p.add_child("reaction_torque_Nm",Array(torque_));
++    p.add_child("model",Parse(model_));
++    std_msgs::msg::String m;m.data=Json(p);report_->publish(m);
++}
++int64_t UWTerminal::ClockValue(int64_t raw) {
++    if(clock_hold_.load()) return clock_last_.load();
++    int64_t value=std::max<int64_t>(0,raw+clock_offset_.load());clock_last_.store(value);return value;
++}
++void UWTerminal::Fixture(const std_msgs::msg::String::SharedPtr msg) {
++    try {
++        auto p=Parse(msg->data);if(p.get<std::string>("run")!=run_ || p.get<std::string>("secret")!=secret_) return;
++        auto now=Now(), sent=p.get<int64_t>("sent_ns");if(sent>now || now-sent>250000000) return;
++        auto op=p.get<std::string>("op");
++        if(op=="hold_clock") clock_hold_.store(true);
++        else if(op=="resume_clock") clock_hold_.store(false);
++        else if(op=="rewind_clock") clock_offset_.fetch_sub(2000000000LL);
++        // Revoke immediately on a local clock discontinuity, even before external nodes observe it.
++        if(op=="hold_clock" || op=="rewind_clock") {std::lock_guard<std::mutex> lock(mutex_);Fault(op,now);}
++    } catch(const std::exception&) {}
++}
++}
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -44,6 +44,7 @@
+ 
+ # define libraries
+ add_library(stonefish_ros2_interface SHARED
++  src/${PROJECT_NAME}/UWTerminal.cpp
+   src/${PROJECT_NAME}/ROS2ConsoleSimulationApp.cpp
+   src/${PROJECT_NAME}/ROS2GraphicalSimulationApp.cpp
+   src/${PROJECT_NAME}/ROS2SimulationManager.cpp
+--- a/include/stonefish_ros2/ROS2SimulationManager.h
++++ b/include/stonefish_ros2/ROS2SimulationManager.h
+@@ -27,6 +27,7 @@
+ #define __Stonefish_ROS2SimulationManager__
+ 
+ #include "rclcpp/rclcpp.hpp"
++#include "stonefish_ros2/UWTerminal.h"
+ #include "rosgraph_msgs/msg/clock.hpp"
+ #include "image_transport/image_transport.hpp"
+ #include "std_srvs/srv/trigger.hpp"
+@@ -66,6 +67,7 @@
+ 		Robot* robot_;
+ 		bool publishBaseLinkTransform_;
+ 		std::vector<Scalar> thrusterSetpoints_;
++        std::shared_ptr<UWTerminal> terminal_;
+ 		std::vector<Scalar> propellerSetpoints_;
+ 		std::vector<Scalar> rudderSetpoints_;
+ 		std::map<std::string, std::pair<ServoControlMode, Scalar>> servoSetpoints_;
+@@ -86,6 +88,7 @@
+         virtual ~ROS2SimulationManager();
+ 		
+         virtual void BuildScenario();
++        virtual void SimulationStepStarted(Scalar timeStep) override;
+         virtual void DestroyScenario();
+ 		virtual void SimulationStepCompleted(Scalar timeStep);
+         virtual void ColorCameraImageReady(ColorCamera* cam);
+--- a/src/stonefish_ros2/ROS2ScenarioParser.cpp
++++ b/src/stonefish_ros2/ROS2ScenarioParser.cpp
+@@ -280,6 +280,16 @@
+     if((item = element->FirstChildElement("ros_base_link_transforms")) != nullptr)
+         item->QueryBoolAttribute("publish", &rosRobot->publishBaseLinkTransform_);
+ 
++    // Opt-in terminal receiver: never expose the unguarded native subscriber together.
++    if((item = element->FirstChildElement("uw_terminal")) != nullptr)
++    {
++        if(element->FirstChildElement("ros_subscriber")) throw std::runtime_error("Terminal/native subscriber conflict");
++        const char* run=item->Attribute("run"); const char* secret=item->Attribute("secret");
++        bool fixture=false; item->QueryBoolAttribute("fixture", &fixture);
++        if(!run || !secret) throw std::runtime_error("Missing terminal identity");
++        rosRobot->terminal_=std::make_shared<UWTerminal>(nh_,robot,run,secret,fixture);
++    }
++
+     //Save robot
+     sim->AddROS2Robot(rosRobot);
+ 
+--- a/src/stonefish_ros2/ROS2SimulationManager.cpp
++++ b/src/stonefish_ros2/ROS2SimulationManager.cpp
+@@ -178,10 +178,20 @@
+     SimulationManager::DestroyScenario();
+ }
+ 	
++void ROS2SimulationManager::SimulationStepStarted(Scalar timeStep)
++{
++    (void)timeStep;
++    for(auto& robot:rosRobots_) if(robot->terminal_) robot->terminal_->BeforeStep();
++}
++
+ void ROS2SimulationManager::SimulationStepCompleted(Scalar timeStep)
+ {
+     (void)timeStep;
+-    uw_step_time_ns.store(static_cast<int64_t>(getSimulationTime() * 1000000000.0));
++    int64_t stamp=static_cast<int64_t>(getSimulationTime() * 1000000000.0);
++    for(auto& robot:rosRobots_) if(robot->terminal_) {
++        robot->terminal_->AfterStep(); stamp=robot->terminal_->ClockValue(stamp);
++    }
++    uw_step_time_ns.store(stamp);
+     rosgraph_msgs::msg::Clock clock_msg;
+     clock_msg.clock = UWClockNow();
+     uw_clock_pub_->publish(clock_msg);
+@@ -411,7 +421,9 @@
+                     break;
+ 
+                 case ActuatorType::THRUSTER:
+-                    ((Thruster*)actuator)->setSetpoint(rosRobots_[i]->thrusterSetpoints_[thID++]);
++                    if(!rosRobots_[i]->terminal_)
++                        ((Thruster*)actuator)->setSetpoint(rosRobots_[i]->thrusterSetpoints_[thID]);
++                    ++thID;
+                     break;
+ 
+                 case ActuatorType::PROPELLER:

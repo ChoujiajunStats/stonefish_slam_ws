@@ -1,0 +1,27 @@
+schema_version: 1
+scope: optional_online_orbslam3_stereo
+parent_image: underwater-stack:m3-porth-survey-v1
+parent_image_id: sha256:6962e626a341a9141dce2e0e679d2dd472e5eaf022324599319efe002b5d1cf4
+parent_lock_sha256: e37d0130ba226752aaa1975e5589df8821105097b71e03be4c65cfc11c1eeb1e
+repositories:
+- name: ORB_SLAM3
+  url: https://github.com/UZ-SLAMLab/ORB_SLAM3.git
+  commit: 4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4
+  license: GPL-3.0-or-later
+  patches:
+  - file: 0010-orbslam3-build-export-shutdown.patch
+    sha256: c730f1ed2a0fd2680814502cdd80066e669ebabf98a53426b46dbc30c9d870bd
+    reason: C++17 portable target and explicit g2o build dependency; GBA generation
+      counter int (upstream bool++ is invalid in C++17); read-only map snapshot; wait
+      for mapping/loop and all GBA workers before serialization. Handle empty Atlas
+      after unsuccessful initialization without GetCurrentMap wait.
+- name: Pangolin
+  url: https://github.com/stevenlovegrove/Pangolin.git
+  commit: aff6883c83f3fd7e8268a9715e84266c42e2efe3
+  tag: v0.8
+  license: MIT
+  patches:
+  - file: 0011-pangolin-fixed-width-integers.patch
+    sha256: 8480cbe0e5972bbb5066e1b0eda6bd6baa14c8ef11f3cae0878d8fb09d79dc99
+    reason: Explicit standard integer includes required by GCC 13; no visualization/SLAM
+      behavior changes.

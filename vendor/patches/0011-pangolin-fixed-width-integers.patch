@@ -1,0 +1,21 @@
+diff --git a/components/pango_image/include/pangolin/image/image.h b/components/pango_image/include/pangolin/image/image.h
+index 098638a..fcadf66 100644
+--- a/components/pango_image/include/pangolin/image/image.h
++++ b/components/pango_image/include/pangolin/image/image.h
+@@ -31,6 +31,7 @@
+ #include <pangolin/image/memcpy.h>
+ 
+ #include <cstddef>
++#include <cstdint>
+ #include <functional>
+ #include <limits>
+ #include <cstring>
+diff --git a/components/pango_packetstream/include/pangolin/log/packetstream_tags.h b/components/pango_packetstream/include/pangolin/log/packetstream_tags.h
+index 2798fec..cce5f67 100644
+--- a/components/pango_packetstream/include/pangolin/log/packetstream_tags.h
++++ b/components/pango_packetstream/include/pangolin/log/packetstream_tags.h
+@@ -1,3 +1,4 @@
++#include <cstdint>
+ #pragma once
+ 
+ #include <string>

@@ -1,0 +1,22 @@
+--- a/Library/include/core/SimulationManager.h
++++ b/Library/include/core/SimulationManager.h
+@@ -91,6 +91,7 @@
+          \param timeStep amount of time that passed in the simulation world
+          */
+         virtual void SimulationStepCompleted(Scalar timeStep);
++        virtual void SimulationStepStarted(Scalar timeStep) {}
+ 
+         //! A method returning the current simulation clock time in us (overriding allows for external time source).
+         virtual uint64_t getSimulationClock() const;
+--- a/Library/src/core/SimulationManager.cpp
++++ b/Library/src/core/SimulationManager.cpp
+@@ -1424,6 +1424,9 @@
+     //Clear all forces to ensure that no summing occurs
+     mbDynamicsWorld->clearForces(); //Includes clearing of multibody forces!
+         
++    // Optional integration safety hook before actuators consume cached setpoints.
++    simManager->SimulationStepStarted(timeStep);
++
+     //loop through all actuators -> apply forces to bodies (free and connected by joints)
+     for(size_t i = 0; i < simManager->actuators.size(); ++i)
+         simManager->actuators[i]->Update(timeStep);

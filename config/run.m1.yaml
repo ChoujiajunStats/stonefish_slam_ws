@@ -1,0 +1,27 @@
+schema_version: 2
+run_id: m1_manual
+mode: simulation_research
+backend: stonefish
+control_authority: project
+namespace: rov01
+robot_profile: bluerov2_heavy
+scene_profile: empty_water
+observation_profile: stereo_imu
+controller_profile: body_velocity_4d
+state_source: ground_truth_debug
+observation_access: PRIVILEGED_DEBUG
+use_sim_time: true
+seed: 2026
+visualization: rviz
+recording_profile: control
+ros_domain_id: 42
+startup_timeout_sec: 45.0
+duration_sec: 3600.0
+control_mode: body_velocity
+case_id: manual
+initial_rpy_enu_deg:
+- 0.0
+- 0.0
+- 90.0
+fixed_fixture: false
+evaluation_phase: manual

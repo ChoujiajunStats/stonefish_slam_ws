@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+  <name>uw_simulations</name>
+  <version>0.1.0</version>
+  <description>Underwater Stack M0 simulations module</description>
+  <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
+  <license>LicenseRef-Not-Yet-Licensed</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>uw_robot</exec_depend>
+  <exec_depend>stonefish_ros2</exec_depend>
+  <exec_depend>stonefish_bluerov2</exec_depend>
+  <exec_depend>uw_interfaces</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>uw_perception</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

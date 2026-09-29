@@ -1,0 +1,26 @@
+{
+  "core": {
+    "image": "stonefish-slam:core",
+    "description": "M0 observation and M1 control"
+  },
+  "vio": {
+    "image": "stonefish-slam:vio",
+    "description": "Core + OpenVINS stereo/IMU"
+  },
+  "navigation": {
+    "image": "stonefish-slam:navigation",
+    "description": "VIO + M3 local navigation/tasks"
+  },
+  "rtabmap": {
+    "image": "stonefish-slam:rtabmap",
+    "description": "Navigation + RTAB-Map"
+  },
+  "survey": {
+    "image": "stonefish-slam:survey",
+    "description": "RTAB-Map + native lights and prescribed cave survey"
+  },
+  "orbslam3": {
+    "image": "stonefish-slam:orbslam3",
+    "description": "Survey + ORB-SLAM3 online stereo"
+  }
+}

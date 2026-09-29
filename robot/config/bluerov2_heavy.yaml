@@ -1,0 +1,29 @@
+schema_version: 1
+upstream_scene_sha256: 38fd7380283413f68df0f7c684392993ae226e419c36cd6e7432a2dd0a93f65d
+native_world: NED
+native_body: FRD
+public_world: ENU
+public_body: FLU
+stereo_baseline_m: 0.145
+thruster_order:
+  - FrontRight
+  - FrontLeft
+  - BackRight
+  - BackLeft
+  - DiveFrontRight
+  - DiveFrontLeft
+  - DiveBackRight
+  - DiveBackLeft
+cameras:
+  left:
+    xyz_frd: [0.16, -0.0725, 0.15]
+    rpy_frd: [1.5707963267948966, 0.0, 1.5707963267948966]
+    width: 640
+    height: 480
+    horizontal_fov_deg: 75.0
+  right:
+    xyz_frd: [0.16, 0.0725, 0.15]
+    rpy_frd: [1.5707963267948966, 0.0, 1.5707963267948966]
+    width: 640
+    height: 480
+    horizontal_fov_deg: 75.0
