@@ -95,13 +95,13 @@ RUN dpkg-query -W > /opt/uw/m2-dpkg-packages.txt \
     && sha256sum /opt/uw/m2-vendor/source-lock.m2.yaml > /opt/uw/m2-lock.sha256
 LABEL org.opencontainers.image.title="stonefish_slam_ws" io.stonefish-slam.profile="vio"
 
-# Checked against vendor/source-lock.m3.yaml by scripts/uw before building.
+# The M3 lock is retained as a runtime-verified source provenance marker.
 FROM vio AS navigation
 COPY vendor/source-lock.m3.yaml /opt/uw/source-lock.m3.yaml
 RUN sha256sum /opt/uw/source-lock.m3.yaml > /opt/uw/m3-lock.sha256
 LABEL org.opencontainers.image.title="stonefish_slam_ws" io.stonefish-slam.profile="navigation"
 
-# Parent identity is checked by scripts/uw; M0--M3 tags are never overwritten.
+# Parent layers are built above; historical M0--M3 tags are never overwritten.
 FROM navigation AS rtabmap
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
