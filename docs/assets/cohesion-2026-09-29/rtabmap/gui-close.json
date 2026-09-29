@@ -1,8 +1,0 @@
-{
-  "wall_ns": 90194592246450,
-  "operation": "WM_DELETE_WINDOW",
-  "run_id": "porth_slam--20260929T022328Z--348bd7a0ba4d",
-  "requested": false,
-  "title_after_save": "/data/runs/porth_slam--20260929T022328Z--348bd7a0ba4d/inspect.rviz* - RViz",
-  "error": "RViz did not save its run-local layout"
-}

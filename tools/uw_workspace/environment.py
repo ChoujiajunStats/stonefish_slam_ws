@@ -52,7 +52,7 @@ def require_docker():
     result = subprocess.run(["docker", "info"], capture_output=True, text=True)
     if result.returncode:
         raise RuntimeError("Docker daemon unavailable to this user:\n"+result.stderr.strip()+
-                           "\nSee docs/runbook.md. No host permissions were modified.")
+                           "\nSee README.md prerequisites. No host permissions were modified.")
 
 
 def compose(command, env, project, **kwargs):
@@ -74,4 +74,3 @@ def prepare_xauth(directory):
     path.touch(mode=0o600)
     subprocess.run(["xauth", "-f", str(path), "nmerge", "-"], input=records, text=True, check=True)
     return path
-

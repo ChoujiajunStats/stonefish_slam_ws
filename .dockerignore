@@ -3,6 +3,9 @@ build
 install
 log
 .cache
+/docs
+**/*.md
+!README.md
 **/__pycache__
 **/*.egg-info
 .env

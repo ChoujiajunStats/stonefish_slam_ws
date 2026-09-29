@@ -10,9 +10,11 @@ __pycache__/
 *.bag
 *.db3
 *.mcap
-docs/.obsidian/workspace*.json
-docs/.obsidian/cache/
-docs/.obsidian/plugins/
+# Local research vault; not published with the source repository.
+/docs/
+# Publish only the root deployment README; keep other Markdown locally.
+*.md
+!/README.md
 
 # Generated configurations, local secrets and experiment artifacts
 config/generated/

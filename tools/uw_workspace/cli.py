@@ -76,8 +76,8 @@ def main():
     formal_files = {"acceptance": "m1-freeze.json", "m2-acceptance": "m2-freeze.json", "m3-acceptance": "m3-freeze.json"}
     if options.command in formal_files and options.phase == "formal":
         if not (REPO / "test" / formal_files[options.command]).is_file():
-            raise RuntimeError("Historical freezes are archived in docs/history/freezes. "
-                               "Freeze this workspace and image before formal evaluation; see docs/deployment.md.")
+            raise RuntimeError("Formal evaluation requires a current test/" + formal_files[options.command] +
+                               ". Freeze this workspace, parameters and image first; see README.md.")
     if options.command == "assets":
         from .assets import run
         env, _ = compose_env()

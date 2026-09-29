@@ -38,8 +38,11 @@ class RepositoryBoundaryTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256((ROOT / "vendor" / patch["file"]).read_bytes()).hexdigest(), patch["sha256"])
 
     def test_nonpackages_are_excluded(self):
-        for directory in ("vendor", "config", "docs", "docker", "scripts", "test", "resources", "tools"):
+        for directory in ("vendor", "config", "docker", "scripts", "test", "resources", "tools"):
             self.assertTrue((ROOT / directory / "COLCON_IGNORE").is_file())
+        # The ignored research vault is optional in a source checkout.
+        if (ROOT / "docs").is_dir():
+            self.assertTrue((ROOT / "docs" / "COLCON_IGNORE").is_file())
 
     def test_no_global_home_socket_or_privileged_mount(self):
         compose = yaml.safe_load((ROOT / "docker/compose.yaml").read_text())
@@ -52,7 +55,8 @@ class RepositoryBoundaryTests(unittest.TestCase):
                     self.assertNotIn(volume["target"], ("/home", "/root", "/"))
 
     def test_document_local_links_resolve(self):
-        for path in list((ROOT / "docs").rglob("*.md")) + [ROOT / "README.md"]:
+        # Only the root deployment README is part of the public checkout.
+        for path in [ROOT / "README.md"]:
             for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
                 if "://" in target or target.startswith("#"):
                     continue
