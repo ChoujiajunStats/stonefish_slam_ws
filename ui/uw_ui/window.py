@@ -163,13 +163,32 @@ def close_rviz(output):
         shutil.copy2(output/'inspect.rviz',output/'inspect.before-close.rviz')
         x.XStringToKeysym.argtypes=[C.c_char_p];x.XStringToKeysym.restype=C.c_ulong
         x.XKeysymToKeycode.argtypes=[C.c_void_p,C.c_ulong];x.XKeysymToKeycode.restype=C.c_ubyte
-        key=XEvent();key.key.display=display;key.key.window=matches[0];key.key.root=x.XDefaultRootWindow(display)
-        key.key.state=4;key.key.keycode=x.XKeysymToKeycode(display,x.XStringToKeysym(b's'));key.key.same_screen=1
-        key.key.type=2;x.XSendEvent(display,matches[0],1,1,C.byref(key))
-        key.key.type=3;x.XSendEvent(display,matches[0],1,2,C.byref(key));x.XFlush(display);time.sleep(.3)
+        x.XSetInputFocus.argtypes=[C.c_void_p,C.c_ulong,C.c_int,C.c_ulong]
+        x.XGetInputFocus.argtypes=[C.c_void_p,C.POINTER(C.c_ulong),C.POINTER(C.c_int)]
+        x.XSync.argtypes=[C.c_void_p,C.c_int]
+        # Qt does not reliably honor a synthetic modifier mask on XSendEvent.
+        # Establish and verify focus on this run's exact client before sending
+        # a real Ctrl+S pair. No global shortcut or other window is targeted.
+        xtest=C.CDLL(find_library('Xtst'))
+        xtest.XTestFakeKeyEvent.argtypes=[C.c_void_p,C.c_uint,C.c_int,C.c_ulong]
+        x.XSetInputFocus(display,matches[0],2,0);x.XSync(display,False)
+        focused=C.c_ulong();revert=C.c_int()
+        x.XGetInputFocus(display,C.byref(focused),C.byref(revert))
+        if focused.value!=matches[0]:raise RuntimeError('RViz focus verification failed')
+        control=x.XKeysymToKeycode(display,x.XStringToKeysym(b'Control_L'))
+        save=x.XKeysymToKeycode(display,x.XStringToKeysym(b's'))
+        try:
+            xtest.XTestFakeKeyEvent(display,control,True,0)
+            xtest.XTestFakeKeyEvent(display,save,True,0)
+            xtest.XTestFakeKeyEvent(display,save,False,0)
+        finally:
+            xtest.XTestFakeKeyEvent(display,control,False,0);x.XFlush(display)
+        time.sleep(.3)
         current=C.c_void_p()
         if x.XFetchName(display,matches[0],C.byref(current)) and current.value:
             record['title_after_save']=C.string_at(current).decode(errors='replace');x.XFree(current)
+            if record['title_after_save'].endswith('* - RViz'):
+                raise RuntimeError('RViz did not save its run-local layout')
         event=XEvent();event.client.type=33;event.client.display=display;event.client.window=matches[0]
         event.client.message_type=x.XInternAtom(display,b'WM_PROTOCOLS',0);event.client.format=32
         event.client.data.l[0]=x.XInternAtom(display,b'WM_DELETE_WINDOW',0);event.client.data.l[1]=0
