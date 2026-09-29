@@ -1,0 +1,149 @@
+{
+  "artifact_sha256": {
+    "acceptance.yaml": "06e5c165b4df28583fd2f7d5f1a6faa23da7670ecd4bf44933a3a058590ab6b4",
+    "bag-qos.yaml": "35d34c493e234c8a0557c9ae0e1c050adfb655a3aa0855e0e0c30e43c8ec911d",
+    "controller-parameters.yaml": "0ea9763d76255e54e3fda6629679966e572f04db892ab5e7773330950cf7c70f",
+    "fastdds.xml": "ca6961088346410f2e4770396caecb17ade8848974bfa6b427a31d7d307f53f7",
+    "guard-parameters.yaml": "68bda4f5ae76588801d08ca4234934b0af23ad8b14ec72c52c9d260e76f91861",
+    "imu.yaml": "88fadbacbdc5cfd775960341660c9c4d68a8a8bf15ee02aed9db3645372adec8",
+    "m2.scn": "b76dc39bd02f14f927413265b61cc97878a286aafe97175bd83a2353c125d6af",
+    "navigation-parameters.yaml": "a4d1dc48e17ee82de1afed6078058471151041bc030dd767bce9051175bcb8ea",
+    "openvins.yaml": "60d838ff833b787afc9ea932863e02e63e7bf9b9265df8356f82df05979f19c5",
+    "orb-robot.urdf": "dc3b042fe1d234bcacada0d765bd0e2e49593b4a9826e1215b467bd41ae23176",
+    "orbslam3-parameters.yaml": "a1438fe04be9e521ce3071eefcca1627f3d1bf1636247d61d95d2d41f80704d8",
+    "orbslam3-settings.yaml": "5a6db3021590454dc86bfc6222c403b84dad78915c64c8bed484ef5184eceae8",
+    "requested_config.yaml": "03e8ec667c83072987b2f0759655d99459c5cb1bd93e8103e89871e1c4f858a5",
+    "resolved_config.yaml": "8ea527b55cb26bf69ab7da0c72309150b1b12233988ab17900da27228585049b",
+    "robot.urdf": "8822bd9ed742823a7f9bb7803228ecf40352b47c0384a0535a926c28839a97d7",
+    "robot_profile.yaml": "0b42332a9395277a1a103c66d2b8f24942416d2fe46e19f4dfe1f9b27b16e498",
+    "source-lock.m2.yaml": "eb88d3285555a547ac553676300791aac27a6ebc188754f1e9404456c359405c",
+    "source-lock.m3.yaml": "ad0f433a1376465c7245dc45734414656da0fe1a7e96a6d0aee295fa17982e18",
+    "source-lock.porth.yaml": "4ad7d7415c2d32f99d83a50098bb0a12f9812642dc74fb19985f6d1d3205f69a",
+    "source-lock.yaml": "f8129e0570220f791e49d83ef4b19f944b708abe6588f5fc6ff27c0980419fa5",
+    "stereo.yaml": "da77a287b133047f54bcee5a202f86dccec271a5bf74e64da12156763f53ab50",
+    "tasks-parameters.yaml": "abd22c1644580bf2013de13631b7adae4308602ac4017eda6f3900bebbba9e92",
+    "thrusters.yaml": "15d1959848de19d70128153a29288cbc7765d7258f91a270023c1a06a63a8e0b"
+  },
+  "auxiliary_estimator": "OPENVINS_STEREO_IMU",
+  "bag_finalized_nonempty": true,
+  "clock": "single patched Stonefish physics clock",
+  "command": [
+    "ros2",
+    "launch",
+    "uw_app",
+    "navigate.launch.py",
+    "run_dir:=/data/runs/porth_orbslam3_short_v2--20260929T014925Z--e5315934bba8"
+  ],
+  "container": "uw-run-c6639e00049d",
+  "data_budget": {
+    "baseline_run_bytes": 3305621350,
+    "created_at": "2026-09-29T01:49:25.149881+00:00",
+    "limit_bytes": 25000000000
+  },
+  "dds_sha256": "ca6961088346410f2e4770396caecb17ade8848974bfa6b427a31d7d307f53f7",
+  "diagnostic_controller_state": "PRIVILEGED_DEBUG",
+  "dirty": false,
+  "estimated_state_control": false,
+  "evaluation_phase": "diagnostic",
+  "evaluation_truth": "PRIVILEGED_DEBUG",
+  "exit_accounting_complete": true,
+  "expected_exit_codes_verified": true,
+  "expected_process_exits": [],
+  "explicit_path_authorization": true,
+  "finished_at": "2026-09-29T01:50:22.316359+00:00",
+  "git_sha": "ffc24c4af469d15377000cfc30a08c2d6ca7bc18",
+  "image_id": "sha256:8161bfea609ec51516cc32d95c4876a743378ba6e685a76bee4e4ee903039522",
+  "launch_exit_code": 0,
+  "m2_source_lock_sha256": "eb88d3285555a547ac553676300791aac27a6ebc188754f1e9404456c359405c",
+  "m3_source_lock_sha256": "ad0f433a1376465c7245dc45734414656da0fe1a7e96a6d0aee295fa17982e18",
+  "map_product": "SPARSE_LANDMARKS",
+  "milestone": "PORTH_SURVEY",
+  "orb_output_finalized": true,
+  "orbslam3_source_lock_sha256": "12e8007a5167e1209c9c7b230f8562a1d297a1983c83b7f366890ffce632d144",
+  "porth_lock_sha256": "4ad7d7415c2d32f99d83a50098bb0a12f9812642dc74fb19985f6d1d3205f69a",
+  "process_exits": [
+    {
+      "before_case_completion": false,
+      "name": "benchmark",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "robot_state_publisher",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "localization",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "controller",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "perception",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "actuator_adapter",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "debug_truth",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "guard",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "rosbag",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "stonefish_simulator",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "slam",
+      "returncode": 0
+    },
+    {
+      "before_case_completion": false,
+      "name": "rviz",
+      "returncode": 0
+    }
+  ],
+  "reason": "collection checks passed",
+  "run_directory": "porth_orbslam3_short_v2--20260929T014925Z--e5315934bba8",
+  "schema_version": 2,
+  "seed": 2026,
+  "seed_coverage": [
+    "fixture_texture_only"
+  ],
+  "slam_backend": "ORB_SLAM3_STEREO",
+  "slam_inputs": [
+    "left_image",
+    "right_image"
+  ],
+  "slam_verdict": "PASS",
+  "source_archive_sha256": "c5f0545bb9da64b4a5ef3ebc08c0acaf43df9f8c37c78cb441124d2b31bfc573",
+  "source_state_sha256": "e415c218ede51fc86305405a59446420f0352be690aed05650ea1e54cb14ea6d",
+  "started_at": "2026-09-29T01:49:25.150881+00:00",
+  "startup_arm_state": "DISARMED",
+  "state_source": "PRIVILEGED_DEBUG",
+  "status": "COMPLETED",
+  "survey_plan_sha256": "8f0a68f663c905f21bc29380b04b26089805e3d1f77f1fba8a6aefc78a003792",
+  "survey_source_lock_sha256": "e37d0130ba226752aaa1975e5589df8821105097b71e03be4c65cfc11c1eeb1e",
+  "test_verdict": "PASS",
+  "wall_duration_sec": 57.16628737699648
+}

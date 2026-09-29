@@ -31,6 +31,7 @@ def evaluate(run):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     run=Path(run);output=run.parent.parent/'reports'/('orb-evaluation-'+run.name)
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.mkdir(exist_ok=False)
     source_paths=[run/name for name in ('orb-frames.jsonl','orb-keyframes-body.jsonl','orb-sparse-map.ply','orb-final.json','m3-samples.jsonl')]
     source={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in source_paths}

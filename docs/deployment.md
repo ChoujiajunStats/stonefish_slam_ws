@@ -63,6 +63,8 @@ APT 依赖有实际清单，尚不保证逐位可复现。源码提交与 vendor
 # 另一个终端查询/中和本工作区的活动仿真实例
 ./scripts/uw status
 ./scripts/uw disarm
+# 结束后使用输出的真实 run_id，生成图表并重读 Atlas（每轮报告只创建一次）
+./scripts/uw orb-report RUN_ID
 ```
 
 `Ctrl+C` 触发有界退出；末端 watchdog 独立处理外部进程异常失联。

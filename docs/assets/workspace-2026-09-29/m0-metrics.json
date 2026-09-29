@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scope": "M0_observation_probe",
+  "reason": "Finite M0 observation window completed",
+  "errors": [],
+  "wall_duration_sec": 64.20693215500796,
+  "clock_first_sec": 0.01,
+  "clock_sec": 61.069999999,
+  "topics": {
+    "state/odometry": {
+      "count": 6107,
+      "stamp": 61.069999999,
+      "last_wall": 88009.476435206,
+      "frame": "rov01/odom"
+    },
+    "sensors/imu": {
+      "count": 1221,
+      "stamp": 61.049999999,
+      "last_wall": 88009.456335684,
+      "frame": "rov01/imu_link"
+    },
+    "sensors/stereo/right/image_raw": {
+      "count": 1813,
+      "stamp": 61.059999999,
+      "last_wall": 88009.474632293,
+      "frame": "rov01/right_camera_optical"
+    },
+    "sensors/stereo/right/camera_info": {
+      "count": 1813,
+      "stamp": 61.059999999,
+      "last_wall": 88009.474969001,
+      "frame": "rov01/right_camera_optical"
+    },
+    "sensors/stereo/left/image_raw": {
+      "count": 1744,
+      "stamp": 61.049999999,
+      "last_wall": 88009.457554542,
+      "frame": "rov01/left_camera_optical"
+    },
+    "sensors/stereo/left/camera_info": {
+      "count": 1744,
+      "stamp": 61.049999999,
+      "last_wall": 88009.457789317,
+      "frame": "rov01/left_camera_optical"
+    }
+  },
+  "unverified": [
+    "GPU visual correctness",
+    "stereo exposure synchronization",
+    "IMU physical fidelity",
+    "control",
+    "estimation",
+    "restart acceptance"
+  ]
+}

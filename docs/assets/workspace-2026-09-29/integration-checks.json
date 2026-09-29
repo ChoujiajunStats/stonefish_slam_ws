@@ -1,0 +1,46 @@
+{
+  "source_preservation": {
+    "checked": 319,
+    "changed": []
+  },
+  "asset_roundtrip": {
+    "status": "PASS",
+    "files": 17,
+    "unpacked_bytes": 384318323,
+    "bundle_bytes": 103672944,
+    "duration_sec": 1.2466798499954166
+  },
+  "image_id": "sha256:8161bfea609ec51516cc32d95c4876a743378ba6e685a76bee4e4ee903039522",
+  "simulation_git_sha": "ffc24c4af469d15377000cfc30a08c2d6ca7bc18",
+  "runs": [
+    "bluerov_empty_water--20260929T014711Z--5de309c453ab",
+    "porth_orbslam3_short_v2--20260929T014925Z--e5315934bba8"
+  ],
+  "unit_local": {
+    "pass": 80,
+    "skip": 8
+  },
+  "unit_ci_container": {
+    "pass": 88,
+    "skip": 0
+  },
+  "unit_full_image": {
+    "pass": 88,
+    "skip": 0
+  },
+  "run_bytes": 3340434650,
+  "evidence_sha256": {
+    "m0-graph.json": "b3f752ca8e88af2c0321979863e89651db0adff39e8f76d89a49cca874173097",
+    "orb-evaluation.json": "42fa7e1f3dc662d684460ba8b58e032fd2061a1d3f44b2812799d6b49996749e",
+    "orb-slam-metrics.json": "98690c91bba89af53c73e49ccea94a29014663a8879e618f4c1382617c3e9bf5",
+    "m0-metrics.json": "d3e0a61f1d25f14d91a26a1bd5ade6a11299585bcaa25c2912311770a242e35d",
+    "orb-left-rgb.png": "7932b4dcdd73cf7840309c0b7fd242e93689af2b9a44fffe959dfba8d7e8e422",
+    "orb-manifest.json": "17dc70a2ecaf4c8d1e68aa7ea65d294799b3e63aab8808ab155be93f0ec18dd4",
+    "atlas-reload.json": "03481044f85dcfcc38aabcd5e180204a90196e37492bc235eec09273d60752d3",
+    "orb-online-tracking.png": "c8695a66df5dc3f85d82f46e306397bfddef8793016b3c711e52b9f0b0c6ee24",
+    "m0-stonefish.png": "86676646a1c3cdd4eb11bdc29001b3525985bb01ba8c88026b0bbd53f43f05db",
+    "m0-rviz.png": "4bbe1f4f10f98c59a3e6be3ec3ec4945a8f55c6af001fb66c7de4d09084c5aec",
+    "orb-sparse-map.png": "af3400b98c82d93cdb3bba1ed99d5343989a41074fdaf448b21cc8f8754da2a4",
+    "m0-manifest.json": "031760985236cebf83751b256d41ae37dd94bbf99399dfeae06b9d536463901e"
+  }
+}

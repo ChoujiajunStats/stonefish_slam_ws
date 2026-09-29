@@ -22,4 +22,5 @@ Porth 资产位于外部数据根，没有可移植导入入口。协作入口�
    最后检查可发布文件，提交新仓库并向用户指定远端推送，不 force push。
 
 范围不含控制器/估计器调参、完整 M1–M3 再验收、新导航功能或实机。
-Git 远端地址及提交署名待用户提供；本地工作继续。
+远端确认为公开 ChoujiajunStats/stonefish_slam_ws；署名为用户提供的 Jiajun Zhou。
+实际结果见 [部署验证](validation-2026-09-29-workspace.md)。

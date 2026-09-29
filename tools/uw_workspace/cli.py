@@ -40,6 +40,8 @@ def main():
     porth=commands.add_parser('porth');porth.add_argument('config',nargs='?',default='config/run.porth.yaml');porth.add_argument('--arm',action='store_true',help='Explicitly authorize the finite prescribed data-collection path')
     porth.add_argument('--water-jerlov',type=float,help='Survey only: native optical water parameter [0,1], recorded in the new run')
     export=commands.add_parser('slam-export');export.add_argument('run_id')
+    orb_report = commands.add_parser('orb-report', help='Evaluate online poses and reload the saved native Atlas')
+    orb_report.add_argument('run_id')
     commands.add_parser('m3-status')
     for action in ('mission','mission-cancel'):
         sub=commands.add_parser(action);sub.add_argument('--arm',action='store_true');sub.add_argument('--waypoint',nargs=4,type=float,action='append');sub.add_argument('--timeout',type=float,default=60.)
@@ -86,6 +88,12 @@ def main():
     if options.command=='slam-export':
         env,project=compose_env();require_docker()
         return compose(['run','--rm','--no-deps','-e','PYTHONPATH=/workspace/runtime:/workspace/app:/workspace/benchmark','tools','python3','-m','uw_benchmark.slam_export',options.run_id],env,project).returncode
+    if options.command == 'orb-report':
+        env, project = compose_env()
+        require_docker()
+        return compose(['run', '--rm', '--no-deps', '-e',
+                        'PYTHONPATH=/workspace/runtime:/workspace/benchmark:/workspace/controller:/workspace/robot',
+                        'tools', 'python3', '-m', 'uw_benchmark.orb_report', options.run_id], env, project).returncode
     if options.command == "porth":
         from .configuration import prepare_porth
         options.config = prepare_porth(options)
