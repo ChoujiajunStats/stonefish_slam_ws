@@ -4,9 +4,7 @@ Containerized BlueROV2 simulation, safeguarded body-velocity control, OpenVINS,
 RTAB-Map and online stereo ORB-SLAM3, using locked Stonefish sources.
 面向水下 SLAM 研究的工作区，分别管理源码、实验配置、外部资产和运行证据。
 
-**能力边界：** Porth 规定路线的 ORB-SLAM3 是在线双目稀疏建图；路径控制使用
-`PRIVILEGED_DEBUG` 真值反馈。没有自主洞穴探索/避障，不是稠密全洞重建，不连接实机。
-普通启动保持 DISARMED，只有显式 `--arm` 才执行规定路径。
+**能力：** 没有close loop，controller用的是真值反馈，自主导航还没写，目前在这个repo通了slam的pipeline。
 
 ## 快速开始
 
