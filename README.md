@@ -33,7 +33,7 @@ cd stonefish_slam_ws
 
 构建使用 [固定源码与补丁](vendor/)；[profile 配置](docker/profiles.json) 给出镜像名。首次构建会下载并编译依赖。
 
-## 先跑仿真
+## 仿真
 
 ```bash
 ./scripts/uw run config/run.empty_water.example.yaml
@@ -101,7 +101,7 @@ RTAB-Map 路径演示：
 
 历史全程 ORB 运行跟踪了 60,949 帧，在线位置 RMSE 为 0.458 m，输出 77,450 个稀疏点。Atlas 可加载，严格数值一致性检查未通过；地图重读与在线跟踪分别评价。
 
-## 结构与协作
+## 结构
 
 | 职责 | 目录 |
 |---|---|
