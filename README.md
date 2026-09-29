@@ -3,6 +3,8 @@
 基于锁定版本 Stonefish 的 BlueROV2 水下仿真工作区，包含速度/姿态控制、
 OpenVINS、RTAB-Map 和在线双目 ORB-SLAM3。ROS 与算法依赖全部放在容器内。
 
+**能力：** 没有close loop，controller用的是真值反馈，自主导航还没写，目前在这个repo通了slam的pipeline。
+
 Porth 规定路线的 ORB-SLAM3 输出稀疏地图，路径控制使用明确标记的
 `PRIVILEGED_DEBUG` 真值反馈；没有自主洞穴探索、避障或实机接入。
 普通启动默认 DISARMED，只有显式授权才执行运动。
