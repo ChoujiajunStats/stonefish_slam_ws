@@ -1,0 +1,40 @@
+{
+  "additive_m2_source_lock_sha256": "eb88d3285555a547ac553676300791aac27a6ebc188754f1e9404456c359405c",
+  "bag_finalized_nonempty": true,
+  "clock": "patched Stonefish physics-step time; process restart reset",
+  "command": [
+    "ros2",
+    "launch",
+    "uw_app",
+    "inspect.launch.py",
+    "run_dir:=/data/runs/bluerov_empty_water--20260929T021557Z--9f53a252a50e"
+  ],
+  "container": "uw-run-841ad028b5e7",
+  "control_enabled": false,
+  "dirty": false,
+  "exit_reason": "A recorded process exited nonzero, including after probe completion",
+  "finished_at": "2026-09-29T02:17:05.887304+00:00",
+  "git_sha": "c7ef3b8c78ffda671fd15908bdfe58ebef04d56f",
+  "image_id": "sha256:96d562e68ec6eca606e2b366f079112a17f3fd767ec292a129561f5f5e57c6a1",
+  "launch_exit_code": 0,
+  "middleware": {
+    "discovery_range": "SYSTEM_DEFAULT",
+    "implementation": "rmw_fastrtps_cpp",
+    "profile_sha256": "ca6961088346410f2e4770396caecb17ade8848974bfa6b427a31d7d307f53f7",
+    "transport": "SHM only; container-private IPC; 32 MiB per participant"
+  },
+  "mode": "simulation_research",
+  "observation_access": "PRIVILEGED_DEBUG",
+  "process_registry_file": "process-starts.jsonl",
+  "run_directory": "bluerov_empty_water--20260929T021557Z--9f53a252a50e",
+  "schema_version": 1,
+  "seed": 2026,
+  "seed_coverage": [],
+  "seed_limitations": "Stonefish RNG/GPU scheduling not controlled by M0 seed",
+  "source_archive_sha256": "2acda1edb84c0d6a8297990624017f6734c84970e035bd5996ddc4b00551a49e",
+  "source_state_sha256": "cb6401bfc53327f0ea74fe3538b0e5ed8b7ef3b0ca84b3608596a6c4e88b105f",
+  "started_at": "2026-09-29T02:15:57.763879+00:00",
+  "startup_arm_state": "DISARMED",
+  "status": "FAILED",
+  "wall_duration_sec": 68.1229205730051
+}

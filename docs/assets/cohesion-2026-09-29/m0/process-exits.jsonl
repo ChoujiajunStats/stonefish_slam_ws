@@ -1,0 +1,6 @@
+{"name": "m0_probe", "returncode": 0, "before_probe_completion": false}
+{"name": "robot_state_publisher", "returncode": 0, "before_probe_completion": false}
+{"name": "observation_adapter", "returncode": 0, "before_probe_completion": false}
+{"name": "rosbag", "returncode": 0, "before_probe_completion": false}
+{"name": "stonefish_simulator", "returncode": 0, "before_probe_completion": false}
+{"name": "rviz", "returncode": 0, "before_probe_completion": false}

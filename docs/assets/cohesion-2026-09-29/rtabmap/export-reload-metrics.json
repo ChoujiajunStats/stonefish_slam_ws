@@ -1,0 +1,73 @@
+{
+  "source_run": "porth_slam--20260929T022328Z--348bd7a0ba4d",
+  "source_database_sha256": "e3e916dca4ff42b0f774ab1ead9fa509436186ff7c8db928baf6ce6f0b7f4937",
+  "source_unchanged": true,
+  "image_id": "sha256:96d562e68ec6eca606e2b366f079112a17f3fd767ec292a129561f5f5e57c6a1",
+  "commands": [
+    [
+      "rtabmap-info",
+      "/data/reports/slam-export-20260929T022523Z-53a8539a/rtabmap.db"
+    ],
+    [
+      "rtabmap-export",
+      "--cloud",
+      "--poses",
+      "--opt",
+      "2",
+      "--decimation",
+      "4",
+      "--voxel",
+      "0.06",
+      "--max_range",
+      "8",
+      "--output",
+      "reloaded",
+      "--output_dir",
+      "/data/reports/slam-export-20260929T022523Z-53a8539a",
+      "/data/reports/slam-export-20260929T022523Z-53a8539a/rtabmap.db"
+    ]
+  ],
+  "exit_codes": [
+    0,
+    0
+  ],
+  "reopened": {
+    "integrity": "ok",
+    "rows": {
+      "Node": 122,
+      "Link": 140,
+      "Data": 122
+    },
+    "payload_bytes": {
+      "image": 8283691,
+      "depth": 6848603,
+      "calibration": 95648
+    },
+    "size_bytes": 39346176,
+    "sha256": "e3e916dca4ff42b0f774ab1ead9fa509436186ff7c8db928baf6ce6f0b7f4937",
+    "reopened_read_only": true,
+    "passed": true
+  },
+  "exported_points": 73267,
+  "exported_pose_rows": 45,
+  "scope": "RTAB-Map database reopen and saved optimized map export; not a new sensor relocalization trial",
+  "files": {
+    "rtabmap.db": "e3e916dca4ff42b0f774ab1ead9fa509436186ff7c8db928baf6ce6f0b7f4937",
+    "reloaded_poses.txt": "89c4fb6740c09a41334f5177edb233df039744ab1d659fd2b2aab5f590cee601",
+    "reloaded_cloud.ply": "15e1738bde0939de219305dad60ccd1b6c7cab925736c3b4900ca791dc1162e3",
+    "command-0.log": "0a7f2f8e4eaddb5832559910107e164ff3cf0188fda35b12669ef39c61319994",
+    "command-1.log": "5cc4abc5463f9ea888816c1d3b31ca160d32274e8a98194a9e87feb7d3462f62",
+    "reloaded-trajectory.png": "7d03a9f73e7144209580dfc9cae51640fbe05e30fa6a9807ce9b30e9afbf3c2d"
+  },
+  "exporter_sha256": "4d80e7f8240bbb261496b16a5d637afb07f7595fdc93b2264c21eb702a98f006",
+  "full_global_reoptimization": false,
+  "trajectory_evaluation": {
+    "status": "MEASURED",
+    "samples": 44,
+    "position_rmse_m": 0.0637098681699745,
+    "position_max_m": 0.099298469579611,
+    "alignment": "Initial VIO yaw/translation alignment from m3-metrics; no trajectory best-fit",
+    "truth_input_to_slam": false
+  },
+  "status": "PASS"
+}

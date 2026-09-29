@@ -1,0 +1,12 @@
+{"name": "benchmark", "returncode": 0, "before_case_completion": false}
+{"name": "robot_state_publisher", "returncode": 0, "before_case_completion": false}
+{"name": "localization", "returncode": 0, "before_case_completion": false}
+{"name": "debug_truth", "returncode": 0, "before_case_completion": false}
+{"name": "perception", "returncode": 0, "before_case_completion": false}
+{"name": "actuator_adapter", "returncode": 0, "before_case_completion": false}
+{"name": "guard", "returncode": 0, "before_case_completion": false}
+{"name": "rosbag", "returncode": 0, "before_case_completion": false}
+{"name": "controller", "returncode": 0, "before_case_completion": false}
+{"name": "stonefish_simulator", "returncode": 0, "before_case_completion": false}
+{"name": "slam", "returncode": 0, "before_case_completion": false}
+{"name": "rviz", "returncode": 0, "before_case_completion": false}

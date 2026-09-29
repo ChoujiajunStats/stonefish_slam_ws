@@ -8,6 +8,8 @@ status: m3-accepted
 新协作仓库 **stonefish_slam_ws**：
 [部署指南](deployment.md) / [模块边界](repository-structure.md) /
 [2026-09-29 整合验证](validation-2026-09-29-workspace.md)。
+[职责边界重构与运行验证](validation-2026-09-29-cohesion.md) 补充领域归属、依赖检查
+和同版 M0 / ORB / RTAB 回归。
 以下阶段结论保留为原研究工作区的历史证据。
 
 

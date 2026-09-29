@@ -1,0 +1,27 @@
+{
+  "run_id": "ui_close_diagnostic--20260929T021853Z--6758503e5234",
+  "wall_ns": 89850155332981,
+  "shown": true,
+  "clients": {
+    "stonefish_simulator": "0x7000005",
+    "rviz": "0x6e00105"
+  },
+  "requested_geometry": {
+    "rviz": [
+      30,
+      80,
+      2100,
+      1200
+    ],
+    "stonefish_simulator": [
+      2165,
+      80,
+      960,
+      720
+    ]
+  },
+  "display_pixels": [
+    3840,
+    2160
+  ]
+}

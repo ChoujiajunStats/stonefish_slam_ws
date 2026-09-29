@@ -1,0 +1,27 @@
+{
+  "run_id": "bluerov_empty_water--20260929T022003Z--465c44d95c2e",
+  "wall_ns": 89919810311308,
+  "shown": true,
+  "clients": {
+    "stonefish_simulator": "0x7000005",
+    "rviz": "0x6e00105"
+  },
+  "requested_geometry": {
+    "rviz": [
+      30,
+      80,
+      2100,
+      1200
+    ],
+    "stonefish_simulator": [
+      2165,
+      80,
+      960,
+      720
+    ]
+  },
+  "display_pixels": [
+    3840,
+    2160
+  ]
+}

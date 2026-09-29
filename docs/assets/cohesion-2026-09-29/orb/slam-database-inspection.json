@@ -1,0 +1,44 @@
+{
+  "atlas_deserialization": "NOT_YET_VERIFIED",
+  "files": {
+    "orb-atlas.osa": {
+      "bytes": 13507838,
+      "sha256": "424a797887362d1d5aec42bd5ac9b2dbb6965e840bdfcd2a3c546e70c98be936"
+    },
+    "orb-final.json": {
+      "bytes": 155,
+      "sha256": "da1f1e20b5c0e1c3c21cd12fd5fa020d5132248a7be0db34badfb12e3cd924dc"
+    },
+    "orb-frames.jsonl": {
+      "bytes": 205614,
+      "sha256": "0f61a60b73cc6bb5d8089e98928289ff2e1809cae71fd5cb9afd814e88bc20f9"
+    },
+    "orb-keyframes-body.jsonl": {
+      "bytes": 10840,
+      "sha256": "2255aa281344e39bea30805379f2c7603f0656df1811f3c23a250f2d47d098e7"
+    },
+    "orb-optimized-camera-tum.txt": {
+      "bytes": 73122,
+      "sha256": "826d40721d5d079affc45492ab5c9c1559a76daafaecd9467d167505ee68f9c1"
+    },
+    "orb-sparse-map.ply": {
+      "bytes": 38626,
+      "sha256": "a4a0ae34c05fd8bec5d2c7cf808033fb52465625e5389b2282687015b46767ee"
+    }
+  },
+  "final": {
+    "dropped": 0,
+    "keyframes": 62,
+    "loop_edges": 0,
+    "lost": 0,
+    "map_count": 1,
+    "map_id": 0,
+    "processed": 752,
+    "shutdown_completed": true,
+    "sparse_points": 3209,
+    "tracked": 752
+  },
+  "missing": [],
+  "passed": true,
+  "product": "ORB_SLAM3_SPARSE_STEREO"
+}

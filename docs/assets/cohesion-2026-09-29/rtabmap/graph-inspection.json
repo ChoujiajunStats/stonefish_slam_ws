@@ -1,0 +1,170 @@
+{
+  "tf_edges": {
+    "rov01/map->rov01/odom": 1195,
+    "rov01/odom->rov01/base_link": 2991
+  },
+  "topics": {
+    "/clock": {
+      "publishers": [
+        {
+          "gid": [
+            1,
+            15,
+            225,
+            241,
+            95,
+            0,
+            58,
+            222,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            3
+          ],
+          "name": "stonefish_simulator"
+        }
+      ],
+      "subscribers": [
+        "rosbag2_recorder",
+        "rosbag2_recorder",
+        "stonefish_simulator",
+        "robot_state_publisher",
+        "m2_debug_truth",
+        "m2_sensors",
+        "m2_sensors",
+        "openvins",
+        "openvins",
+        "control_guard",
+        "control_guard",
+        "body_velocity_controller",
+        "actuator_adapter",
+        "m3_case",
+        "m3_case",
+        "rtabmap",
+        "transform_listener_impl_5ada035b37b0",
+        "navigation",
+        "missions",
+        "rviz2"
+      ]
+    },
+    "/rov01/control/request": {
+      "publishers": [
+        {
+          "gid": [
+            1,
+            15,
+            225,
+            241,
+            103,
+            0,
+            10,
+            218,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            22,
+            3
+          ],
+          "name": "m3_case"
+        },
+        {
+          "gid": [
+            1,
+            15,
+            225,
+            241,
+            105,
+            0,
+            50,
+            239,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            3
+          ],
+          "name": "navigation"
+        }
+      ],
+      "subscribers": [
+        "rosbag2_recorder",
+        "control_guard",
+        "m3_case"
+      ]
+    },
+    "/rov01/sim/ground_truth/odometry": {
+      "publishers": [
+        {
+          "gid": [
+            1,
+            15,
+            225,
+            241,
+            97,
+            0,
+            195,
+            130,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            20,
+            3
+          ],
+          "name": "m2_debug_truth"
+        }
+      ],
+      "subscribers": [
+        "rosbag2_recorder",
+        "m3_case"
+      ]
+    },
+    "/rov01/state/odometry": {
+      "publishers": [
+        {
+          "gid": [
+            1,
+            15,
+            225,
+            241,
+            99,
+            0,
+            94,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            3
+          ],
+          "name": "openvins"
+        }
+      ],
+      "subscribers": [
+        "rosbag2_recorder",
+        "control_guard",
+        "body_velocity_controller",
+        "m3_case",
+        "rtabmap",
+        "navigation",
+        "missions",
+        "rviz2"
+      ]
+    }
+  }
+}

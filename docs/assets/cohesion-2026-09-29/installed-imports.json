@@ -1,0 +1,6 @@
+{
+  "uw_ui.layouts": "/work/overlay/install/uw_ui/lib/python3.12/site-packages/uw_ui/layouts.py",
+  "uw_localization.orbslam3": "/work/overlay/install/uw_localization/lib/python3.12/site-packages/uw_localization/orbslam3.py",
+  "uw_localization.artifacts": "/work/overlay/install/uw_localization/lib/python3.12/site-packages/uw_localization/artifacts.py",
+  "uw_app.composition.estimation": "/work/overlay/build/uw_app/uw_app/composition/estimation.py"
+}
