@@ -8,7 +8,7 @@ Porth 洞穴演示沿规定路线采集，路线与速度控制使用仿真真�
 
 Linux x86_64、Docker Engine、Compose v2、NVIDIA Container Toolkit，以及可用的 NVIDIA GPU 和 X11/XWayland 桌面。宿主还需 Git、Python 3.11+、`xauth`；ROS、colcon 和算法库由镜像提供。
 
-已使用 Ubuntu 24.04、RTX 5090 验证。建议预留至少 50 GB 可用空间用于源码构建、镜像和录制；完整 debug bag 的参考量约为 **3.3 GB/分钟**。
+建议预留至少 50 GB 可用空间用于源码构建、镜像和录制；完整 debug bag 的参考量约为 **3.3 GB/分钟**。
 
 ## 构建
 
