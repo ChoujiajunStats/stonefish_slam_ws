@@ -118,4 +118,3 @@ RTAB-Map 路径演示：
 
 提交前运行 `./scripts/uw test`。涉及仿真行为的修改，在 PR 中附配置、镜像 ID、run_id 和结果。正式验收入口需要当前源码对应的 `test/*-freeze.json`。
 
-远端文档保留本 README；研究笔记与实验报告放在本地 `docs/`。第三方版本和许可见 `vendor/source-lock*.yaml` 及包元数据，自有代码的发行许可尚待指定。
