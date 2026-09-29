@@ -24,7 +24,7 @@ UW_BUILD_JOBS=8 ./scripts/uw build --profile orbslam3
 
 默认 profile 为 orbslam3；也可设置 `UW_PROFILE`。镜像名为 `stonefish-slam:<profile>`，
 `UW_IMAGE` 可指定自定义标签，但内容必须具备所选 profile 能力。overlay 按工作区路径、
-UID 和 profile 隔离。完整构建从锁定的 ROS 基础镜像开始，不要求历史 `underwater-stack:*` 镜像。
+UID 和 profile 隔离；镜像 ID 变化时清理该专用 volume 内的构建缓存，避免复用不兼容二进制。完整构建从锁定的 ROS 基础镜像开始，不要求历史 `underwater-stack:*` 镜像。
 APT 依赖有实际清单，尚不保证逐位可复现。源码提交与 vendor 补丁哈希保持原锁。
 
 ## 数据与外部资产

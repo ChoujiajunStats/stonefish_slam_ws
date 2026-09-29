@@ -13,6 +13,15 @@ if [[ -f /opt/uw/m3-lock.sha256 ]]; then
 fi
 case "${1:-}" in
     build)
+        # An overlay contains binaries tied to the image's dependency ABI.
+        # Only this workspace/profile's disposable build volume is affected.
+        if [[ ! "${UW_IMAGE_ID:-}" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            printf 'Build requires the actual UW_IMAGE_ID from scripts/uw\n' >&2
+            exit 1
+        fi
+        if [[ -f .image-id && "$(cat .image-id)" != "$UW_IMAGE_ID" ]]; then
+            rm -rf -- /work/overlay/build /work/overlay/install /work/overlay/log
+        fi
         discovered=$(colcon list --paths /workspace/runtime /workspace/app /workspace/robot /workspace/simulations /workspace/ui /workspace/benchmark /workspace/interfaces /workspace/guard /workspace/controller "${extra[@]}" --names-only | sort)
         expected=$(printf '%s\n' uw_runtime uw_app uw_benchmark uw_controller uw_guard uw_interfaces uw_robot uw_simulations uw_ui "${expected_extra[@]}" | sort)
         if [[ "$discovered" != "$expected" ]]; then
@@ -22,6 +31,7 @@ case "${1:-}" in
         colcon build --paths /workspace/runtime /workspace/app /workspace/robot /workspace/simulations /workspace/ui /workspace/benchmark /workspace/interfaces /workspace/guard /workspace/controller "${extra[@]}" \
             --build-base /work/overlay/build --install-base /work/overlay/install \
             --symlink-install --event-handlers console_direct+
+        printf '%s\n' "$UW_IMAGE_ID" > .image-id
         ;;
     test)
         export PYTHONPATH="/workspace/tools:/workspace/runtime:/workspace/app:/workspace/robot:/workspace/simulations:/workspace/benchmark:/workspace/guard:/workspace/controller:/workspace/perception:/workspace/navigation:/workspace/tasks:${PYTHONPATH:-}"
