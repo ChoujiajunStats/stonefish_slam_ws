@@ -1,20 +1,20 @@
-# stonefish_slam_ws
+# stonefish_slam_ws（codex）
 
 基于 Stonefish 的 BlueROV2 水下仿真工作区，包含速度/姿态控制、
-OpenVINS、RTAB-Map 和在线双目 ORB-SLAM3。ROS 与算法依赖全部放在容器内。
+OpenVINS、RTAB-Map 和online双目 ORB-SLAM3。ROS 与算法依赖全部放在容器内。
 
 **能力：** 没有close loop，controller用的是真值反馈，自主导航还没写，目前在这个repo通了slam的pipeline。
 
-Porth 规定路线的 ORB-SLAM3 输出的是稀疏点云地图，路径控制使用明确标记的
+Porth 规定路线的 ORB-SLAM3 输出的是稀疏点云地图，路径控制用标记过的
 `PRIVILEGED_DEBUG` 真值反馈（supervised）；并不是自主洞穴探索、避障或实机接入！！！！！！
-普通启动默认 DISARMED，只有显式授权才执行运动。
+启动默认 DISARMED，只有解锁才执行运动，就和真机那套差不多，这个地方codex写他纯无聊。。。。。你可以改一下
 
-## 1. 宿主环境
+## 1. 环境
 
-需要 Linux x86_64、Docker Engine + Compose v2、NVIDIA Container Toolkit、
+Linux x86_64、Docker Engine + Compose v2、NVIDIA Container Toolkit、
 兼容的 NVIDIA GPU/驱动、X11/XWayland、`xauth`、Python 3.11+ 和 Git。
 
-先确认 Docker 可由当前用户访问，且当前会话可以显示图形窗口：
+先确认 Docker 权限表和保证会话可以显示图形窗口：
 
 ```bash
 docker info
@@ -23,8 +23,7 @@ nvidia-smi
 xauth info
 ```
 
-完整源码编译需要较多时间、内存和磁盘。M0 的完整 debug 录制约 3.3 GB/分钟；
-运行前检查 `df -h`、GPU 和其他项目容器。
+写了一个smoke test的，3.3g/s，起码要空间腾50g给他。
 
 ## 2. 获取与构建
 
@@ -36,15 +35,13 @@ cd stonefish_slam_ws
 ./scripts/uw test --profile orbslam3
 ```
 
-构建从锁定的 ROS 基础镜像获取和编译上游源码。
-自有包通过显式路径 colcon 构建；镜像、构建缓存和运行数据按工作区隔离。
-镜像变化时自动重建本工作区对应的 overlay。
+有ros和colcon的，很方便。
 
 | Profile | 能力 |
 |---|---|
 | `core` | M0 观察与 M1 控制 |
 | `vio` | 加入 OpenVINS 双目/IMU |
-| `navigation` | 加入局部航点与有限任务 |
+| `navigation` | 加入局部航点与任务 |
 | `rtabmap` | 加入 RTAB-Map |
 | `survey` | 加入随车灯与洞穴规定路线采集 |
 | `orbslam3` | 包含上述能力及 ORB-SLAM3 在线双目，默认 profile |
@@ -68,7 +65,9 @@ export UW_DATA_ROOT=/path/to/stonefish-slam-data
 ./scripts/uw assets export --source-data-root /path/to/existing-data --bundle /path/to/porth-bundle.tar.gz
 ```
 
-## 4. 启动、运动与停止
+...codex一堆废话
+
+## 4. 启动、运动与停止（codex的防御性编程...）
 
 先执行 60 秒观察回归，显示 Stonefish 与 RViz、保存 debug bag，无推进器输入：
 
@@ -98,7 +97,7 @@ export UW_DATA_ROOT=/path/to/stonefish-slam-data
 
 `Ctrl+C` 触发有界退出，末端 watchdog 独立处理外部进程失联。
 
-## 5. 结果与验证
+## 5. 结果与验证（看看就好了能用就行，跑通后再整理）
 
 使用运行输出中的实际 run_id，生成独立报告并重读地图：
 
@@ -115,7 +114,7 @@ export UW_DATA_ROOT=/path/to/stonefish-slam-data
 图形、控制、时钟、观测或 SLAM 变更需要真实运行，保留失败证据与原始退出码。
 正式评价需要为当前源码、参数和镜像建立 `test/*-freeze.json`。
 
-## 6. 结构与协作
+## 6. 结构
 
 自有 ROS 包位于根目录，按职责组织：
 
