@@ -11,7 +11,7 @@ from nav_msgs.msg import Path as PathMsg
 from visualization_msgs.msg import Marker
 from uw_benchmark.m3_case import Case as MissionCase
 from uw_runtime.artifacts import write_json
-from uw_controller.core import rpy
+from uw_robot.frames import quaternion_rpy as rpy
 from uw_robot.frames import rpy_quaternion
 
 

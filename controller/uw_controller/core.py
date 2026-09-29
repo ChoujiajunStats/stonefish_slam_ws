@@ -1,14 +1,11 @@
 """Four velocity targets plus independent roll/pitch attitude feedback; no position hold."""
-import math
+from uw_robot.frames import quaternion_rpy
 import numpy as np
 
 
 def rpy(q):
-    x,y,z,w=q
-    return np.array([math.atan2(2*(w*x+y*z),1-2*(x*x+y*y)),
-                     math.asin(max(-1,min(1,2*(w*y-z*x)))),
-                     math.atan2(2*(w*z+x*y),1-2*(y*y+z*z))])
-
+    """Compatibility array interface; geometry is owned by uw_robot."""
+    return np.asarray(quaternion_rpy(q))
 
 class BodyController:
     def __init__(self,parameters,allocation):

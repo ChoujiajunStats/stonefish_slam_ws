@@ -3,7 +3,7 @@ import copy,hashlib,json,math,tempfile,unittest
 from pathlib import Path
 import yaml
 from uw_app.m3_config import load_config
-from uw_app.orbslam3 import prepare
+from uw_localization.orbslam3 import prepare
 ROOT=Path(__file__).resolve().parents[1]
 
 
@@ -24,7 +24,7 @@ class OrbContracts(unittest.TestCase):
         profile=yaml.safe_load((ROOT/'robot/config/bluerov2_heavy.yaml').read_text())
         with tempfile.TemporaryDirectory() as directory:
             out=Path(directory);(out/'robot_profile.yaml').write_text(yaml.safe_dump(profile))
-            prepare(out,{'namespace':'test_robot'},lambda name:str(ROOT/'localization'))
+            prepare(out,'test_robot',profile,ROOT/'localization/config/orbslam3_stereo.yaml')
             c=json.loads((out/'orb-contract.json').read_text());fx,fy,cx,cy=c['intrinsics']
             self.assertAlmostEqual(c['baseline_m'],.145);self.assertAlmostEqual(fx,640/(2*math.tan(math.radians(75)/2)))
             self.assertEqual([cx,cy],[319.5,239.5]);self.assertEqual(fx,fy)
@@ -35,7 +35,7 @@ class OrbContracts(unittest.TestCase):
             self.assertFalse(c['truth_input']);self.assertFalse(c['external_odometry_input']);self.assertFalse(c['imu_input'])
             profile['cameras']['right']['xyz_frd'][1]=-.0725
             (out/'robot_profile.yaml').write_text(yaml.safe_dump(profile))
-            with self.assertRaises(ValueError):prepare(out,{'namespace':'test_robot'},lambda name:str(ROOT/'localization'))
+            with self.assertRaises(ValueError):prepare(out,'test_robot',profile,ROOT/'localization/config/orbslam3_stereo.yaml')
 
     def test_pinned_sources_and_patch_hashes(self):
         lock=yaml.safe_load((ROOT/'vendor/source-lock.orbslam3.yaml').read_text())

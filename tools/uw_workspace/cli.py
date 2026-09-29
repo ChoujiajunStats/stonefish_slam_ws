@@ -87,12 +87,12 @@ def main():
         return compose(['run','--rm','--no-deps','-e','PYTHONPATH=/workspace/runtime:/workspace/app:/workspace/benchmark:/workspace/simulations','tools','python3','-m','uw_benchmark.survey_coverage',options.run_id,options.export_dir],env,project).returncode
     if options.command=='slam-export':
         env,project=compose_env();require_docker()
-        return compose(['run','--rm','--no-deps','-e','PYTHONPATH=/workspace/runtime:/workspace/app:/workspace/benchmark','tools','python3','-m','uw_benchmark.slam_export',options.run_id],env,project).returncode
+        return compose(['run','--rm','--no-deps','-e','PYTHONPATH=/workspace/runtime:/workspace/localization:/workspace/benchmark','tools','python3','-m','uw_benchmark.slam_export',options.run_id],env,project).returncode
     if options.command == 'orb-report':
         env, project = compose_env()
         require_docker()
         return compose(['run', '--rm', '--no-deps', '-e',
-                        'PYTHONPATH=/workspace/runtime:/workspace/benchmark:/workspace/controller:/workspace/robot',
+                        'PYTHONPATH=/workspace/runtime:/workspace/benchmark:/workspace/robot',
                         'tools', 'python3', '-m', 'uw_benchmark.orb_report', options.run_id], env, project).returncode
     if options.command == "porth":
         from .configuration import prepare_porth

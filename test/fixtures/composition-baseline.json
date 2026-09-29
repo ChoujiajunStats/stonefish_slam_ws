@@ -1,0 +1,984 @@
+{
+  "source_commit": "878e0d7d70fa2777917ef30ac42c600742908713",
+  "layouts": {
+    "2-False-False-False": {
+      "Panels": [
+        {
+          "Class": "rviz_common/Displays",
+          "Name": "Displays"
+        }
+      ],
+      "Visualization Manager": {
+        "Class": "",
+        "Global Options": {
+          "Fixed Frame": "test_robot/odom",
+          "Background Color": "20; 28; 40",
+          "Frame Rate": 30
+        },
+        "Displays": [
+          {
+            "Class": "rviz_default_plugins/Grid",
+            "Name": "ENU Reference Grid",
+            "Enabled": true,
+            "Cell Size": 1,
+            "Plane": "XY",
+            "Reference Frame": "<Fixed Frame>"
+          },
+          {
+            "Class": "rviz_default_plugins/RobotModel",
+            "Name": "Schematic Robot (not hydrodynamics)",
+            "Enabled": true,
+            "Description Source": "Topic",
+            "Description Topic": {
+              "Value": "/test_robot/robot_description",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Transient Local",
+              "History Policy": "Keep Last",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/TF",
+            "Name": "TF",
+            "Enabled": true,
+            "Show Names": true
+          },
+          {
+            "Class": "rviz_default_plugins/Odometry",
+            "Name": "OpenVINS local state",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/state/odometry",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            },
+            "Keep": 1
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Left RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/left/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Right RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/right/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "OpenVINS estimated trajectory",
+            "Enabled": true,
+            "Color": "0; 210; 180",
+            "Topic": {
+              "Value": "/test_robot/localization/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          }
+        ],
+        "Tools": [
+          {
+            "Class": "rviz_default_plugins/Interact"
+          },
+          {
+            "Class": "rviz_default_plugins/MoveCamera"
+          },
+          {
+            "Class": "rviz_default_plugins/Select"
+          }
+        ],
+        "Views": {
+          "Current": {
+            "Class": "rviz_default_plugins/Orbit",
+            "Distance": 5,
+            "Pitch": 0.45,
+            "Yaw": 0.75,
+            "Target Frame": "test_robot/base_link"
+          }
+        }
+      },
+      "Window Geometry": {
+        "Width": 1600,
+        "Height": 900,
+        "QMainWindow State": "000000ff00000000fd00000002000000000000015400000373fc0200000001fb000000100044006900730070006c0061007900730100000011000003730000007b00ffffff000000010000019000000373fc0200000002fb00000010004c00650066007400200052004700420100000011000001b70000007b00fffffffb0000001200520069006700680074002000520047004201000001ce000001b60000007b00ffffff000003500000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000"
+      }
+    },
+    "3-False-False-False": {
+      "Panels": [
+        {
+          "Class": "rviz_common/Displays",
+          "Name": "Displays"
+        }
+      ],
+      "Visualization Manager": {
+        "Class": "",
+        "Global Options": {
+          "Fixed Frame": "test_robot/odom",
+          "Background Color": "20; 28; 40",
+          "Frame Rate": 30
+        },
+        "Displays": [
+          {
+            "Class": "rviz_default_plugins/Grid",
+            "Name": "ENU Reference Grid",
+            "Enabled": true,
+            "Cell Size": 1,
+            "Plane": "XY",
+            "Reference Frame": "<Fixed Frame>"
+          },
+          {
+            "Class": "rviz_default_plugins/RobotModel",
+            "Name": "Schematic Robot (not hydrodynamics)",
+            "Enabled": true,
+            "Description Source": "Topic",
+            "Description Topic": {
+              "Value": "/test_robot/robot_description",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Transient Local",
+              "History Policy": "Keep Last",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/TF",
+            "Name": "TF",
+            "Enabled": true,
+            "Show Names": false
+          },
+          {
+            "Class": "rviz_default_plugins/Odometry",
+            "Name": "OpenVINS local state",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/state/odometry",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            },
+            "Keep": 1
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Left RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/left/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Right RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/right/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "OpenVINS estimated trajectory",
+            "Enabled": true,
+            "Color": "0; 210; 180",
+            "Topic": {
+              "Value": "/test_robot/localization/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "Mission waypoints",
+            "Enabled": true,
+            "Color": "250; 160; 20",
+            "Topic": {
+              "Value": "/test_robot/navigation/path",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Mission status",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/mission/status_marker",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          }
+        ],
+        "Tools": [
+          {
+            "Class": "rviz_default_plugins/Interact"
+          },
+          {
+            "Class": "rviz_default_plugins/MoveCamera"
+          },
+          {
+            "Class": "rviz_default_plugins/Select"
+          }
+        ],
+        "Views": {
+          "Current": {
+            "Class": "rviz_default_plugins/Orbit",
+            "Distance": 5,
+            "Pitch": 0.45,
+            "Yaw": 0.75,
+            "Target Frame": "test_robot/base_link"
+          }
+        }
+      },
+      "Window Geometry": {
+        "Width": 1600,
+        "Height": 900,
+        "QMainWindow State": "000000ff00000000fd00000002000000000000015400000373fc0200000001fb000000100044006900730070006c0061007900730100000011000003730000007b00ffffff000000010000019000000373fc0200000002fb00000010004c00650066007400200052004700420100000011000001b70000007b00fffffffb0000001200520069006700680074002000520047004201000001ce000001b60000007b00ffffff000003500000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000"
+      }
+    },
+    "3-True-False-False": {
+      "Panels": [
+        {
+          "Class": "rviz_common/Displays",
+          "Name": "Displays"
+        }
+      ],
+      "Visualization Manager": {
+        "Class": "",
+        "Global Options": {
+          "Fixed Frame": "test_robot/map",
+          "Background Color": "20; 28; 40",
+          "Frame Rate": 30
+        },
+        "Displays": [
+          {
+            "Class": "rviz_default_plugins/Grid",
+            "Name": "ENU Reference Grid",
+            "Enabled": true,
+            "Cell Size": 1,
+            "Plane": "XY",
+            "Reference Frame": "<Fixed Frame>"
+          },
+          {
+            "Class": "rviz_default_plugins/RobotModel",
+            "Name": "BlueROV2 Heavy - actual asset",
+            "Enabled": true,
+            "Description Source": "Topic",
+            "Description Topic": {
+              "Value": "/test_robot/robot_description",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Transient Local",
+              "History Policy": "Keep Last",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/TF",
+            "Name": "TF",
+            "Enabled": true,
+            "Show Names": false
+          },
+          {
+            "Class": "rviz_default_plugins/Odometry",
+            "Name": "OpenVINS local state",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/state/odometry",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            },
+            "Keep": 1
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Left RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/left/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Right RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/right/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "OpenVINS estimated trajectory",
+            "Enabled": true,
+            "Color": "0; 210; 180",
+            "Topic": {
+              "Value": "/test_robot/localization/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "Mission waypoints",
+            "Enabled": true,
+            "Color": "250; 160; 20",
+            "Topic": {
+              "Value": "/test_robot/navigation/path",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Mission status",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/mission/status_marker",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/PointCloud2",
+            "Name": "SLAM map - stereo measurements",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/slam/cloud_map",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            },
+            "Style": "Points",
+            "Size (Pixels)": 3,
+            "Color Transformer": "RGB8",
+            "Position Transformer": "XYZ",
+            "Decay Time": 0
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "SLAM optimized trajectory",
+            "Enabled": true,
+            "Color": "255; 90; 130",
+            "Topic": {
+              "Value": "/test_robot/slam/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Known Porth cutaway - NOT SLAM output",
+            "Enabled": false,
+            "Topic": {
+              "Value": "/test_robot/slam/known_cave",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            }
+          }
+        ],
+        "Tools": [
+          {
+            "Class": "rviz_default_plugins/Interact"
+          },
+          {
+            "Class": "rviz_default_plugins/MoveCamera"
+          },
+          {
+            "Class": "rviz_default_plugins/Select"
+          }
+        ],
+        "Views": {
+          "Current": {
+            "Class": "rviz_default_plugins/Orbit",
+            "Distance": 7,
+            "Pitch": 0.7,
+            "Yaw": 0.7,
+            "Target Frame": "test_robot/odom",
+            "Focal Point": {
+              "X": 1.2,
+              "Y": 0.0,
+              "Z": 0.0
+            }
+          }
+        }
+      },
+      "Window Geometry": {
+        "Width": 1600,
+        "Height": 900,
+        "QMainWindow State": "000000ff00000000fd00000002000000000000015400000373fc0200000001fb000000100044006900730070006c0061007900730100000011000003730000007b00ffffff000000010000019000000373fc0200000002fb00000010004c00650066007400200052004700420100000011000001b70000007b00fffffffb0000001200520069006700680074002000520047004201000001ce000001b60000007b00ffffff000003500000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000"
+      }
+    },
+    "3-True-True-False": {
+      "Panels": [
+        {
+          "Class": "rviz_common/Displays",
+          "Name": "Displays"
+        }
+      ],
+      "Visualization Manager": {
+        "Class": "",
+        "Global Options": {
+          "Fixed Frame": "test_robot/map",
+          "Background Color": "20; 28; 40",
+          "Frame Rate": 30
+        },
+        "Displays": [
+          {
+            "Class": "rviz_default_plugins/Grid",
+            "Name": "ENU Reference Grid",
+            "Enabled": true,
+            "Cell Size": 1,
+            "Plane": "XY",
+            "Reference Frame": "<Fixed Frame>"
+          },
+          {
+            "Class": "rviz_default_plugins/RobotModel",
+            "Name": "BlueROV2 Heavy - actual asset",
+            "Enabled": true,
+            "Description Source": "Topic",
+            "Description Topic": {
+              "Value": "/test_robot/robot_description",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Transient Local",
+              "History Policy": "Keep Last",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/TF",
+            "Name": "TF",
+            "Enabled": true,
+            "Show Names": false
+          },
+          {
+            "Class": "rviz_default_plugins/Odometry",
+            "Name": "OpenVINS local state",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/state/odometry",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            },
+            "Keep": 1
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Left RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/left/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Right RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/right/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "OpenVINS estimated trajectory",
+            "Enabled": true,
+            "Color": "0; 210; 180",
+            "Topic": {
+              "Value": "/test_robot/localization/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "Mission waypoints",
+            "Enabled": true,
+            "Color": "250; 160; 20",
+            "Topic": {
+              "Value": "/test_robot/navigation/path",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Mission status",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/mission/status_marker",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/PointCloud2",
+            "Name": "SLAM map - stereo measurements",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/slam/cloud_map",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            },
+            "Style": "Points",
+            "Size (Pixels)": 3,
+            "Color Transformer": "RGB8",
+            "Position Transformer": "XYZ",
+            "Decay Time": 0
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "SLAM optimized trajectory",
+            "Enabled": true,
+            "Color": "255; 90; 130",
+            "Topic": {
+              "Value": "/test_robot/slam/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Known Porth cutaway - NOT SLAM output",
+            "Enabled": false,
+            "Topic": {
+              "Value": "/test_robot/slam/known_cave",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            }
+          }
+        ],
+        "Tools": [
+          {
+            "Class": "rviz_default_plugins/Interact"
+          },
+          {
+            "Class": "rviz_default_plugins/MoveCamera"
+          },
+          {
+            "Class": "rviz_default_plugins/Select"
+          }
+        ],
+        "Views": {
+          "Current": {
+            "Class": "rviz_default_plugins/Orbit",
+            "Distance": 12.0,
+            "Pitch": 0.7,
+            "Yaw": 0.7,
+            "Target Frame": "test_robot/base_link",
+            "Focal Point": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 0.0
+            }
+          }
+        }
+      },
+      "Window Geometry": {
+        "Width": 1600,
+        "Height": 900,
+        "QMainWindow State": "000000ff00000000fd00000002000000000000015400000373fc0200000001fb000000100044006900730070006c0061007900730100000011000003730000007b00ffffff000000010000019000000373fc0200000002fb00000010004c00650066007400200052004700420100000011000001b70000007b00fffffffb0000001200520069006700680074002000520047004201000001ce000001b60000007b00ffffff000003500000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000"
+      }
+    },
+    "3-True-True-True": {
+      "Panels": [
+        {
+          "Class": "rviz_common/Displays",
+          "Name": "Displays"
+        }
+      ],
+      "Visualization Manager": {
+        "Class": "",
+        "Global Options": {
+          "Fixed Frame": "test_robot/map",
+          "Background Color": "20; 28; 40",
+          "Frame Rate": 30
+        },
+        "Displays": [
+          {
+            "Class": "rviz_default_plugins/Grid",
+            "Name": "ORB initial-body FLU grid",
+            "Enabled": true,
+            "Cell Size": 1,
+            "Plane": "XY",
+            "Reference Frame": "<Fixed Frame>"
+          },
+          {
+            "Class": "rviz_default_plugins/RobotModel",
+            "Name": "BlueROV2 - ORB-SLAM3 pose",
+            "Enabled": true,
+            "Description Source": "File",
+            "Description Topic": {
+              "Value": "/test_robot/robot_description",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Transient Local",
+              "History Policy": "Keep Last",
+              "Depth": 1
+            },
+            "Description File": "/RUN/orb-robot.urdf"
+          },
+          {
+            "Class": "rviz_default_plugins/TF",
+            "Name": "TF",
+            "Enabled": false,
+            "Show Names": false
+          },
+          {
+            "Class": "rviz_default_plugins/Odometry",
+            "Name": "OpenVINS local state",
+            "Enabled": false,
+            "Topic": {
+              "Value": "/test_robot/state/odometry",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            },
+            "Keep": 1
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Left RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/left/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Image",
+            "Name": "Right RGB",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/sensors/stereo/right/image_raw",
+              "Reliability Policy": "Best Effort",
+              "Durability Policy": "Volatile",
+              "History Policy": "Keep Last",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "OpenVINS estimated trajectory",
+            "Enabled": false,
+            "Color": "0; 210; 180",
+            "Topic": {
+              "Value": "/test_robot/localization/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "Mission waypoints",
+            "Enabled": false,
+            "Color": "250; 160; 20",
+            "Topic": {
+              "Value": "/test_robot/navigation/path",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Mission status",
+            "Enabled": false,
+            "Topic": {
+              "Value": "/test_robot/mission/status_marker",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/PointCloud2",
+            "Name": "ORB-SLAM3 sparse landmarks",
+            "Enabled": true,
+            "Topic": {
+              "Value": "/test_robot/slam/cloud_map",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            },
+            "Style": "Points",
+            "Size (Pixels)": 3,
+            "Color Transformer": "FlatColor",
+            "Position Transformer": "XYZ",
+            "Decay Time": 0,
+            "Color": "70; 215; 255"
+          },
+          {
+            "Class": "rviz_default_plugins/Path",
+            "Name": "ORB-SLAM3 online keyframe trajectory",
+            "Enabled": true,
+            "Color": "255; 90; 130",
+            "Topic": {
+              "Value": "/test_robot/slam/trajectory",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Marker",
+            "Name": "Known Porth cutaway - NOT SLAM output",
+            "Enabled": false,
+            "Topic": {
+              "Value": "/test_robot/slam/known_cave",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 1
+            }
+          },
+          {
+            "Class": "rviz_default_plugins/Pose",
+            "Name": "ORB-SLAM3 current body pose",
+            "Enabled": true,
+            "Shape": "Axes",
+            "Topic": {
+              "Value": "/test_robot/slam/pose",
+              "Reliability Policy": "Reliable",
+              "Durability Policy": "Volatile",
+              "Depth": 5
+            }
+          }
+        ],
+        "Tools": [
+          {
+            "Class": "rviz_default_plugins/Interact"
+          },
+          {
+            "Class": "rviz_default_plugins/MoveCamera"
+          },
+          {
+            "Class": "rviz_default_plugins/Select"
+          }
+        ],
+        "Views": {
+          "Current": {
+            "Class": "rviz_default_plugins/Orbit",
+            "Distance": 12.0,
+            "Pitch": 0.7,
+            "Yaw": 0.7,
+            "Target Frame": "test_robot/orb_body",
+            "Focal Point": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 0.0
+            }
+          }
+        }
+      },
+      "Window Geometry": {
+        "Width": 1600,
+        "Height": 900,
+        "QMainWindow State": "000000ff00000000fd00000002000000000000015400000373fc0200000001fb000000100044006900730070006c0061007900730100000011000003730000007b00ffffff000000010000019000000373fc0200000002fb00000010004c00650066007400200052004700420100000011000001b70000007b00fffffffb0000001200520069006700680074002000520047004201000001ce000001b60000007b00ffffff000003500000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000"
+      }
+    }
+  },
+  "orb": {
+    "parameters": {
+      "frame_prefix": "test_robot",
+      "run_dir": "/RUN",
+      "settings_path": "/RUN/orbslam3-settings.yaml",
+      "maximum_input_age_sec": 0.3,
+      "maximum_pending_per_side": 3,
+      "map_publish_hz": 1.0,
+      "clahe_clip_limit": 3.0,
+      "clahe_grid_size": 8
+    },
+    "settings": "%YAML:1.0\nCamera.type: \"PinHole\"\nCamera.fx: 417.0321193091858\nCamera.fy: 417.0321193091858\nCamera.cx: 319.5\nCamera.cy: 239.5\nCamera.k1: 0.0\nCamera.k2: 0.0\nCamera.p1: 0.0\nCamera.p2: 0.0\nCamera.k3: 0.0\nCamera.width: 640\nCamera.height: 480\nCamera.fps: 20.0\nCamera.RGB: 1\nCamera.bf: 60.46965729983194\nThDepth: 40.0\nORBextractor.nFeatures: 1600\nORBextractor.scaleFactor: 1.2\nORBextractor.nLevels: 8\nORBextractor.iniThFAST: 12\nORBextractor.minThFAST: 5\nViewer.KeyFrameSize: 0.05\nViewer.KeyFrameLineWidth: 1.0\nViewer.GraphLineWidth: 0.9\nViewer.PointSize: 2.0\nViewer.CameraSize: 0.08\nViewer.CameraLineWidth: 3.0\nViewer.ViewpointX: 0.0\nViewer.ViewpointY: -0.7\nViewer.ViewpointZ: -1.8\nViewer.ViewpointF: 500.0\nSystem.SaveAtlasToFile: \"orb-atlas\"\nResearch.T_body_camera: !!opencv-matrix\n  rows: 4\n  cols: 4\n  dt: f\n  data: [0.0, 0.0, 1.0, 0.16, -1.0, 0.0, 0.0, 0.0725, 0.0, -1.0, 0.0, -0.15, 0.0, 0.0, 0.0, 1.0]\n",
+    "contract": {
+      "mode": "STEREO",
+      "input": "live_exact_stereo_only",
+      "truth_input": false,
+      "external_odometry_input": false,
+      "imu_input": false,
+      "baseline_m": 0.145,
+      "T_body_camera": [
+        0.0,
+        0.0,
+        1.0,
+        0.16,
+        -1.0,
+        0.0,
+        0.0,
+        0.0725,
+        0.0,
+        -1.0,
+        0.0,
+        -0.15,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "intrinsics": [
+        417.0321193091858,
+        417.0321193091858,
+        319.5,
+        239.5
+      ],
+      "map_frame": "test_robot/map",
+      "map_gauge": "first tracked camera transformed into initial body FLU",
+      "rviz_robot_pose": "ORB map->orb_body only; no transform connecting independent OpenVINS odom",
+      "preprocessing": {
+        "grayscale": "RGB2GRAY",
+        "clahe_clip_limit": 3.0,
+        "clahe_grid_size": 8
+      },
+      "map_product": "sparse landmarks; not a dense surface",
+      "settings_sha256": "5a6db3021590454dc86bfc6222c403b84dad78915c64c8bed484ef5184eceae8"
+    }
+  },
+  "rtabmap": {
+    "False": {
+      "/**": {
+        "ros__parameters": {
+          "subscribe_stereo": true,
+          "subscribe_depth": false,
+          "subscribe_rgb": false,
+          "subscribe_odom_info": false,
+          "approx_sync": true,
+          "approx_sync_max_interval": 0.03,
+          "topic_queue_size": 10,
+          "sync_queue_size": 20,
+          "qos": 2,
+          "qos_camera_info": 2,
+          "qos_odom": 1,
+          "publish_tf": true,
+          "wait_for_transform": 0.1,
+          "Rtabmap/DetectionRate": "2.0",
+          "Rtabmap/TimeThr": "0",
+          "Mem/IncrementalMemory": "true",
+          "Mem/STMSize": "10",
+          "RGBD/LinearUpdate": "0.08",
+          "RGBD/AngularUpdate": "0.04",
+          "RGBD/ProximityBySpace": "true",
+          "Reg/Strategy": "0",
+          "Vis/MinInliers": "15",
+          "Grid/Sensor": "1",
+          "Grid/3D": "true",
+          "Grid/RangeMin": "0.3",
+          "Grid/RangeMax": "8.0",
+          "Grid/CellSize": "0.06",
+          "Grid/NormalsSegmentation": "false",
+          "Grid/MaxGroundHeight": "0.06",
+          "Grid/DepthDecimation": "4",
+          "cloud_output_voxelized": true,
+          "map_always_update": false,
+          "use_sim_time": true,
+          "frame_id": "test_robot/base_link",
+          "map_frame_id": "test_robot/map",
+          "odom_frame_id": "",
+          "database_path": "/RUN/rtabmap.db",
+          "Rtabmap/WorkingDirectory": "/RUN"
+        }
+      }
+    },
+    "True": {
+      "/**": {
+        "ros__parameters": {
+          "subscribe_stereo": true,
+          "subscribe_depth": false,
+          "subscribe_rgb": false,
+          "subscribe_odom_info": false,
+          "approx_sync": true,
+          "approx_sync_max_interval": 0.03,
+          "topic_queue_size": 10,
+          "sync_queue_size": 20,
+          "qos": 2,
+          "qos_camera_info": 2,
+          "qos_odom": 1,
+          "publish_tf": true,
+          "wait_for_transform": 0.1,
+          "Rtabmap/DetectionRate": "1.0",
+          "Rtabmap/TimeThr": "250",
+          "Mem/IncrementalMemory": "true",
+          "Mem/STMSize": "30",
+          "RGBD/LinearUpdate": "0.08",
+          "RGBD/AngularUpdate": "0.04",
+          "RGBD/ProximityBySpace": "true",
+          "Reg/Strategy": "0",
+          "Vis/MinInliers": "15",
+          "Grid/Sensor": "1",
+          "Grid/3D": "true",
+          "Grid/RangeMin": "0.3",
+          "Grid/RangeMax": "10.0",
+          "Grid/CellSize": "0.20",
+          "Grid/NormalsSegmentation": "false",
+          "Grid/MaxGroundHeight": "0.06",
+          "Grid/DepthDecimation": "4",
+          "cloud_output_voxelized": true,
+          "map_always_update": false,
+          "use_sim_time": true,
+          "frame_id": "test_robot/base_link",
+          "map_frame_id": "test_robot/map",
+          "odom_frame_id": "",
+          "database_path": "/RUN/rtabmap.db",
+          "Rtabmap/WorkingDirectory": "/RUN",
+          "Rtabmap/MemoryThr": "600"
+        }
+      }
+    }
+  }
+}

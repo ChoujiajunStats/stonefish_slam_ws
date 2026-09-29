@@ -15,7 +15,7 @@ from visualization_msgs.msg import Marker
 from diagnostic_msgs.msg import DiagnosticArray,DiagnosticStatus,KeyValue
 from uw_interfaces.msg import ControlRequest,ActuatorOutput,AuthorizedCommand
 from uw_interfaces.srv import Control
-from uw_controller.core import rpy
+from uw_robot.frames import quaternion_rpy as rpy
 
 
 def stamp_ns(s):return s.sec*1_000_000_000+s.nanosec
@@ -99,7 +99,7 @@ class Case(Node):
 
     def on_state(self,m):
         p=m.pose.pose.position;q=m.pose.pose.orientation;v=m.twist.twist
-        angles=rpy([q.x,q.y,q.z,q.w]).tolist()
+        angles=list(rpy([q.x,q.y,q.z,q.w]))
         self.state=dict(wall=time.monotonic(),stamp=stamp_ns(m.header.stamp)*1e-9,
             position=[p.x,p.y,p.z],velocity=[v.linear.x,v.linear.y,v.linear.z,v.angular.x,v.angular.y,v.angular.z],rpy=angles,
             target=list(self.target))

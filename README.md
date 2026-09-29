@@ -51,7 +51,7 @@ Porth 资产不随 Git 分发。从有权提供资产的协作者取得锁定的
 | 观测转换、OpenVINS/ORB 接入 | `perception/`, `localization/` |
 | 局部航点与有限任务 | `navigation/`, `tasks/` |
 | RViz、评价和故障注入 | `ui/`, `benchmark/`, `test/` |
-| 共用证据与地图存储检查 | `runtime/` |
+| 共用运行证据、目录与快照 | `runtime/` |
 | 部署、容器、来源锁、运行配置 | `tools/`, `scripts/`, `docker/`, `vendor/`, `config/` |
 | 唯一 Obsidian Vault | `docs/` |
 

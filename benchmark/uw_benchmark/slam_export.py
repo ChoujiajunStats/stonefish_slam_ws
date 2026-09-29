@@ -5,7 +5,7 @@ The original run is read-only. A separate copy absorbs any backend side effects.
 import argparse,hashlib,json,shutil,subprocess,uuid
 from pathlib import Path
 from datetime import datetime,timezone
-from uw_runtime.map_storage import inspect_database
+from uw_localization.artifacts import inspect_database
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

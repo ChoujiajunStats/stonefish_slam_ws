@@ -12,7 +12,7 @@ from launch.events.process import SignalProcess
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from uw_app.m1_config import load_run_config
-from uw_app.window import close_rviz,show_window_actions
+from uw_ui.window import close_rviz,show_window_actions
 from uw_robot.description import make_urdf
 from uw_simulations.m1_scene import generate_m1_scene
 
@@ -61,13 +61,9 @@ def compose(context):
           '--storage-preset-profile','zstd_fast' if config['recording_profile']=='debug' else 'none',
           '--qos-profile-overrides-path',str(output/'bag-qos.yaml'),'--output',str(output/'bags'),'--topics',*topics],output='screen')))
     if config['visualization']=='rviz':
-        p=output/'inspect.rviz';p.write_text((Path(share('uw_ui'))/'config/inspect.rviz').read_text().replace('@NAMESPACE@',namespace))
-        layout=yaml.safe_load(p.read_text())
-        layout['Visualization Manager']['Displays'] += [
-            {'Class':'rviz_default_plugins/Path','Name':'Actual trajectory','Enabled':True,'Color':'0; 210; 180',
-             'Topic':{'Value':f'/{namespace}/control/trajectory','Reliability Policy':'Reliable','Durability Policy':'Volatile','Depth':5}},
-            {'Class':'rviz_default_plugins/Marker','Name':'Control state','Enabled':True,
-             'Topic':{'Value':f'/{namespace}/control/status_marker','Reliability Policy':'Reliable','Durability Policy':'Volatile','Depth':5}}]
+        from uw_ui.layouts import control_layout
+        p=output/'inspect.rviz'
+        layout=control_layout(Path(share('uw_ui'))/'config/inspect.rviz',namespace)
         p.write_text(yaml.safe_dump(layout,sort_keys=False))
         processes.append(('rviz',node('rviz2','rviz2','rviz2',arguments=['-d',str(p)],additional_env={'QT_FONT_DPI':'96'})))
     actions=[]

@@ -14,7 +14,7 @@ from uw_interfaces.msg import ControlRequest
 from uw_benchmark.m2_case import Case as SensorCase
 from uw_benchmark.m2_metrics import evaluate
 from uw_runtime.artifacts import write_json
-from uw_controller.core import rpy
+from uw_robot.frames import quaternion_rpy as rpy
 
 
 class Case(SensorCase):

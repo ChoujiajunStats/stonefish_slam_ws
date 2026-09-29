@@ -1,13 +1,13 @@
-"""ORB composition/calibration and saved-output validation; no SLAM algorithm."""
+"""Native ORB stereo settings from an explicit robot calibration and defaults file."""
 import hashlib,json,shutil,math
 from pathlib import Path
 import yaml
 from uw_perception.contracts import intrinsics
 
 
-def prepare(out,cfg,share):
-    profile=yaml.safe_load((out/'robot_profile.yaml').read_text())
-    params=yaml.safe_load((Path(share('uw_localization'))/'config/orbslam3_stereo.yaml').read_text())
+def prepare(out, namespace, profile, defaults):
+    out, defaults = Path(out), Path(defaults)
+    params=yaml.safe_load(defaults.read_text())
     left,right=[profile['cameras'][side] for side in ('left','right')]
     for key in ('width','height','horizontal_fov_deg','rpy_frd'):
         if left[key]!=right[key]:raise ValueError('ORB requires already rectified identical cameras')
@@ -32,19 +32,11 @@ def prepare(out,cfg,share):
     settings=out/'orbslam3-settings.yaml'
     settings.write_text('%YAML:1.0\n'+''.join(k+': '+(json.dumps(v) if isinstance(v,str) else str(v))+'\n' for k,v in values.items())+
         'Research.T_body_camera: !!opencv-matrix\n  rows: 4\n  cols: 4\n  dt: f\n  data: '+str(matrix)+'\n')
-    shutil.copy2(Path(share('uw_localization'))/'config/orbslam3_stereo.yaml',out/'orbslam3-parameters.yaml')
+    shutil.copy2(defaults,out/'orbslam3-parameters.yaml')
     (out/'orb-contract.json').write_text(json.dumps(dict(mode='STEREO',input='live_exact_stereo_only',truth_input=False,
         external_odometry_input=False,imu_input=False,baseline_m=baseline,T_body_camera=matrix,intrinsics=[fx,fy,cx,cy],
-        map_frame=cfg['namespace']+'/map',map_gauge='first tracked camera transformed into initial body FLU',
+        map_frame=namespace+'/map',map_gauge='first tracked camera transformed into initial body FLU',
         rviz_robot_pose='ORB map->orb_body only; no transform connecting independent OpenVINS odom',
         preprocessing=dict(grayscale='RGB2GRAY',clahe_clip_limit=params['clahe_clip_limit'],clahe_grid_size=params['clahe_grid_size']),map_product='sparse landmarks; not a dense surface',settings_sha256=hashlib.sha256(settings.read_bytes()).hexdigest()),indent=2)+'\n')
-    return {'frame_prefix':cfg['namespace'],'run_dir':str(out),'settings_path':str(settings),'maximum_input_age_sec':float(params['maximum_input_age_sec']),'maximum_pending_per_side':params['maximum_pending_per_side'],'map_publish_hz':float(params['map_publish_hz']),'clahe_clip_limit':float(params['clahe_clip_limit']),'clahe_grid_size':params['clahe_grid_size']}
+    return {'frame_prefix':namespace,'run_dir':str(out),'settings_path':str(settings),'maximum_input_age_sec':float(params['maximum_input_age_sec']),'maximum_pending_per_side':params['maximum_pending_per_side'],'map_publish_hz':float(params['map_publish_hz']),'clahe_clip_limit':float(params['clahe_clip_limit']),'clahe_grid_size':params['clahe_grid_size']}
 
-
-def inspect_output(out):
-    files=['orb-final.json','orb-sparse-map.ply','orb-keyframes-body.jsonl','orb-optimized-camera-tum.txt','orb-atlas.osa','orb-frames.jsonl']
-    missing=[p for p in files if not (out/p).is_file() or not (out/p).stat().st_size]
-    final=json.loads((out/'orb-final.json').read_text()) if (out/'orb-final.json').exists() else {}
-    return dict(passed=not missing and final.get('shutdown_completed') and final.get('keyframes',0)>=3,
-        missing=missing,final=final,files={p:dict(bytes=(out/p).stat().st_size,sha256=hashlib.sha256((out/p).read_bytes()).hexdigest()) for p in files if (out/p).exists()},
-        atlas_deserialization='NOT_YET_VERIFIED',product='ORB_SLAM3_SPARSE_STEREO')

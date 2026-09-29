@@ -99,9 +99,9 @@ def run(config_path,repo,data_root,milestone=2):
         finalized=bagmeta.get('rosbag2_bagfile_information',{}).get('message_count',0)>0
         passed=code==0 and metrics.get('status')=='PASS' and not unexpected and exit_accounting and expected_codes and (config['recording_profile']=='none' or finalized)
         if porth:
-            from uw_runtime.map_storage import inspect_database
+            from uw_localization.artifacts import inspect_database
             if orb:
-                from uw_app.orbslam3 import inspect_output
+                from uw_localization.artifacts import inspect_orb_output as inspect_output
                 database=inspect_output(output)
             else:database=inspect_database(output/'rtabmap.db') if (output/'rtabmap.db').exists() else {'passed':False,'reason':'No database'}
             write_json(output/'slam-database-inspection.json',database)

@@ -1,7 +1,7 @@
 """Offline M2 metrics: single initial yaw/translation gauge alignment, never scale fit."""
 import math
 import numpy as np
-from uw_controller.core import rpy
+from uw_robot.frames import quaternion_rpy as rpy
 
 
 def rotation(q):

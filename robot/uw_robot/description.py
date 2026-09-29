@@ -56,3 +56,16 @@ def make_mesh_urdf(namespace,profile,asset_directory):
             visual(Path(mesh.get('filename')).name,[float(x) for x in origin.get('xyz').split()],
                 [float(x) for x in origin.get('rpy').split()])
     return ET.tostring(root,encoding='unicode')
+
+
+def isolated_visual_urdf(description, frame):
+    """Display one body in an independent SLAM gauge, without sensor TF claims."""
+    root = ET.fromstring(description)
+    base = root.find('link')
+    if base is None:
+        raise ValueError('Robot description requires a base link')
+    base.set('name', frame)
+    for child in list(root):
+        if child is not base:
+            root.remove(child)
+    return ET.tostring(root, encoding='unicode')

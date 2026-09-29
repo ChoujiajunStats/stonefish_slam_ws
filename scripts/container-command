@@ -34,7 +34,7 @@ case "${1:-}" in
         printf '%s\n' "$UW_IMAGE_ID" > .image-id
         ;;
     test)
-        export PYTHONPATH="/workspace/tools:/workspace/runtime:/workspace/app:/workspace/robot:/workspace/simulations:/workspace/benchmark:/workspace/guard:/workspace/controller:/workspace/perception:/workspace/navigation:/workspace/tasks:${PYTHONPATH:-}"
+        export PYTHONPATH="/workspace/tools:/workspace/runtime:/workspace/app:/workspace/robot:/workspace/simulations:/workspace/benchmark:/workspace/guard:/workspace/controller:/workspace/perception:/workspace/navigation:/workspace/tasks:/workspace/localization:/workspace/ui:${PYTHONPATH:-}"
         python3 -m unittest discover -s /workspace/test -v
         ;;
     *)

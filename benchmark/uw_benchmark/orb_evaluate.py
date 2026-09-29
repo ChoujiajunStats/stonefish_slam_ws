@@ -2,7 +2,7 @@
 import argparse,hashlib,json,math
 from pathlib import Path
 import numpy as np
-from uw_controller.core import rpy
+from uw_robot.frames import quaternion_rpy as rpy
 from uw_runtime.artifacts import write_json
 from uw_benchmark.cloud_viewer import write_viewer
 

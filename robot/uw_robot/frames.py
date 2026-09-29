@@ -55,3 +55,11 @@ def signed_permutation_covariance(values, indices, signs):
         return list(values)
     return [signs[i]*signs[j]*values[indices[i]*n+indices[j]]
             for i in range(n) for j in range(n)]
+
+
+def quaternion_rpy(q):
+    """Roll/pitch/yaw radians for unit x,y,z,w quaternions; pitch is clamped at poles."""
+    x,y,z,w=q
+    return (math.atan2(2*(w*x+y*z),1-2*(x*x+y*y)),
+            math.asin(max(-1,min(1,2*(w*y-z*x)))),
+            math.atan2(2*(w*z+x*y),1-2*(y*y+z*z)))

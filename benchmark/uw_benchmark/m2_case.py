@@ -16,7 +16,7 @@ from uw_interfaces.msg import ControlRequest
 from uw_interfaces.srv import Control
 from uw_perception.contracts import ExactPairs,intrinsics
 from uw_robot.frames import rpy_quaternion
-from uw_controller.core import rpy
+from uw_robot.frames import quaternion_rpy as rpy
 from uw_benchmark.m2_metrics import rotation,evaluate,render
 from uw_runtime.artifacts import write_json
 

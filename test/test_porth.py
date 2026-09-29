@@ -30,7 +30,7 @@ class PorthContracts(unittest.TestCase):
             self.assertEqual(prop.find('geometry/mesh').get('scale'),'1 1 1')
     def test_database_requires_sensor_payload_and_graph(self):
         import sqlite3
-        from uw_app.porth import inspect_database
+        from uw_localization.artifacts import inspect_database
         with tempfile.TemporaryDirectory() as d:
             path=Path(d)/'map.db'
             with sqlite3.connect(path) as db:

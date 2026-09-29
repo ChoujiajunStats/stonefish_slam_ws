@@ -15,7 +15,7 @@ from launch_ros.actions import Node
 import yaml
 
 from uw_app.config import load_config
-from uw_app.window import close_rviz,show_window_actions
+from uw_ui.window import close_rviz,show_window_actions
 from uw_robot.description import make_urdf
 from uw_simulations.scene import generate_scene
 

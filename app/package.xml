@@ -2,7 +2,7 @@
 <package format="3">
   <name>uw_app</name>
   <version>0.1.0</version>
-  <description>Underwater Stack M0 app module</description>
+  <description>Run configuration, composition and process lifecycle</description>
   <maintainer email="ChoujiajunStats@126.com">Jiajun Zhou</maintainer>
   <license>LicenseRef-Not-Yet-Licensed</license>
   <buildtool_depend>ament_python</buildtool_depend>

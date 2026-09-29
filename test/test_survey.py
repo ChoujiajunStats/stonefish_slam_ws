@@ -72,7 +72,7 @@ class SurveyContracts(unittest.TestCase):
 
     def test_truth_routing_cannot_apply_to_old_m3(self):
         old=load_config(ROOT/'config/run.m3.yaml');self.assertNotIn('control_state_source',old)
-        scene=(ROOT/'app/launch/estimate.launch.py').read_text()
+        scene=(ROOT/'app/uw_app/composition/estimation.py').read_text()
         self.assertIn("milestone==2 or survey",scene)
         guard=(ROOT/'guard/uw_guard/node.py').read_text()
         self.assertIn("self.config.get('scene_profile')=='porth_sump9'",guard)
