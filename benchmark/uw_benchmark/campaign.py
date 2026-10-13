@@ -3,6 +3,8 @@ import argparse,hashlib,json,os
 from pathlib import Path
 import subprocess,time,uuid
 import yaml
+from uw_robot.profiles import PROFILES
+from uw_benchmark.protocols import control_protocol
 
 
 def verify_freeze(repo, freeze, image_id):
@@ -17,19 +19,23 @@ def verify_freeze(repo, freeze, image_id):
 def main(args=None):
     p=argparse.ArgumentParser();p.add_argument('--phase',choices=['diagnostic','tuning','formal'],default='formal')
     p.add_argument('--cases',nargs='+',required=True);p.add_argument('--continue-on-failure',action='store_true')
-    p.add_argument('--probe-faults',action='store_true');options=p.parse_args(args)
+    p.add_argument('--probe-faults',action='store_true')
+    p.add_argument('--robot-profile',choices=tuple(PROFILES),default='bluerov2_heavy')
+    p.add_argument('--visualization',choices=['none','rviz'],default='none');options=p.parse_args(args)
     repo=Path(__file__).resolve().parents[2];data=Path(os.environ.get('UW_DATA_ROOT',str(Path.home()/'.local/share/stonefish-slam')))
-    specification=yaml.safe_load((repo/'test/m1-acceptance.yaml').read_text());names=[]
+    six=options.robot_profile=='bluerov2_six_disaware'
+    protocol='six-thruster' if six else 'm1'
+    specification=control_protocol(repo,options.robot_profile);names=[]
     for name in options.cases:
         matches=[k for k,v in specification['cases'].items() if v['group']==name]
         names+=matches or [name]
     if options.phase=='formal':
-        freeze=json.loads((repo/'test/m1-freeze.json').read_text())
+        freeze=json.loads((repo/f'test/{protocol}-freeze.json').read_text())
         image_id=subprocess.check_output(['docker','image','inspect',os.environ.get('UW_IMAGE','stonefish-slam:orbslam3'),'--format','{{.Id}}'],text=True).strip()
         verify_freeze(repo, freeze, image_id)
     batch=f'm1-{options.phase}-{uuid.uuid4().hex[:10]}';reports=data/'reports';reports.mkdir(exist_ok=True)
     folder=repo/'config/generated'/batch;folder.mkdir(parents=True,exist_ok=False)
-    base=yaml.safe_load((repo/'config/run.m1.yaml').read_text());results=[]
+    base=yaml.safe_load((repo/'config/run.m1.yaml').read_text());base['robot_profile']=options.robot_profile;results=[]
     for name in names:
         if options.phase == 'formal':
             image_id = subprocess.check_output(['docker','image','inspect',os.environ.get('UW_IMAGE','stonefish-slam:orbslam3'),'--format','{{.Id}}'],text=True).strip()
@@ -39,7 +45,7 @@ def main(args=None):
             spec=specification['cases'][name];config=dict(base)
             config.update(run_id=f'{options.phase}_{name}',case_id=name,evaluation_phase=options.phase,
                 control_mode='actuator_probe' if name.startswith('probe_') or name=='authority_validation' or options.probe_faults else 'body_velocity',
-                fixed_fixture=name.startswith('probe_') or name=='authority_validation' or options.probe_faults,visualization='none',recording_profile='control',
+                fixed_fixture=name.startswith('probe_') or name=='authority_validation' or options.probe_faults,visualization=options.visualization,recording_profile='control',
                 initial_rpy_enu_deg=spec.get('initial_rpy_enu_deg',[0.,0.,90.]),duration_sec=90. if name.startswith('load_') else 50.)
             if name.startswith('load_'):config.update(visualization='rviz',recording_profile='debug')
             if name=='fault_rviz':config['visualization']='rviz'

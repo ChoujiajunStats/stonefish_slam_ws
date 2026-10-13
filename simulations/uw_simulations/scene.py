@@ -16,7 +16,7 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def generate_scene(upstream_share, template, profile, namespace, output, expected_assets=None):
+def generate_scene(upstream_share, template, profile, namespace, output, expected_assets=None, actuator_profile=None):
     if not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_]{0,47}", namespace):
         raise ValueError("Invalid namespace")
     upstream_share = Path(upstream_share)
@@ -56,6 +56,10 @@ def generate_scene(upstream_share, template, profile, namespace, output, expecte
             specs.attrib.update(resolution_x=str(camera["width"]),
                                 resolution_y=str(camera["height"]),
                                 horizontal_fov=str(camera["horizontal_fov_deg"]))
+    if actuator_profile is not None:
+        from uw_robot.profiles import apply_actuators
+        apply_actuators(robot, actuator_profile)
+        root.find('environment/ocean/water').set('density',str(actuator_profile['density_kg_m3']))
     root.append(robot)
     assets = {}
     for element in root.iter():

@@ -1,0 +1,156 @@
+schema_version: 1
+source_sha256: 38fd7380283413f68df0f7c684392993ae226e419c36cd6e7432a2dd0a93f65d
+density_kg_m3: 1025.0
+wrench_reference: physical_CG
+wrench_frame: FLU
+velocity_reference: base_link_origin
+setpoint_limit: 0.6
+thrusters:
+- name: FrontRight
+  position_frd:
+  - 0.1355
+  - 0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - -0.7853981634
+  axis_frd:
+  - 0.7071067811847432
+  - -0.7071067811883519
+  - -0.0
+  inverted: true
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3598.17495342157
+  kt_forward: 0.252
+  kt_reverse: 0.252
+  kq: 0.016
+  rotor_time_constant_sec: 0.1
+  propeller_mesh: bluerov2/ccw.obj
+- name: FrontLeft
+  position_frd:
+  - 0.1355
+  - -0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - 0.7853981634
+  axis_frd:
+  - 0.7071067811847432
+  - 0.7071067811883519
+  - -0.0
+  inverted: true
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3598.17495342157
+  kt_forward: 0.252
+  kt_reverse: 0.252
+  kq: 0.016
+  rotor_time_constant_sec: 0.1
+  propeller_mesh: bluerov2/ccw.obj
+- name: BackRight
+  position_frd:
+  - -0.1475
+  - 0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - -2.3561944902
+  axis_frd:
+  - -0.7071067811919605
+  - -0.7071067811811346
+  - -0.0
+  inverted: false
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3598.17495342157
+  kt_forward: 0.252
+  kt_reverse: 0.252
+  kq: 0.016
+  rotor_time_constant_sec: 0.1
+  propeller_mesh: bluerov2/cw.obj
+- name: BackLeft
+  position_frd:
+  - -0.1475
+  - -0.1
+  - 0.0725
+  rpy_frd:
+  - 0.0
+  - 0.0
+  - 2.3561944902
+  axis_frd:
+  - -0.7071067811919605
+  - 0.7071067811811346
+  - -0.0
+  inverted: false
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3598.17495342157
+  kt_forward: 0.252
+  kt_reverse: 0.252
+  kq: 0.016
+  rotor_time_constant_sec: 0.1
+  propeller_mesh: bluerov2/cw.obj
+- name: DiveRight
+  position_frd:
+  - 0.0025
+  - 0.1105
+  - -0.005
+  rpy_frd:
+  - 0.0
+  - -1.5707963268
+  - 0.0
+  axis_frd:
+  - -5.1034119672569625e-12
+  - -0.0
+  - 1.0
+  inverted: false
+  right_handed: true
+  diameter_m: 0.076
+  max_rpm: 3598.17495342157
+  kt_forward: 0.277
+  kt_reverse: 0.277
+  kq: 0.016
+  rotor_time_constant_sec: 0.1
+  propeller_mesh: bluerov2/cw.obj
+- name: DiveLeft
+  position_frd:
+  - 0.0025
+  - -0.1105
+  - -0.005
+  rpy_frd:
+  - 0.0
+  - -1.5707963268
+  - 0.0
+  axis_frd:
+  - -5.1034119672569625e-12
+  - -0.0
+  - 1.0
+  inverted: true
+  right_handed: false
+  diameter_m: 0.076
+  max_rpm: 3598.17495342157
+  kt_forward: 0.277
+  kt_reverse: 0.277
+  kq: 0.016
+  rotor_time_constant_sec: 0.1
+  propeller_mesh: bluerov2/ccw.obj
+controlled_axes:
+- 0
+- 1
+- 2
+- 3
+- 5
+variant: bluerov2_six_disaware
+provenance:
+  archive: disaware_repro_code_20260927-115131/disaware_repro_code.tar.gz
+  archive_sha256: c34b6aa351dd027e5a48026a13325a3d4fa43eb9335155af26049652bea4a26a
+  scene: disaware/src/stonefish_bluerov2/scenarios/bluerov2.scn
+  scene_sha256: 56af04e77063def08c76686ce22b2fea15f3e395bb35b33e99779e9149dcb1fa
+  bluerov2_commit: cc0b1af0a6173e2e598dea642e1adb01d8ef7159
+  historical_engine_version: 1.6.0
+  historical_controller: ArduSub VECTORED; not part of this integration
+  pitch_control: passive hull stability; no independent pitch channel

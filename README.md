@@ -30,8 +30,46 @@ cd stonefish_slam_ws
 | `rtabmap` | 加入 RTAB-Map |
 | `survey` | 加入洞穴灯光与规定路线采集 |
 | `orbslam3` | 加入在线双目 ORB-SLAM3 |
+| `actuators` | 完整 SLAM 工作区，加入可选 disaware 六推进器模型 |
 
 构建使用 [固定源码与补丁](vendor/)；[profile 配置](docker/profiles.json) 给出镜像名。首次构建会下载并编译依赖。
+
+## 六推进器配置
+
+六推进器使用四个水平桨和两个垂直桨，配置键为 `bluerov2_six_disaware`。船体和相机沿用当前模型；控制器主动控制平移、横滚和偏航，俯仰依赖船体被动稳定。几何、推力参数与一阶转速响应见 [六推进器映射](robot/config/thrusters_six_disaware.yaml)。八推进器仍是现有配置的默认选择。
+
+```bash
+./scripts/uw build --profile actuators
+./scripts/uw test --profile actuators
+./scripts/uw run config/run.m1.six.yaml --profile actuators
+```
+
+该入口启动后保持 DISARMED。在另一个终端显式启动有限运动：
+
+```bash
+./scripts/uw arm --profile actuators
+./scripts/uw command --velocity 0.10 0 0 0 --seconds 5 --profile actuators
+./scripts/uw disarm --profile actuators
+```
+
+命令停止后按失联规则撤权；若故障锁存，下次运动前先 `clear-fault` 再 `arm`。M1/M2/M3 和在线 SLAM 配置均可通过 `robot_profile` 选择六推进器，并用 `--profile actuators` 启动。M0 观察模式仍使用八推进器。
+
+已有 Porth 资产时，可运行六推进器在线双目 SLAM 短程；`--arm` 授权本次规定路线运动：
+
+```bash
+./scripts/uw porth config/run.porth-orbslam3-six-short.yaml --profile actuators --arm
+```
+
+六通道有限诊断命令：
+
+```bash
+./scripts/uw acceptance --profile actuators --robot-profile bluerov2_six_disaware \
+  --phase diagnostic --cases probe_0 probe_1 probe_2 probe_3 probe_4 probe_5
+```
+
+原生补丁及哈希保存在 [六推进器源码锁](vendor/source-lock.actuators.yaml)。2026-09-29 验收的原始源码冻结记录保存在 `test/frozen/six-thruster-20260929.json`；它记录当时的版本。当前版本的 formal 验收需要重新冻结，不能直接使用这份历史记录。
+
+2026-10-13 同步前复核：容器契约测试 104/104 通过，六个原生推进器通道的正向、反向及归零诊断 6/6 通过。该复核验证六通道接入，不包含自主避障导航。
 
 ## 仿真
 

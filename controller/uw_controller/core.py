@@ -12,7 +12,7 @@ class BodyController:
         self.p=parameters;self.allocation=allocation;self.reset()
 
     def reset(self):
-        self.integral=np.zeros(4);self.attitude_integral=np.zeros(2);self.previous=np.zeros(8)
+        self.integral=np.zeros(4);self.attitude_integral=np.zeros(2);self.previous=np.zeros(len(self.allocation.names))
 
     def update(self,target,velocity,angles,dt):
         if not 0<dt<=0.1 or not np.isfinite(np.r_[target,velocity,angles,dt]).all():
@@ -23,6 +23,8 @@ class BodyController:
         desired[[0,1,2,5]]=np.asarray(self.p['velocity_kp'])*error+self.integral
         desired[2]+=self.p['buoyancy_feedforward_N']
         desired[3:5]=np.asarray(self.p['attitude_kp'])*attitude_error-np.asarray(self.p['attitude_kd'])*np.asarray(velocity[3:5])+self.attitude_integral
+        attitude_mask=np.array([3 in self.allocation.controlled_axes,4 in self.allocation.controlled_axes])
+        desired[3:5]*=attitude_mask
         clipped=np.clip(desired,-np.asarray(self.p['wrench_limits']),self.p['wrench_limits'])
         command,predicted,saturated=self.allocation.allocate(clipped)
         step=self.p['setpoint_rate_per_sec']*dt
@@ -33,4 +35,5 @@ class BodyController:
         self.integral=np.clip(self.integral,-np.asarray(self.p['integral_force_limits']),self.p['integral_force_limits'])
         self.attitude_integral+=dt*(np.asarray(self.p['attitude_ki'])*attitude_error+3*(predicted-desired)[3:5])
         self.attitude_integral=np.clip(self.attitude_integral,-self.p['attitude_integral_limit'],self.p['attitude_integral_limit'])
+        self.attitude_integral*=attitude_mask
         return command,desired,predicted,saturated or bool(np.any(clipped!=desired))

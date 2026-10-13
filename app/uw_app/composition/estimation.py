@@ -1,5 +1,6 @@
 """M2 composition. Normal launch stays DISARMED; benchmark motion is explicit."""
 import json,shutil,signal
+from uw_robot.profiles import load_robot, PROFILES
 from pathlib import Path
 import yaml
 from ament_index_python.packages import get_package_share_directory as share
@@ -23,8 +24,8 @@ def compose(context,milestone=2):
     porth=cfg['scene_profile']=='porth_sump9'
     survey=cfg.get('survey_profile')=='known_route_capture_v1'
     orb=cfg.get('slam_profile')=='orbslam3_stereo'
-    profile=yaml.safe_load((Path(share('uw_robot'))/'config/bluerov2_heavy.yaml').read_text())
-    for package,file,target in [('uw_robot','config/thrusters_m1.yaml','thrusters.yaml'),('uw_guard','config/defaults.yaml','guard-parameters.yaml'),('uw_controller','config/defaults.yaml','controller-parameters.yaml')]:
+    profile=load_robot(Path(share('uw_robot'))/'config',cfg['robot_profile'])
+    for package,file,target in [('uw_robot','config/'+PROFILES[cfg['robot_profile']],'thrusters.yaml'),('uw_guard','config/defaults.yaml','guard-parameters.yaml'),('uw_controller','config/defaults.yaml','controller-parameters.yaml')]:
         shutil.copy2(Path(share(package))/file,out/target)
     for name in ('openvins.yaml','imu.yaml'):shutil.copy2(Path(share('uw_localization'))/'config'/name,out/name)
     write_stereo_calibration(profile,out/'stereo.yaml')

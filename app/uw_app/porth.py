@@ -1,4 +1,5 @@
 """Explicit Porth composition and evidence helpers; no control algorithms."""
+from uw_robot.profiles import load_robot, PROFILES
 import shutil
 from pathlib import Path
 import yaml
@@ -10,5 +11,5 @@ def prepare(out,cfg,share):
     directory=out.parent.parent/'assets'/cfg['cave_asset']
     asset=load_asset(directory);shutil.copy2(directory/'asset.json',out/'cave-asset.json')
     add_cave(out/'m2.scn',directory,asset)
-    profile=yaml.safe_load((Path(share('uw_robot'))/'config/bluerov2_heavy.yaml').read_text())
+    profile=load_robot(Path(share('uw_robot'))/'config',cfg['robot_profile'])
     return make_mesh_urdf(cfg['namespace'],profile,directory)

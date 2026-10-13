@@ -1,0 +1,8 @@
+protocol: six-disaware-v1
+robot_profile: bluerov2_six_disaware
+attitude_interpretation: roll actively controlled, pitch passive; RMS limits describe
+  observed motion, not pitch controllability
+extends: m1-acceptance.yaml
+excluded_cases:
+- probe_6
+- probe_7

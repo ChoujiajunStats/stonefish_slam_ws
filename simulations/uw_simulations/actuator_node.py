@@ -1,5 +1,7 @@
 """Last external adapter; never owns the final watchdog and never repeats cached output."""
-import json,math,time
+import json,time
+import yaml
+from uw_simulations.actuator_contract import valid_channels
 from pathlib import Path
 import signal
 import rclpy
@@ -13,6 +15,7 @@ class ActuatorAdapter(Node):
     def __init__(self):
         super().__init__('actuator_adapter')
         self.output=Path(self.declare_parameter('run_dir','').value);self.run=self.output.name
+        self.names=[t['name'] for t in yaml.safe_load((self.output/'thrusters.yaml').read_text())['thrusters']]
         self.terminal={};self.seq=0;self.fault_generation=None
         self.native=self.create_publisher(String,'sim/terminal/input',1)
         self.status=self.create_publisher(String,'control/adapter_status',1)
@@ -26,8 +29,7 @@ class ActuatorAdapter(Node):
                self.fault_generation!=r.generation and
                r.issued_steady_ns<=msg.computed_steady_ns<=now and now-msg.computed_steady_ns<=200_000_000 and
                now<a.deadline_steady_ns<=r.issued_steady_ns+250_000_000 and
-               list(msg.names)==self.terminal.get('names') and len(msg.setpoint)==8 and
-               all(math.isfinite(x) and abs(x)<=0.6+1e-9 for x in msg.setpoint))
+               self.names==self.terminal.get('names') and valid_channels(msg.names,msg.setpoint,self.names))
         if not valid:
             # Inactive/late authorization is simply dropped. Invalid current output latches.
             if self.terminal.get('state')=='ARMED' and r.generation==int(self.terminal['generation']):

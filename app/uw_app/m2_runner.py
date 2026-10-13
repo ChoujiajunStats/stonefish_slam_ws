@@ -42,6 +42,8 @@ def run(config_path,repo,data_root,milestone=2):
     try:
         for sig in (signal.SIGINT,signal.SIGTERM):previous[sig]=signal.signal(sig,interrupt)
         manifest.update(source_snapshot(repo,output))
+        from uw_app.composition.actuators import record_actuator_build
+        record_actuator_build(repo,output,config,manifest)
         for name in ('source-lock.yaml','source-lock.m2.yaml'):shutil.copy2(repo/'vendor'/name,output/name)
         lock=hashlib.sha256((output/'source-lock.m2.yaml').read_bytes()).hexdigest()
         built=Path('/opt/uw/m2-lock.sha256').read_text().split()[0]

@@ -70,7 +70,7 @@ def render_fault(folder,terminal,statuses,estimates,injection_wall):
     times=np.array([int(r['wall_ns'])*1e-9-injection_wall for r in terminal])
     for axis,key,unit in zip(axes[:3],('receiver_setpoint','rpm','thrust_N'),('Native setpoint','Measured RPM','Measured thrust [N]')):
         values=np.array([[float(v) for v in r[key]] for r in terminal])
-        for i in range(8):axis.plot(times,values[:,i],label=terminal[0]['names'][i])
+        for i in range(len(terminal[0]['names'])):axis.plot(times,values[:,i],label=terminal[0]['names'][i])
         axis.set_ylabel(unit);axis.grid(alpha=.3)
     axes[0].legend(fontsize=7,ncol=4)
     codes={'INITIALIZING':0,'TRACKING':1,'DEGRADED':2,'FAULT':3}

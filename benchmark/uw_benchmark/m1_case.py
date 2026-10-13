@@ -166,7 +166,7 @@ class Case(Node):
         if self.arm_time is None:
             if self.case.startswith('authority_') and 'unready_rejected' not in self.extra and not self.future and self.client.service_is_ready():
                 if self.guard.get('ready'):self.finish(False,'Missed pre-readiness injection window');return
-                self.extra['expect_unready_rejection']=True;self.call('ARM');self.request([0.]*4,[0.]*8 if self.config['control_mode']=='actuator_probe' else None)
+                self.extra['expect_unready_rejection']=True;self.call('ARM');self.request([0.]*4,[0.]*len(self.names) if self.config['control_mode']=='actuator_probe' else None)
                 return
             if now-self.started>self.config['startup_timeout_sec']:self.finish(False,'M1 readiness timeout',guard=self.guard,terminal=self.terminal.get('state'));return
             if (self.guard.get('ready') or self.restart_replay is not None) and self.client.service_is_ready() and not self.future:
@@ -214,7 +214,7 @@ class Case(Node):
             x.update(checks=[],check_index=0,next_check=.3,old_authorization=None)
             x['not_armed_rejected']=self.guard.get('rejected',0)>0
         if self.guard.get('state')=='ARMED':
-            self.request([0.]*4,[0.]*8 if probe_mode else None)
+            self.request([0.]*4,[0.]*len(self.names) if probe_mode else None)
             if x['old_authorization'] is None:x['old_authorization']=copy.deepcopy(self.last_message)
         if x['check_index']<len(checks):
             name,expected=checks[x['check_index']]
@@ -265,7 +265,7 @@ class Case(Node):
                 old_source_replay_rejected=x['replay_pass'],final_generation=self.generation)
 
     def probe_case(self,t):
-        index=int(self.case.split('_')[1]);probe=[0.]*8
+        index=int(self.case.split('_')[1]);probe=[0.]*len(self.names)
         if 1<=t<3:probe[index]=0.12
         elif 4<=t<6:probe[index]=-0.12
         if t<8:self.request([0.]*4,probe)
@@ -342,7 +342,7 @@ class Case(Node):
         # Inject only PIDs recorded by this run's launch. Physics remains alive.
         kind=self.case.removeprefix('fault_')
         if self.injected is None:
-            self.request([0.15,0.,0.,0.]) if self.config['control_mode']=='body_velocity' else self.request([0.]*4,[0.12]+[0.]*7)
+            self.request([0.15,0.,0.,0.]) if self.config['control_mode']=='body_velocity' else self.request([0.]*4,[0.12]+[0.]*(len(self.names)-1))
             if t>=4 and self.terminal and max(abs(x) for x in self.terminal['applied_setpoint'])>0.02:
                 self.injected=time.monotonic_ns();self.event('injection',kind=kind,injection_ns=self.injected)
                 processes={r['name']:r for r in map(json.loads,(self.folder/'process-starts.jsonl').read_text().splitlines())}
@@ -369,7 +369,7 @@ class Case(Node):
             elif t>10:self.finish(False,'No nonzero actual setpoint available for fault injection')
         else:
             since=(time.monotonic_ns()-self.injected)*1e-9
-            if kind!='source' and kind not in ('disarm','latch'):self.request([0.15,0.,0.,0.]) if self.config['control_mode']=='body_velocity' else self.request([0.]*4,[0.12]+[0.]*7)
+            if kind!='source' and kind not in ('disarm','latch'):self.request([0.15,0.,0.,0.]) if self.config['control_mode']=='body_velocity' else self.request([0.]*4,[0.12]+[0.]*(len(self.names)-1))
             if since>0.7 and not self.extra.get('restored') and kind in ('clock_pause','state_frozen'):
                 secret=json.loads((self.folder/'session.json').read_text())['terminal_secret']
                 message=String(data=json.dumps(dict(run=self.folder.name,secret=secret,sent_ns=time.monotonic_ns(),op='resume_clock' if kind=='clock_pause' else 'resume_state')))

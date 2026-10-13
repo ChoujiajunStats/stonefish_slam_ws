@@ -1,0 +1,49 @@
+--- a/include/stonefish_ros2/UWTerminal.h
++++ b/include/stonefish_ros2/UWTerminal.h
+@@ -14,7 +14,7 @@
+ class UWTerminal {
+ public:
+     UWTerminal(std::shared_ptr<rclcpp::Node> node, Robot* robot,
+-               const std::string& run, const std::string& secret, bool fixture);
++               const std::string& run, const std::string& secret, bool fixture, unsigned expectedThrusters = 8);
+     ~UWTerminal();
+     void BeforeStep();
+     void AfterStep();
+--- a/src/stonefish_ros2/UWTerminal.cpp
++++ b/src/stonefish_ros2/UWTerminal.cpp
+@@ -20,7 +20,7 @@
+     ptree a; for(const auto& x:v) { ptree n; n.put("",x); a.push_back({"",n}); } return a;
+ }
+ UWTerminal::UWTerminal(std::shared_ptr<rclcpp::Node> node, Robot* robot,
+-    const std::string& run, const std::string& secret, bool fixture)
++    const std::string& run, const std::string& secret, bool fixture, unsigned expectedThrusters)
+     : node_(std::make_shared<rclcpp::Node>("uw_terminal",node->get_namespace(),rclcpp::NodeOptions().use_global_arguments(false))), robot_(robot), run_(run), secret_(secret) {
+     if(run.empty() || secret.size()<24) throw std::runtime_error("Invalid terminal run identity");
+     for(unsigned i=0; auto* a=robot->getActuator(i); ++i) {
+@@ -31,8 +31,9 @@
+         thrusters_.push_back(static_cast<Thruster*>(a));
+         auto name=a->getName(); names_.push_back(name.substr(name.find_last_of('/')+1));
+     }
+-    if(thrusters_.size()!=8) throw std::runtime_error("M1 expects verified eight-thruster model");
+-    values_.resize(8,0); applied_=rpm_=thrust_=torque_=values_;
++    if((expectedThrusters!=6 && expectedThrusters!=8) || thrusters_.size()!=expectedThrusters)
++        throw std::runtime_error("Unexpected terminal thruster count");
++    values_.resize(thrusters_.size(),0); applied_=rpm_=thrust_=torque_=values_;
+     auto* base=robot->getBaseLink(); auto cg=base->getCG2OTransform().inverse().getOrigin();
+     ptree model; model.put("mass_kg",base->getMass()); model.put("volume_m3",base->getVolume());
+     model.add_child("cg_frd_m",Array(std::vector<double>{cg.x(),cg.y(),cg.z()}));
+--- a/src/stonefish_ros2/ROS2ScenarioParser.cpp
++++ b/src/stonefish_ros2/ROS2ScenarioParser.cpp
+@@ -287,7 +287,11 @@
+         const char* run=item->Attribute("run"); const char* secret=item->Attribute("secret");
+         bool fixture=false; item->QueryBoolAttribute("fixture", &fixture);
+         if(!run || !secret) throw std::runtime_error("Missing terminal identity");
+-        rosRobot->terminal_=std::make_shared<UWTerminal>(nh_,robot,run,secret,fixture);
++        unsigned expectedThrusters=8; // Existing scene contracts remain eight-channel.
++        if(item->Attribute("expected_thrusters") != nullptr &&
++           item->QueryUnsignedAttribute("expected_thrusters", &expectedThrusters) != XML_SUCCESS)
++            throw std::runtime_error("Invalid terminal expected_thrusters");
++        rosRobot->terminal_=std::make_shared<UWTerminal>(nh_,robot,run,secret,fixture,expectedThrusters);
+     }
+ 
+     //Save robot

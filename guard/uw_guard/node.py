@@ -117,7 +117,7 @@ class Guard(Node):
             if not self.mapping:
                 allocation=Allocation(self.profile,self.terminal['model']);self.mapping=True
                 (self.run_dir/'allocation-model.json').write_text(json.dumps(dict(model=self.terminal['model'],
-                    matrix=allocation.matrix.tolist(),singular_values=allocation.singular_values.tolist(),
+                    matrix=allocation.matrix.tolist(),controlled_axes=allocation.controlled_axes,full_singular_values=allocation.full_singular_values.tolist(),singular_values=allocation.singular_values.tolist(),
                     condition_number=float(allocation.singular_values[0]/allocation.singular_values[-1])),indent=2))
             if self.terminal['state']=='FAULT':self.fault('terminal:'+self.terminal['reason'])
         except (ValueError,KeyError,TypeError):self.mapping=False;self.fault('mapping_invalid')

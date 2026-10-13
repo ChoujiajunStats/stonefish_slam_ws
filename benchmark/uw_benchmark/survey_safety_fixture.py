@@ -1,4 +1,5 @@
 """Explicit SIGKILL regression in one identified survey run, with native evidence."""
+import yaml
 import argparse,json,os,subprocess,time
 from pathlib import Path
 
@@ -48,7 +49,7 @@ out.write_text(json.dumps(dict(operation='SIGKILL',process='actuator_adapter',pi
         receiver_neutral_within_budget=latency is not None and 0<=latency<=.50,
         physics_continued=bool(after) and int(after[-1]['physics_ns'])>t+500000000,
         latched_fault=bool(neutral) and all(p['state']=='FAULT' for p in after if int(p['wall_ns'])>=int(neutral['wall_ns'])),
-        exactly_eight_channels=all(len(p['names'])==8 for p in terminal))
+        expected_channels=all(p['names']==[t['name'] for t in yaml.safe_load((run/'thrusters.yaml').read_text())['thrusters']] for p in terminal))
     result=dict(run_id=run_id,status='PASS' if all(checks.values()) else 'FAIL',checks=checks,
         native_receiver_neutral_latency_sec=latency,injection=event,collection_status=json.loads((run/'m3-metrics.json').read_text())['status'],
         process_exit_codes=exits,terminal_timeline=[dict(seconds=(int(p['wall_ns'])-t)*1e-9,state=p['state'],reason=p['reason'],

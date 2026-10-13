@@ -1,0 +1,96 @@
+--- a/Library/include/actuators/Thruster.h
++++ b/Library/include/actuators/Thruster.h
+@@ -45,7 +45,7 @@
+          \param rightHand a flag to indicate if the propeller is right hand (clockwise rotation)
+          \param inverted a flag to indicate if the setpoint is inverted (positive value results in backward force)
+         */
+-        Thruster(std::string uniqueName, SolidEntity* propeller, Scalar diameter, std::pair<Scalar, Scalar> thrustCoeff, Scalar torqueCoeff, Scalar maxRPM, bool rightHand, bool inverted = false);
++        Thruster(std::string uniqueName, SolidEntity* propeller, Scalar diameter, std::pair<Scalar, Scalar> thrustCoeff, Scalar torqueCoeff, Scalar maxRPM, bool rightHand, bool inverted = false, Scalar rotorTimeConstant = Scalar(0));
+         
+         //! A destructor.
+         ~Thruster();
+@@ -91,6 +91,7 @@
+         
+     private:
+         //Params
++        Scalar rotorTimeConstant_;
+         Scalar D;
+         std::pair<Scalar, Scalar> kT;
+         Scalar kQ;
+--- a/Library/src/actuators/Thruster.cpp
++++ b/Library/src/actuators/Thruster.cpp
+@@ -1,3 +1,4 @@
++#include <cmath>
+ /*    
+     This file is a part of Stonefish.
+ 
+@@ -34,7 +35,7 @@
+ namespace sf
+ {
+ 
+-Thruster::Thruster(std::string uniqueName, SolidEntity* propeller, Scalar diameter, std::pair<Scalar, Scalar> thrustCoeff, Scalar torqueCoeff, Scalar maxRPM, bool rightHand, bool inverted) : LinkActuator(uniqueName)
++Thruster::Thruster(std::string uniqueName, SolidEntity* propeller, Scalar diameter, std::pair<Scalar, Scalar> thrustCoeff, Scalar torqueCoeff, Scalar maxRPM, bool rightHand, bool inverted, Scalar rotorTimeConstant) : LinkActuator(uniqueName), rotorTimeConstant_(rotorTimeConstant)
+ {
+     D = diameter;
+     kT = thrustCoeff;
+@@ -116,14 +117,22 @@
+     if(attach != nullptr)
+     {
+         //Update thruster velocity
+-        Scalar error = setpoint * omegaLim - omega;
+-        Scalar motorTorque = kp * error + ki * iError;
+-        omega += (motorTorque - (-torque))*dt;
++        if(rotorTimeConstant_ > Scalar(0))
++        {
++            // Exact step of d(omega)/dt=(target-omega)/tau. Explicit opt-in only.
++            // This branch models the configured motor speed servo independently of load.
++            omega += (setpoint * omegaLim - omega) * (Scalar(1) - std::exp(-dt/rotorTimeConstant_));
++        }
++        else
++        {
++            // Locked v1.3 motor PI behavior for all pre-existing scenes.
++            Scalar error = setpoint * omegaLim - omega;
++            Scalar motorTorque = kp * error + ki * iError;
++            omega += (motorTorque - (-torque))*dt;
++            iError += error * dt;
++            iError = iError > iLim ? iLim : (iError < -iLim ? -iLim : iError);
++        }
+         theta += omega * dt; //Just for animation
+-    
+-        //Integrate error
+-        iError += error * dt;
+-        iError = iError > iLim ? iLim : (iError < -iLim ? -iLim : iError);
+         
+         //Get transforms
+         Transform solidTrans = attach->getCGTransform();
+--- a/Library/src/core/ScenarioParser.cpp
++++ b/Library/src/core/ScenarioParser.cpp
+@@ -1,3 +1,4 @@
++#include <cmath>
+ /*    
+     This file is a part of Stonefish.
+ 
+@@ -2476,6 +2477,14 @@
+             log.Print(MessageType::ERROR, "Specs of actuator '%s' not properly defined!", actuatorName.c_str());
+             return nullptr;
+         }
++        Scalar rotorTimeConstant = Scalar(0);
++        if(item->Attribute("first_order_time_constant") != nullptr &&
++           (item->QueryAttribute("first_order_time_constant", &rotorTimeConstant) != XML_SUCCESS ||
++            !std::isfinite(rotorTimeConstant) || rotorTimeConstant <= Scalar(0)))
++        {
++            log.Print(MessageType::ERROR, "Invalid first-order time constant for '%s'", actuatorName.c_str());
++            return nullptr;
++        }
+         cThrustBack = cThrust;
+         item->QueryAttribute("thrust_coeff_backward", &cThrustBack); //Optional
+         item->QueryAttribute("inverted", &inverted); //Optional
+@@ -2512,7 +2521,7 @@
+         {
+             phy.mode = BodyPhysicsMode::SUBMERGED;
+             Polyhedron* prop = new Polyhedron(actuatorName + "/Propeller", phy, GetFullPath(std::string(propFile)), propScale, I4(), std::string(mat), lookStr);
+-            Thruster* th = new Thruster(actuatorName, prop, diameter, std::make_pair(cThrust, cThrustBack), cTorque, maxRpm, rightHand, inverted);
++            Thruster* th = new Thruster(actuatorName, prop, diameter, std::make_pair(cThrust, cThrustBack), cTorque, maxRpm, rightHand, inverted, rotorTimeConstant);
+             return th;
+         }
+         else //propeller

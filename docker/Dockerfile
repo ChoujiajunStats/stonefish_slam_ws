@@ -184,3 +184,26 @@ RUN cmake -S /opt/uw_src/ORB_SLAM3/Thirdparty/DBoW2 -B /opt/uw_build/dbow2 -DCMA
     && sha256sum /opt/uw_src/ORB_SLAM3/Vocabulary/ORBvoc.txt > /opt/uw/orbslam3/vocabulary.sha256 \
     && dpkg-query -W > /opt/uw/orbslam3/dpkg-packages.txt
 LABEL org.opencontainers.image.title="stonefish_slam_ws" io.stonefish-slam.profile="orbslam3"
+
+# Optional six-thruster model; default profiles and their image tags stay unchanged.
+FROM orbslam3 AS actuators
+COPY vendor/source-lock.actuators.yaml /opt/uw/actuators/source-lock.actuators.yaml
+COPY vendor/patches/0012-optional-first-order-thruster.patch vendor/patches/0013-terminal-explicit-channel-count.patch /opt/uw/actuators/
+RUN python3 - <<'PY'
+import hashlib,pathlib,subprocess,yaml
+r=pathlib.Path('/opt/uw/actuators');l=yaml.safe_load((r/'source-lock.actuators.yaml').read_text())
+assert hashlib.sha256(pathlib.Path('/opt/uw/orbslam3/source-lock.orbslam3.yaml').read_bytes()).hexdigest()==l['parent_lock_sha256']
+for entry in l['repositories']:
+    target='/opt/uw_src/'+entry['name'];p=r/entry['patch']
+    assert subprocess.check_output(['git','-C',target,'rev-parse','HEAD'],text=True).strip()==entry['commit']
+    assert hashlib.sha256(p.read_bytes()).hexdigest()==entry['sha256']
+    subprocess.run(['git','-C',target,'apply','--check',str(p)],check=True)
+    subprocess.run(['git','-C',target,'apply',str(p)],check=True)
+PY
+RUN cmake --build /opt/uw_build/stonefish --parallel 4 \
+    && cmake --install /opt/uw_build/stonefish && ldconfig \
+    && source /opt/ros/jazzy/setup.bash && source /opt/uw_underlay/setup.bash \
+    && cmake --build /opt/uw_build/ros/stonefish_ros2 --parallel 4 \
+    && cmake --install /opt/uw_build/ros/stonefish_ros2 \
+    && sha256sum /opt/uw/actuators/source-lock.actuators.yaml > /opt/uw/actuators-lock.sha256
+LABEL org.opencontainers.image.title="stonefish_slam_ws" io.stonefish-slam.profile="actuators"

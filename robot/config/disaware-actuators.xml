@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+<actuators>
+  <actuator name="FrontRight" type="thruster">
+    <link name="base_link" />
+    <origin xyz="0.1355 0.1 0.0725" rpy="0 0 -0.7853981634" />
+    <specs max_setpoint="376.8" inverted_setpoint="true" normalized_setpoint="true" />
+    <rotor_dynamics type="first_order">
+      <time_constant value="0.1" />
+    </rotor_dynamics>
+    <thrust_model type="fluid_dynamics">
+      <thrust_coeff forward="0.252" reverse="0.252" />
+      <torque_coeff value="0.016" />
+    </thrust_model>
+    <propeller diameter="0.076" right="true">
+      <mesh filename="bluerov2/ccw.obj" scale="1.0" />
+      <material name="Neutral" />
+      <look name="blue" />
+    </propeller>
+  </actuator>
+  <actuator name="FrontLeft" type="thruster">
+    <link name="base_link" />
+    <origin xyz="0.1355 -0.1 0.0725" rpy="0 0 0.7853981634" />
+    <specs max_setpoint="376.8" inverted_setpoint="true" normalized_setpoint="true" />
+    <rotor_dynamics type="first_order">
+      <time_constant value="0.1" />
+    </rotor_dynamics>
+    <thrust_model type="fluid_dynamics">
+      <thrust_coeff forward="0.252" reverse="0.252" />
+      <torque_coeff value="0.016" />
+    </thrust_model>
+    <propeller diameter="0.076" right="true">
+      <mesh filename="bluerov2/ccw.obj" scale="1.0" />
+      <material name="Neutral" />
+      <look name="blue" />
+    </propeller>
+  </actuator>
+  <actuator name="BackRight" type="thruster">
+    <link name="base_link" />
+    <origin xyz="-0.1475 0.1 0.0725" rpy="0 0 -2.3561944902" />
+    <specs max_setpoint="376.8" inverted_setpoint="false" normalized_setpoint="true" />
+    <rotor_dynamics type="first_order">
+      <time_constant value="0.1" />
+    </rotor_dynamics>
+    <thrust_model type="fluid_dynamics">
+      <thrust_coeff forward="0.252" reverse="0.252" />
+      <torque_coeff value="0.016" />
+    </thrust_model>
+    <propeller diameter="0.076" right="false">
+      <mesh filename="bluerov2/cw.obj" scale="1.0" />
+      <material name="Neutral" />
+      <look name="blue" />
+    </propeller>
+  </actuator>
+  <actuator name="BackLeft" type="thruster">
+    <link name="base_link" />
+    <origin xyz="-0.1475 -0.1 0.0725" rpy="0 0 2.3561944902" />
+    <specs max_setpoint="376.8" inverted_setpoint="false" normalized_setpoint="true" />
+    <rotor_dynamics type="first_order">
+      <time_constant value="0.1" />
+    </rotor_dynamics>
+    <thrust_model type="fluid_dynamics">
+      <thrust_coeff forward="0.252" reverse="0.252" />
+      <torque_coeff value="0.016" />
+    </thrust_model>
+    <propeller diameter="0.076" right="false">
+      <mesh filename="bluerov2/cw.obj" scale="1.0" />
+      <material name="Neutral" />
+      <look name="blue" />
+    </propeller>
+  </actuator>
+  <actuator name="DiveRight" type="thruster">
+    <link name="base_link" />
+    <origin xyz="0.0025 0.1105 -0.005" rpy="0 -1.5707963268 0" />
+    <specs max_setpoint="376.8" inverted_setpoint="false" normalized_setpoint="true" />
+    <rotor_dynamics type="first_order">
+      <time_constant value="0.1" />
+    </rotor_dynamics>
+    <thrust_model type="fluid_dynamics">
+      <thrust_coeff forward="0.277" reverse="0.277" />
+      <torque_coeff value="0.016" />
+    </thrust_model>
+    <propeller diameter="0.076" right="true">
+      <mesh filename="bluerov2/cw.obj" scale="1.0" />
+      <material name="Neutral" />
+      <look name="blue" />
+    </propeller>
+  </actuator>
+  <actuator name="DiveLeft" type="thruster">
+    <link name="base_link" />
+    <origin xyz="0.0025 -0.1105 -0.005" rpy="0 -1.5707963268 0" />
+    <specs max_setpoint="376.8" inverted_setpoint="true" normalized_setpoint="true" />
+    <rotor_dynamics type="first_order">
+      <time_constant value="0.1" />
+    </rotor_dynamics>
+    <thrust_model type="fluid_dynamics">
+      <thrust_coeff forward="0.277" reverse="0.277" />
+      <torque_coeff value="0.016" />
+    </thrust_model>
+    <propeller diameter="0.076" right="false">
+      <mesh filename="bluerov2/ccw.obj" scale="1.0" />
+      <material name="Neutral" />
+      <look name="blue" />
+    </propeller>
+  </actuator>
+</actuators>

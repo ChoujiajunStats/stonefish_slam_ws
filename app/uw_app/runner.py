@@ -61,8 +61,9 @@ def run(config_path, repo, data_root):
             previous_replay=Path(data_root)/'runs'/previous.name/'first-native-command.json'
             if previous_replay.is_file():shutil.copy2(previous_replay,output/'previous-native-command.json')
         write_json(output/'session.json',{'run_id':output.name,'terminal_secret':uuid.uuid4().hex})
-        shutil.copy2(Path(repo)/'test/m1-acceptance.yaml',output/'acceptance.yaml')
-        freeze=Path(repo)/'test/m1-freeze.json'
+        from uw_benchmark.protocols import control_protocol
+        (output/'acceptance.yaml').write_text(yaml.safe_dump(control_protocol(repo,config['robot_profile']),sort_keys=False))
+        freeze=Path(repo)/('test/six-thruster-freeze.json' if config['robot_profile']=='bluerov2_six_disaware' else 'test/m1-freeze.json')
         if freeze.exists():shutil.copy2(freeze,output/'freeze.json')
     write_json(Path(data_root)/'active-session.json',{'run_dir':str(output),
         'container':os.environ.get('UW_CONTAINER_NAME'),'namespace':config['namespace'],'m1':m1})
@@ -88,6 +89,8 @@ def run(config_path, repo, data_root):
         for sig in (signal.SIGINT, signal.SIGTERM):
             previous_handlers[sig] = signal.signal(sig, interrupted)
         manifest.update(source_snapshot(repo, output))
+        from uw_app.composition.actuators import record_actuator_build
+        record_actuator_build(repo,output,config,manifest)
         middleware_path = Path(os.environ["FASTRTPS_DEFAULT_PROFILES_FILE"])
         shutil.copy2(middleware_path, output / "fastdds.xml")
         manifest["middleware"] = {

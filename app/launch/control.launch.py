@@ -1,4 +1,5 @@
 """M1 composition and process accounting; no automatic ARM in launch."""
+from uw_robot.profiles import load_robot, PROFILES
 import signal
 import json,shutil
 from pathlib import Path
@@ -19,8 +20,8 @@ from uw_simulations.m1_scene import generate_m1_scene
 
 def compose(context):
     output=Path(LaunchConfiguration('run_dir').perform(context));config=load_run_config(output/'resolved_config.yaml')
-    namespace=config['namespace'];profile=yaml.safe_load((Path(share('uw_robot'))/'config/bluerov2_heavy.yaml').read_text())
-    for package,file,target in [('uw_robot','config/thrusters_m1.yaml','thrusters.yaml'),
+    namespace=config['namespace'];profile=load_robot(Path(share('uw_robot'))/'config',config['robot_profile'])
+    for package,file,target in [('uw_robot','config/'+PROFILES[config['robot_profile']],'thrusters.yaml'),
                                ('uw_guard','config/defaults.yaml','guard-parameters.yaml'),
                                ('uw_controller','config/defaults.yaml','controller-parameters.yaml')]:
         shutil.copy2(Path(share(package))/file,output/target)
@@ -36,7 +37,7 @@ def compose(context):
         arguments=[str(upstream/'data'),str(scenario),'100.0','960','720','medium'])),
         ('robot_state_publisher',node('robot_state_publisher','robot_state_publisher','robot_state_publisher',{'robot_description':description})),
         ('observation_adapter',node('uw_simulations','observation_adapter','observation_adapter',{'frame_prefix':namespace,
-            'robot_profile_path':str(Path(share('uw_robot'))/'config/bluerov2_heavy.yaml'),'observation_access':'PRIVILEGED_DEBUG','run_dir':str(output)})),
+            'robot_profile_path':str(output/'robot_profile.yaml'),'observation_access':'PRIVILEGED_DEBUG','run_dir':str(output)})),
         ('guard',node('uw_guard','guard','control_guard',{'run_dir':str(output)})),
         ('actuator_adapter',node('uw_simulations','actuator_adapter','actuator_adapter',{'run_dir':str(output)}))]
     if config['control_mode']=='body_velocity':

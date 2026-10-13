@@ -1,0 +1,16 @@
+schema_version: 1
+scope: optional_six_thruster_disaware
+parent_lock_sha256: 12e8007a5167e1209c9c7b230f8562a1d297a1983c83b7f366890ffce632d144
+repositories:
+- name: stonefish
+  commit: 6d285a955d19c9ecef3defd3f0605907f4594dbb
+  patch: 0012-optional-first-order-thruster.patch
+  sha256: 502083a05863511ac6654c000163f7b0a8309c388fc3cc935660e1a8c05b4d6a
+  reason: 'Explicit first_order_time_constant backport: exact first-order ODE, existing
+    v1.3 motor PI unchanged'
+- name: stonefish_ros2
+  commit: 3fc1fc7e9f959f988cd3e9c71fcf7944163abd0d
+  patch: 0013-terminal-explicit-channel-count.patch
+  sha256: 16aacd5062badf98be17e16c678a00a19a86e91bbbd82aa63353a1b8c7e408ad
+  reason: Explicit six/eight channel receiver; unchanged monotonic deadlines, latch
+    and before-step application

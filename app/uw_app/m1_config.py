@@ -1,5 +1,6 @@
 """Schema 2 explicitly enables M1. Schema 1 validation remains observation-only."""
 import math
+from uw_robot.profiles import require_profile
 from pathlib import Path
 import yaml
 from uw_app.config import ConfigError,UniqueKeyLoader,validate_config
@@ -24,5 +25,8 @@ def load_run_config(path):
     if abs(rpy[0])>10 or abs(rpy[1])>10 or abs(rpy[2])>180:raise ConfigError('Initial attitude outside M1 fixture envelope')
     base={k:v for k,v in value.items() if k not in M1_KEYS}
     base.update(schema_version=1,controller_profile='disabled',recording_profile='none')
+    try:require_profile(value['robot_profile'])
+    except ValueError as error:raise ConfigError(str(error)) from error
+    base['robot_profile']='bluerov2_heavy'
     validate_config(base)
     return dict(value)

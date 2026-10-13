@@ -22,5 +22,9 @@
   "orbslam3": {
     "image": "stonefish-slam:orbslam3",
     "description": "Survey + ORB-SLAM3 online stereo"
+  },
+  "actuators": {
+    "image": "stonefish-slam:actuators",
+    "description": "ORB-SLAM3 + optional disaware six-thruster model (eight remains default)"
   }
 }

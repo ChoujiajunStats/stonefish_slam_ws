@@ -56,6 +56,8 @@ def main():
     accept.add_argument('--cases',nargs='+',required=True)
     accept.add_argument('--continue-on-failure',action='store_true')
     accept.add_argument('--probe-faults',action='store_true')
+    accept.add_argument('--robot-profile',default='bluerov2_heavy',help='Robot profile key; validated by campaign')
+    accept.add_argument('--visualization',choices=['none','rviz'],default='none')
     commands.add_parser('m2-status')
     m2_accept=commands.add_parser('m2-acceptance')
     m2_accept.add_argument('--phase',choices=['diagnostic','tuning','formal'],default='formal')
@@ -74,6 +76,7 @@ def main():
     resolved_env, _ = compose_env()
     os.environ.update({k: resolved_env[k] for k in ("UW_DATA_ROOT", "UW_IMAGE")})
     formal_files = {"acceptance": "m1-freeze.json", "m2-acceptance": "m2-freeze.json", "m3-acceptance": "m3-freeze.json"}
+    if options.command=="acceptance" and options.robot_profile=="bluerov2_six_disaware":formal_files["acceptance"]="six-thruster-freeze.json"
     if options.command in formal_files and options.phase == "formal":
         if not (REPO / "test" / formal_files[options.command]).is_file():
             raise RuntimeError("Formal evaluation requires a current test/" + formal_files[options.command] +
@@ -108,7 +111,7 @@ def main():
     if options.command=='m2-acceptance':
         return subprocess.run([sys.executable,'-m','uw_benchmark.m2_campaign','--phase',options.phase,'--cases',*options.cases,*(['--continue-on-failure'] if options.continue_on_failure else [])],env=source_env()).returncode
     if options.command=='acceptance':
-        return subprocess.run([sys.executable,'-m','uw_benchmark.campaign','--phase',options.phase,'--cases',*options.cases,
+        return subprocess.run([sys.executable,'-m','uw_benchmark.campaign','--robot-profile',options.robot_profile,'--visualization',options.visualization,'--phase',options.phase,'--cases',*options.cases,
             *(['--continue-on-failure'] if options.continue_on_failure else []),
             *(['--probe-faults'] if options.probe_faults else [])],env=source_env()).returncode
     if options.command in ('status','arm','disarm','clear-fault','command','mission','mission-cancel'):
@@ -161,7 +164,7 @@ def main():
         compose(["run", "--rm", "--no-deps", "tools", "/workspace/scripts/container-command", "test"], env, project)
         return 0
     if options.command == "validate":
-        compose(["run", "--rm", "--no-deps", "-e", "PYTHONPATH=/workspace/app", "tools",
+        compose(["run", "--rm", "--no-deps", "-e", "PYTHONPATH=/workspace/app:/workspace/robot", "tools",
                  "python3", "-c", code, str(Path("/workspace") / path.relative_to(REPO))], env, project)
         return 0
     config = Path(options.config).resolve()

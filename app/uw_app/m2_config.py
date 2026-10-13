@@ -1,5 +1,6 @@
 """Explicit M2 schema; no mutation of schema 1/2 behavior."""
 import math
+from uw_robot.profiles import require_profile
 from pathlib import Path
 import yaml
 from uw_app.config import ConfigError,UniqueKeyLoader,validate_config
@@ -28,6 +29,9 @@ def validate(v,maximum_duration=300):
     if max(abs(rpy[0]),abs(rpy[1]))>10 or abs(rpy[2])>180:raise ConfigError('Initial attitude outside fixture limits')
     base={k:x for k,x in v.items() if k not in extras}
     base.update(schema_version=1,state_source='ground_truth_debug',controller_profile='disabled',scene_profile='empty_water',recording_profile='none')
+    try:require_profile(v['robot_profile'])
+    except ValueError as error:raise ConfigError(str(error)) from error
+    base['robot_profile']='bluerov2_heavy'
     validate_config(base)
     if not extras.issubset(v):raise ConfigError('Missing M2 fields')
     if v['duration_sec']>maximum_duration:raise ConfigError('Finite run duration exceeds explicit profile limit')
