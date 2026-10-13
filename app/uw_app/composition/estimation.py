@@ -46,6 +46,16 @@ def compose(context,milestone=2):
         return Node(package=package,executable=executable,name=name,namespace=ns,output='screen',parameters=[{'use_sim_time':True},params or {}],**kw)
     truth_state=[('state/odometry','sim/ground_truth/odometry')] if milestone==2 or survey else []
     state_prefix=ns+'/truth' if milestone==2 or survey else ns
+    controller_params={'run_dir':str(out),'state_frame_prefix':state_prefix}
+    controller_defaults=yaml.safe_load((out/'controller-parameters.yaml').read_text())
+    backend=controller_defaults.get('backend','body_pi')
+    if backend=='jepa_mppi':
+        from uw_controller.checkpoint import validate_feedback
+        validate_feedback(cfg,state_prefix)
+        settings=yaml.safe_load((Path(share('uw_controller'))/'config/jepa_mppi.yaml').read_text())
+        settings['fluid_density_kg_m3']=json.loads(scene.with_suffix('.assets.json').read_text())['pressure_density_kg_m3']
+        path=out/'jepa-mppi-settings.yaml';path.write_text(yaml.safe_dump(settings,sort_keys=False))
+        controller_params.update(controller_backend=backend,jepa_settings_path=str(path))
     if milestone==3:
         for package in ('navigation','tasks'):shutil.copy2(Path(share('uw_'+package))/'config/defaults.yaml',out/(package+'-parameters.yaml'))
     if porth:
@@ -58,7 +68,7 @@ def compose(context,milestone=2):
         ('perception',node('uw_perception','sensors','m2_sensors',{'run_dir':str(out)})),
         ('localization',node('uw_localization','openvins','openvins',{'frame_prefix':ns,'run_id':out.name,'config_path':str(out/'openvins.yaml'),'allow_static_initialization':milestone==3,'normalize_health_image':survey})),
         ('guard',node('uw_guard','guard','control_guard',{'run_dir':str(out),'state_frame_prefix':state_prefix,**({'estimated_horizontal_limit_m':4.,'estimated_vertical_limit_m':1.} if porth else {})},remappings=truth_state)),
-        ('controller',node('uw_controller','body_velocity','body_velocity_controller',{'run_dir':str(out),'state_frame_prefix':state_prefix},remappings=truth_state)),
+        ('controller',node('uw_controller','body_velocity','body_velocity_controller',controller_params,remappings=truth_state)),
         ('actuator_adapter',node('uw_simulations','actuator_adapter','actuator_adapter',{'run_dir':str(out)})),
         ('benchmark',node('uw_benchmark','survey_case' if survey else 'porth_case' if porth else 'm3_case' if milestone==3 else 'm2_case','m3_case' if milestone==3 else 'm2_case',{'run_dir':str(out)}))]
     if orb:
@@ -73,7 +83,7 @@ def compose(context,milestone=2):
     if milestone==3 and not survey:
         processes += [('navigation',node('uw_navigation','tracker','navigation',{'run_dir':str(out)})),('tasks',node('uw_tasks','missions','missions',{'run_dir':str(out)}))]
     if cfg['recording_profile']!='none':
-        names=['state/odometry','sim/ground_truth/odometry','sensors/imu','perception/status','localization/status','control/request','control/status','control/controller_status','sim/terminal/status','sim/actuators/native_feedback','localization/trajectory']
+        names=['state/odometry','sim/ground_truth/odometry','sensors/imu','sensors/pressure','perception/status','localization/status','control/request','control/status','control/controller_status','sim/terminal/status','sim/actuators/native_feedback','localization/trajectory']
         if milestone==3:names += ['navigation/goal','navigation/status','navigation/path','mission/status','control/approved','control/output','control/adapter_status']
         if orb:names += ['slam/status','slam/pose','slam/trajectory','slam/cloud_map']
         elif porth:names += ['slam/info','slam/map_graph','slam/trajectory']

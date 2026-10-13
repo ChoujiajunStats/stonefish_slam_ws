@@ -7,6 +7,17 @@ def rpy(q):
     """Compatibility array interface; geometry is owned by uw_robot."""
     return np.asarray(quaternion_rpy(q))
 
+
+def attitude_wrench(parameters,velocity,angles,integral):
+    return (-np.asarray(parameters['attitude_kp'])*np.asarray(angles[:2])
+            -np.asarray(parameters['attitude_kd'])*np.asarray(velocity[3:5])+integral)
+
+
+def integrate_attitude(parameters,integral,angles,desired,predicted,dt):
+    value=integral+dt*(-np.asarray(parameters['attitude_ki'])*np.asarray(angles[:2])
+                      +3*(predicted-desired)[3:5])
+    return np.clip(value,-parameters['attitude_integral_limit'],parameters['attitude_integral_limit'])
+
 class BodyController:
     def __init__(self,parameters,allocation):
         self.p=parameters;self.allocation=allocation;self.reset()
@@ -18,11 +29,10 @@ class BodyController:
         if not 0<dt<=0.1 or not np.isfinite(np.r_[target,velocity,angles,dt]).all():
             self.reset();raise ValueError('Invalid state or simulation dt')
         error=np.asarray(target)-np.asarray(velocity)[[0,1,2,5]]
-        attitude_error=-np.asarray(angles[:2])
         desired=np.zeros(6)
         desired[[0,1,2,5]]=np.asarray(self.p['velocity_kp'])*error+self.integral
         desired[2]+=self.p['buoyancy_feedforward_N']
-        desired[3:5]=np.asarray(self.p['attitude_kp'])*attitude_error-np.asarray(self.p['attitude_kd'])*np.asarray(velocity[3:5])+self.attitude_integral
+        desired[3:5]=attitude_wrench(self.p,velocity,angles,self.attitude_integral)
         attitude_mask=np.array([3 in self.allocation.controlled_axes,4 in self.allocation.controlled_axes])
         desired[3:5]*=attitude_mask
         clipped=np.clip(desired,-np.asarray(self.p['wrench_limits']),self.p['wrench_limits'])
@@ -33,7 +43,6 @@ class BodyController:
         # Back calculation includes allocator and rate saturation; integral is force/torque.
         self.integral+=dt*(np.asarray(self.p['velocity_ki'])*error+3*(predicted-desired)[[0,1,2,5]])
         self.integral=np.clip(self.integral,-np.asarray(self.p['integral_force_limits']),self.p['integral_force_limits'])
-        self.attitude_integral+=dt*(np.asarray(self.p['attitude_ki'])*attitude_error+3*(predicted-desired)[3:5])
-        self.attitude_integral=np.clip(self.attitude_integral,-self.p['attitude_integral_limit'],self.p['attitude_integral_limit'])
+        self.attitude_integral=integrate_attitude(self.p,self.attitude_integral,angles,desired,predicted,dt)
         self.attitude_integral*=attitude_mask
         return command,desired,predicted,saturated or bool(np.any(clipped!=desired))

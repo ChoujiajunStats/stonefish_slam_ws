@@ -27,6 +27,11 @@ def generate_m2_scene(upstream,template,profile,namespace,output,assets,config,s
             sensor.find('noise').attrib.update(angle='0',angular_velocity='0.0002',linear_acceleration='0.01')
         elif name.startswith('camera_'):
             sensor.set('rate','-1');sensor.set('uw_capture_time','true')
+    pressure=ET.SubElement(robot,'sensor',name='pressure',type='pressure',rate='20.0')
+    ET.SubElement(pressure,'link',name=robot.find('base_link').get('name'))
+    ET.SubElement(pressure,'origin',xyz='0 0 0',rpy='0 0 0')
+    ET.SubElement(pressure,'noise',pressure='5.0')
+    ET.SubElement(pressure,'ros_publisher',topic='sensors/pressure')
     fixture_assets={}
     if config['scene_profile']=='visual_fixture':
         # Diagnostic scenery only: original robot mass/buoyancy/drag are untouched.
@@ -54,7 +59,8 @@ def generate_m2_scene(upstream,template,profile,namespace,output,assets,config,s
             'outer_top_left_yz_ned_m':[-1.35,1.1]}
     ET.indent(tree,space='  ');tree.write(output,encoding='utf-8',xml_declaration=True)
     evidence.update(scene_sha256=sha256(output),fixture_assets_sha256=fixture_assets,
-        imu_rate_hz=100,imu_specific_force=True,imu_truth_orientation=False,
+        imu_rate_hz=100,imu_specific_force=True,imu_truth_orientation=False,pressure_rate_hz=20,
+        pressure_density_kg_m3=float(root.find('environment/ocean/water').get('density')),
         camera_sampling='continuous common drawing-queue snapshot; acquisition stamp carried with PBO',
         paired_delivery_max_hz=20,scene_profile=config['scene_profile'])
     Path(output).with_suffix('.assets.json').write_text(json.dumps(evidence,indent=2)+'\n')

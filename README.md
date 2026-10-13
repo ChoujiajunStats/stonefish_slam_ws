@@ -79,6 +79,32 @@ cd stonefish_slam_ws
 
 运行 60 秒空水域观察，打开 Stonefish 和 RViz，并保存双目、IMU、状态及 debug bag。这一步不需要 Porth 资产。
 
+## JEPA-MPPI 控制器
+
+JEPA-MPPI 与现有 PI/PID 共用 `uw_controller/body_velocity` 节点、授权和推进器分配链。在 [controller 默认参数](controller/config/defaults.yaml) 中将 `backend: body_pi` 改为 `backend: jepa_mppi` 即可切换，启动命令沿用现有配置；切回 `body_pi` 恢复原控制器。
+
+Checkpoint 随 [controller/checkpoints](controller/checkpoints/) 提交并安装；复用的参考算法源码放在 Git 忽略的 `thirdparty/`：
+
+```bash
+mkdir -p thirdparty
+touch thirdparty/COLCON_IGNORE
+git clone --single-branch --branch experiment/control-sufficient-latent-v8 \
+  https://github.com/Xiaoyang-Yu-CS/dev-jepa-water.git thirdparty/dev-jepa-water
+git -C thirdparty/dev-jepa-water checkout 40aa6353d12a01084ff65977047987d80e10239c
+```
+
+[模型参数](controller/config/jepa_mppi.yaml) 默认使用 CUDA，加载 `stage2_zhat_response_potential_full4096_four_modal_e5.pt` 并校验 SHA-256。运行 ROS 控制节点的 Python 环境需安装支持当前 GPU 的 CUDA PyTorch；RTX 5060 需支持 `sm_120` 的版本，本机测试使用 PyTorch 2.9.1 / CUDA 12.8。原 `body_pi` 不依赖 PyTorch。
+
+水平位置、姿态和速度使用 OpenVINS，控制器深度使用压力计；外层导航与 Guard 沿用原 OpenVINS 状态。支持六/八推进器。模型采样为 10 Hz，输出环为 50 Hz；启动后需收集 26 个真实历史样本。
+
+有 Porth 资产时，切换 backend 后直接使用现有估计反馈洞穴入口：
+
+```bash
+./scripts/uw porth config/run.porth.yaml --arm
+```
+
+无洞穴资产时可使用 `./scripts/uw m3 config/run.m3.yaml`。M1/M2 诊断和 `run.porth-orbslam3*.yaml` 的真值反馈 survey 不满足此控制器的状态契约，会拒绝启动。当前接入仍属实验性控制器，checkpoint 的训练动力学与仿真模型尚未完成闭环验收。
+
 ## 导入洞穴
 
 Porth 模型、纹理和路线通过独立 bundle 提供。取得 bundle 后执行：
